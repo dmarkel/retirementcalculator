@@ -12,7 +12,23 @@ Drag any number in the sentence, or type it. Everything on the page — the year
 - **Keeps compounding after you stop.** The portfolio earns its return every year of retirement too. Only what you spend leaves the account.
 - **Works in today's dollars.** Returns are discounted by inflation, so a dollar on the chart always buys what a dollar buys now. A toggle switches everything to future dollars.
 - **Shows what actually moves the date.** One change at a time — savings rate, spending, returns, inflation, starting balance — and how many years each one shifts things.
-- **Doesn't hide a bad market.** Four return scenarios on one shared scale, with the age the money runs dry if it does.
+- **Tests the date against real history.** Not a smooth average — the actual returns of 1928–2024, in the order they happened. See below.
+
+## Tested against history
+
+A steady 7% a year has never happened to anyone. What ruins early retirements isn't a low average return, it's a **bad first decade** — two people with the same lifetime average can end up thirty years apart depending on the order the years arrive.
+
+So the plan is re-run on real markets. For every starting year from 1928 onward, it takes the actual annual returns of the S&P 500 (with dividends) and 10-year US Treasuries, blends them to your stock/bond mix, rebalances once a year, discounts by that year's real CPI, and runs the same saving, spending and stopping age through them.
+
+The result is a count, not a point estimate:
+
+> **35 of 40** histories where the money lasted — and the five that failed all began between 1955 and 1960. Work to 59 instead of 58 and every one of them survives.
+
+The chart shows the middle half and the middle eight-tenths of those histories as bands, every failure as its own red line, and your steady-return assumption as a dashed line so you can see how optimistic or cautious it was against what actually happened.
+
+**Data**: annual total returns for the S&P 500 and 10-year Treasuries plus CPI, 1928–2024, from [Damodaran at NYU Stern](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histretSP.html). Verified against the source's cumulative growth of $100 over the full period (S&P geometric mean 9.95% vs the source's 9.94%; Treasuries 4.50% vs 4.50%).
+
+**Caveat**: the windows overlap heavily. A 58-year plan only fits into 97 years of data 40 times, and neighbouring runs share most of their years. It's a stress test, not a probability.
 
 ## Optional: accounts and taxes
 
@@ -30,7 +46,7 @@ This is what surfaces the **bridge problem**: retire at 52 and you need nine yea
 
 ## What it ignores
 
-Fees, healthcare before Medicare, home equity, state tax, capital-gains tax on the brokerage account, sequence-of-returns risk, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty. Returns are a steady real rate, which no real market has ever delivered.
+Fees, healthcare before Medicare, home equity, state tax, capital-gains tax on the brokerage account, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty. The projected date still rests on a steady real return; only the history panel varies it.
 
 **This is a model, not advice.**
 
