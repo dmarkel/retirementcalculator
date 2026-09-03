@@ -14,7 +14,7 @@ Drag any number in the sentence, or type it. Everything on the page — the year
 - **Prices the levers.** An exchange rate under the hero: months sooner per $1,000 of retirement spending you drop, per extra point of income saved, per $10,000 invested today — and what one more year of work adds to the pot.
 - **Charges for health cover before Medicare.** The biggest surprise cost of stopping early, on top of your spending, in every retired year up to 65.
 - **Knows the difference between income that keeps up and income that doesn't.** Social Security holds its buying power, matching the real cost-of-living rise. A pension only does if you say so — leave the switch off, as most private pensions warrant, and it decays every year after it starts. On a $42,000 pension that switch alone is worth two years of freedom.
-- **Grows your pay.** Contributions rise with real pay increases rather than sitting flat for twenty years.
+- **Grows your pay, if you say so.** An optional switch: give it the raise you actually expect ("3% a year") and it tells you what that is worth against inflation. A 2% raise against 2.6% inflation is a pay cut, and the model charges you a year of freedom for it.
 - **Pins a plan so you can argue with it.** Freeze the current plan and it stays on the chart as a dashed ghost while you move everything else, with the gap called out under the date: "3 years earlier than your pinned plan, 2029".
 - **Shows what actually moves the date.** One change at a time — savings rate, spending, returns, inflation, starting balance — and how many years each one shifts things.
 - **Tests the date against real history.** Not a smooth average — the actual returns of 1928–2024, in the order they happened. See below.

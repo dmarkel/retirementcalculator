@@ -37,33 +37,33 @@
 }
 @media (prefers-color-scheme: dark){ :root:where(:not([data-theme="light"])){
   color-scheme: dark;
-  --paper:#0b131e;  --card:#111c2b;  --card-2:#162334;
-  --ink:#e9edf3;    --ink-2:#9aa6b6; --ink-3:#828e9e;
-  --rule:#23303f;   --rule-soft:#1b2735;
+  --paper:#06090f;  --card:#0c121c;  --card-2:#111927;
+  --ink:#e9edf3;    --ink-2:#a6b2c2; --ink-3:#8b97a7;
+  --rule:#1c2634;   --rule-soft:#151d29;
   --free:#e8622c;   --free-soft:rgba(232,98,44,.16); --free-line:rgba(232,98,44,.42);
   --blue:#3987e5;   --blue-soft:rgba(57,135,229,.16);
   --s1:#184f95;     --s2:#3987e5;    --s3:#9ec5f4;
   --a1:#0d5c40;     --a2:#199e70;    --a3:#6fd6ac;
   --neg:#e66767;    --alarm:#f0655b;
-  --grid:rgba(233,237,243,.075); --card-hi:rgba(255,255,255,.05);
-  --glow-warm:rgba(232,98,44,.20); --glow-cool:rgba(57,135,229,.18);
-  --grain-op:.26; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -22px rgba(0,0,0,.8);
+  --grid:rgba(233,237,243,.062); --card-hi:rgba(255,255,255,.055);
+  --glow-warm:rgba(232,98,44,.15); --glow-cool:rgba(57,135,229,.13);
+  --grain-op:.16; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --shadow:0 1px 2px rgba(0,0,0,.55), 0 16px 40px -20px rgba(0,0,0,.9);
 }}
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --paper:#0b131e;  --card:#111c2b;  --card-2:#162334;
-  --ink:#e9edf3;    --ink-2:#9aa6b6; --ink-3:#828e9e;
-  --rule:#23303f;   --rule-soft:#1b2735;
+  --paper:#06090f;  --card:#0c121c;  --card-2:#111927;
+  --ink:#e9edf3;    --ink-2:#a6b2c2; --ink-3:#8b97a7;
+  --rule:#1c2634;   --rule-soft:#151d29;
   --free:#e8622c;   --free-soft:rgba(232,98,44,.16); --free-line:rgba(232,98,44,.42);
   --blue:#3987e5;   --blue-soft:rgba(57,135,229,.16);
   --s1:#184f95;     --s2:#3987e5;    --s3:#9ec5f4;
   --a1:#0d5c40;     --a2:#199e70;    --a3:#6fd6ac;
   --neg:#e66767;    --alarm:#f0655b;
-  --grid:rgba(233,237,243,.075); --card-hi:rgba(255,255,255,.05);
-  --glow-warm:rgba(232,98,44,.20); --glow-cool:rgba(57,135,229,.18);
-  --grain-op:.26; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
-  --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -22px rgba(0,0,0,.8);
+  --grid:rgba(233,237,243,.062); --card-hi:rgba(255,255,255,.055);
+  --glow-warm:rgba(232,98,44,.15); --glow-cool:rgba(57,135,229,.13);
+  --grain-op:.16; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --shadow:0 1px 2px rgba(0,0,0,.55), 0 16px 40px -20px rgba(0,0,0,.9);
 }
 
 /* ─── base ────────────────────────────────────────────────────────────── */
@@ -701,14 +701,14 @@ body::before{
 /* ── constants & state ─────────────────────────────────────────────── */
 var NOW = new Date().getFullYear();
 var DEFAULTS = { age:38, income:145000, savings:210000, rate:15, spend:70000,
-                 ret:7.0, infl:2.6, raise:0.5, ss:24000, ssAge:67,
+                 ret:7.0, infl:2.6, payOn:0, payRate:3.0, ss:24000, ssAge:67,
                  other:0, otherAge:65, otherCola:0, life:95, health:8000,
                  split:0, taxable:60000, pretax:120000, roth:30000, taxRate:15, stocks:80 };
 var LIMITS = {
   age:[16,80,1], income:[0,3000000,1000], savings:[0,20000000,1000], rate:[0,80,1],
   spend:[0,1000000,1000], ret:[0,14,0.1], infl:[0,8,0.1], ss:[0,80000,1000],
   ssAge:[62,70,1], other:[0,200000,1000], otherAge:[45,80,1], life:[70,105,1],
-  health:[0,60000,500], raise:[0,4,0.1], otherCola:[0,1,1],
+  health:[0,60000,500], payOn:[0,1,1], payRate:[0,8,0.1], otherCola:[0,1,1],
   split:[0,1,1], taxable:[0,20000000,1000], pretax:[0,20000000,1000],
   roth:[0,20000000,1000], taxRate:[0,45,1], stocks:[0,100,5]
 };
@@ -765,7 +765,7 @@ function realRate(st){ return (1 + st.ret/100) / (1 + st.infl/100) - 1; }
 function run(st, retireAge, rates){
   var r0 = realRate(st), i = st.infl/100;
   var contrib0 = st.income * st.rate / 100;
-  var grow = st.raise / 100;
+  var grow = st.payOn === 1 ? (1 + st.payRate/100) / (1 + i) - 1 : 0;
   var split = st.split === 1;
   var tax = split ? st.taxRate/100 : 0;
   var rAge = rmdStart(st);
@@ -1909,13 +1909,22 @@ var GROUPS = [
       { key:'stocks', a11y:'Share of the portfolio held in stocks', lo:'All bonds', hi:'All stocks',
         fmt:function(v){ return v + '% stocks \u00b7 ' + (100-v) + '% bonds'; } } ] },
 
-  { title:'Prices and pay', pair:true,
-    note:'Pay rises sit on top of inflation, so what you put away climbs in real terms every year you keep working.',
+  { title:'Prices and pay', pair:true, pairAlways:true,
+    gate:'payOn', toggle:{ key:'payOn', label:'My pay goes up each year' }, toggleAlways:true,
+    hint:'Off means your pay only keeps pace with prices, so what you put away stays flat in today\u2019s money for as long as you work.',
+    noteFn:function(){
+      var real = ((1 + s.payRate/100) / (1 + s.infl/100) - 1) * 100;
+      var tail = real > 0.05  ? ' \u2014 what you put away climbs every year you keep working.'
+               : real < -0.05 ? ' \u2014 your pay is losing ground, so what you put away shrinks.'
+                              : ' \u2014 your pay just keeps pace, so what you put away stays flat.';
+      return 'Against ' + s.infl.toFixed(1) + '% inflation that is ' +
+             (real >= 0 ? '+' : '') + real.toFixed(1) + '% a year in real terms' + tail;
+    },
     dials:[
       { key:'infl', a11y:'Inflation, percent a year', lo:'0%', hi:'8%',
         fmt:function(v){ return 'Prices +' + v.toFixed(1) + '% a year'; } },
-      { key:'raise', a11y:'Pay rises above inflation, percent a year', lo:'0%', hi:'4%',
-        fmt:function(v){ return v ? 'Pay +' + v.toFixed(1) + '% above that' : 'Pay flat in real terms'; } } ] },
+      { key:'payRate', a11y:'Pay rise, percent a year', lo:'0%', hi:'8%',
+        fmt:function(v){ return 'Pay +' + v.toFixed(1) + '% a year'; } } ] },
 
   { title:'Social Security', pair:true, gate:'ss',
     hint:'Set an amount and you can say when it starts.',
@@ -1968,7 +1977,7 @@ GROUPS.forEach(function(G){
         '<span class="switch-track"></span>' +
         '<span class="switch-text">'+G.toggle.label+'</span></label>' : '') +
     (G.hint ? '<p class="dgroup-note" data-role="hint">' + G.hint + '</p>' : '') +
-    (G.note ? '<p class="dgroup-note" data-role="note">' + G.note + '</p>' : '');
+    (G.note || G.noteFn ? '<p class="dgroup-note" data-role="note">' + (G.note || '') + '</p>' : '');
   if(!G.host) dialHost.appendChild(box);
 
   G.noteEl   = box.querySelector('[data-role="note"]');
@@ -1978,6 +1987,7 @@ GROUPS.forEach(function(G){
     G.toggleInput = box.querySelector('#t-' + G.toggle.key);
     G.toggleInput.addEventListener('change', function(){
       s[G.toggle.key] = G.toggleInput.checked ? 1 : 0;
+      syncGroups();
       refresh();
     });
   }
@@ -2000,14 +2010,18 @@ GROUPS.forEach(function(G){
 /* a start age and a cost-of-living switch mean nothing until there is money */
 function syncGroups(){
   GROUPS.forEach(function(G){
-    G.box.classList.toggle('dgroup--pair', !!G.pair && (!G.gate || s[G.gate] > 0));
+    G.box.classList.toggle('dgroup--pair',
+      !!G.pair && (G.pairAlways || !G.gate || s[G.gate] > 0));
     G.box.classList.toggle('dgroup--wide', !!G.wide);
     if(!G.gate) return;
     var on = s[G.gate] > 0;
     G.dials.forEach(function(D, i){ if(i > 0) D.box.hidden = !on; });
-    if(G.toggleEl) G.toggleEl.hidden = !on;
-    if(G.noteEl)   G.noteEl.hidden   = !on;
-    if(G.hintEl)   G.hintEl.hidden   = on;
+    if(G.toggleEl && !G.toggleAlways) G.toggleEl.hidden = !on;
+    if(G.noteEl){
+      G.noteEl.hidden = !on;
+      if(on && G.noteFn) G.noteEl.textContent = G.noteFn();
+    }
+    if(G.hintEl) G.hintEl.hidden = on;
   });
 }
 function dialFill(D){
