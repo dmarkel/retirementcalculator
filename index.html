@@ -1,0 +1,1614 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freedom Date — when you can stop working</title>
+<meta name="description" content="A retirement calculator that answers one question: what year can you stop working, and how much will you have? Drag the numbers, watch the date move.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:title" content="Freedom Date">
+<meta property="og:description" content="What year can you stop working? Drag the numbers and find out.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A1424'/%3E%3Cg fill='%232a78d6'%3E%3Crect x='4' y='20' width='3' height='8'/%3E%3Crect x='9' y='16' width='3' height='12'/%3E%3Crect x='14' y='11' width='3' height='17'/%3E%3C/g%3E%3Cg fill='%23E8622C'%3E%3Crect x='19' y='5' width='3' height='23'/%3E%3Crect x='24' y='13' width='3' height='15'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500;6..96,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── tokens ──────────────────────────────────────────────────────────── */
+:root{
+  color-scheme: light;
+  --paper:#edeff2;  --card:#f8f9fb;  --card-2:#f1f3f7;
+  --ink:#0a1424;    --ink-2:#4c586a; --ink-3:#64707e;
+  --rule:#d6dbe2;   --rule-soft:#e4e7ed;
+  --free:#d8501c;   --free-soft:rgba(216,80,28,.12); --free-line:rgba(216,80,28,.34);
+  --blue:#2a78d6;   --blue-soft:rgba(42,120,214,.12);
+  --s1:#184f95;     --s2:#2a78d6;    --s3:#6da7ec;
+  --a1:#0d5c40;     --a2:#149268;    --a3:#3fbe92;
+  --neg:#d93a32;    --alarm:#b32318;
+  --grid:rgba(10,20,36,.075); --card-hi:rgba(255,255,255,.9);
+  --glow-warm:rgba(216,80,28,.15); --glow-cool:rgba(42,120,214,.12);
+  --grain-op:.24; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --shadow:0 1px 2px rgba(10,20,36,.05), 0 12px 32px -18px rgba(10,20,36,.28);
+  --display:"Bodoni Moda", "Didot", "Times New Roman", serif;
+  --sans:"Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --gap:clamp(20px,4.2vw,44px);
+  --maxw:1200px;
+}
+@media (prefers-color-scheme: dark){ :root:where(:not([data-theme="light"])){
+  color-scheme: dark;
+  --paper:#0b131e;  --card:#111c2b;  --card-2:#162334;
+  --ink:#e9edf3;    --ink-2:#9aa6b6; --ink-3:#828e9e;
+  --rule:#23303f;   --rule-soft:#1b2735;
+  --free:#e8622c;   --free-soft:rgba(232,98,44,.16); --free-line:rgba(232,98,44,.42);
+  --blue:#3987e5;   --blue-soft:rgba(57,135,229,.16);
+  --s1:#184f95;     --s2:#3987e5;    --s3:#9ec5f4;
+  --a1:#0d5c40;     --a2:#199e70;    --a3:#6fd6ac;
+  --neg:#e66767;    --alarm:#f0655b;
+  --grid:rgba(233,237,243,.075); --card-hi:rgba(255,255,255,.05);
+  --glow-warm:rgba(232,98,44,.20); --glow-cool:rgba(57,135,229,.18);
+  --grain-op:.26; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -22px rgba(0,0,0,.8);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --paper:#0b131e;  --card:#111c2b;  --card-2:#162334;
+  --ink:#e9edf3;    --ink-2:#9aa6b6; --ink-3:#828e9e;
+  --rule:#23303f;   --rule-soft:#1b2735;
+  --free:#e8622c;   --free-soft:rgba(232,98,44,.16); --free-line:rgba(232,98,44,.42);
+  --blue:#3987e5;   --blue-soft:rgba(57,135,229,.16);
+  --s1:#184f95;     --s2:#3987e5;    --s3:#9ec5f4;
+  --a1:#0d5c40;     --a2:#199e70;    --a3:#6fd6ac;
+  --neg:#e66767;    --alarm:#f0655b;
+  --grid:rgba(233,237,243,.075); --card-hi:rgba(255,255,255,.05);
+  --glow-warm:rgba(232,98,44,.20); --glow-cool:rgba(57,135,229,.18);
+  --grain-op:.26; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 16px 40px -22px rgba(0,0,0,.8);
+}
+
+/* ─── base ────────────────────────────────────────────────────────────── */
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.5;
+  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+body::before{
+  content:''; position:fixed; inset:-8%; z-index:0; pointer-events:none;
+  opacity:var(--grain-op);
+  background-image:var(--grain);
+}
+::selection{background:var(--free); color:#fff}
+:focus-visible{outline:2px solid var(--free); outline-offset:3px; border-radius:3px}
+.wrap{max-width:var(--maxw); margin:0 auto; padding-inline:var(--gap); position:relative; z-index:1}
+.eyebrow{
+  font-family:var(--mono); font-size:11px; font-weight:500;
+  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3);
+  margin:0 0 14px;
+}
+.rule{height:1px; background:var(--rule); border:0; margin:0}
+
+/* ─── masthead ────────────────────────────────────────────────────────── */
+.masthead{
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  padding-block:18px; border-bottom:1px solid var(--rule);
+}
+.brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink)}
+.brand svg{display:block}
+.tools{display:flex; align-items:center; gap:8px}
+.seg{display:flex; background:var(--card); border:1px solid var(--rule); border-radius:999px; padding:2px}
+.seg button{
+  appearance:none; border:0; background:transparent; cursor:pointer;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-3); padding:6px 11px; border-radius:999px; white-space:nowrap;
+  transition:color .18s, background .18s;
+}
+.seg button[aria-pressed="true"]{background:var(--ink); color:var(--paper)}
+.seg button:hover{color:var(--ink)}
+.seg button[aria-pressed="true"]:hover{color:var(--paper)}
+.icon-btn{
+  appearance:none; cursor:pointer; width:36px; height:36px; display:grid; place-items:center;
+  background:var(--card); border:1px solid var(--rule); border-radius:999px; color:var(--ink-2);
+  transition:color .18s, border-color .18s;
+}
+.icon-btn:hover{color:var(--ink); border-color:var(--ink-3)}
+
+/* ─── hero ────────────────────────────────────────────────────────────── */
+.hero{padding-top:clamp(38px,7vw,84px); position:relative}
+.hero::before{
+  content:''; position:absolute; z-index:-1; pointer-events:none;
+  left:calc(50% - 50vw); right:calc(50% - 50vw); top:-220px; bottom:-140px;
+  background:
+    radial-gradient(42% 46% at 71% 62%, var(--glow-warm), transparent 66%),
+    radial-gradient(38% 42% at 24% 56%, var(--glow-cool), transparent 68%);
+}
+.hero-head{text-align:center; max-width:900px; margin:0 auto}
+.verdict{
+  font-family:var(--display); font-weight:500;
+  font-size:clamp(5.2rem,23vw,17.5rem); line-height:.8;
+  letter-spacing:-.025em; color:var(--free);
+  display:flex; justify-content:center; margin:6px 0 0;
+  font-variant-numeric:tabular-nums;
+}
+.verdict .d{display:inline-block; will-change:transform}
+@keyframes roll{from{transform:translateY(.34em); opacity:0} to{transform:translateY(0); opacity:1}}
+.verdict .d.rolling{animation:roll .42s cubic-bezier(.2,.75,.25,1)}
+.verdict.is-null{font-size:clamp(2.6rem,9vw,6rem); letter-spacing:-.02em; line-height:1}
+.verdict-sub{
+  font-size:clamp(15px,1.6vw,19px); color:var(--ink-2); margin:26px auto 0; max-width:620px;
+}
+.verdict-sub b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+.verdict-note{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--alarm);
+  margin:14px 0 0; text-transform:uppercase;
+}
+
+/* ─── lifeline (signature) ────────────────────────────────────────────── */
+.lifeline{margin:clamp(34px,6vw,66px) 0 0; position:relative}
+.lifeline-legend{
+  display:flex; flex-wrap:wrap; gap:6px 22px; align-items:baseline;
+  font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:12px;
+}
+.key{display:inline-flex; align-items:center; gap:7px}
+.key i{width:9px; height:9px; border-radius:2px; display:block}
+.lifeline-plot{position:relative; width:100%}
+.lifeline-plot::before{
+  content:''; position:absolute; inset:-18px -8px 26px; z-index:0; pointer-events:none;
+  background-image:
+    repeating-linear-gradient(to right, var(--grid) 0 1px, transparent 1px 34px),
+    repeating-linear-gradient(to bottom, var(--grid) 0 1px, transparent 1px 34px);
+  -webkit-mask-image:linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+  mask-image:linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+}
+.lifeline-plot svg{position:relative; z-index:1}
+.lifeline-plot svg{display:block; width:100%; height:auto; overflow:visible}
+.lifeline-caption{
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-3); margin:14px 0 0; text-align:center;
+}
+
+/* ─── year-by-year table ──────────────────────────────────────────────── */
+.drawer{margin:22px 0 0; border-top:1px solid var(--rule-soft)}
+.drawer summary{
+  cursor:pointer; list-style:none; padding:14px 0 0;
+  font-family:var(--mono); font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-3); display:flex; align-items:center; gap:9px; width:max-content;
+}
+.drawer summary::-webkit-details-marker{display:none}
+.drawer summary::before{content:'+'; color:var(--free); font-size:13px; line-height:1}
+.drawer[open] summary::before{content:'–'}
+.drawer summary:hover{color:var(--ink)}
+.table-scroll{max-height:340px; overflow:auto; margin-top:14px; border:1px solid var(--rule-soft); border-radius:10px; background:var(--card)}
+.table-scroll table{border-collapse:collapse; width:100%; font-family:var(--mono); font-size:11.5px}
+.table-scroll th{
+  position:sticky; top:0; background:var(--card); text-align:right; font-weight:500;
+  letter-spacing:.09em; text-transform:uppercase; font-size:10px; color:var(--ink-3);
+  padding:10px 14px; border-bottom:1px solid var(--rule);
+}
+.table-scroll th:first-child, .table-scroll td:first-child{text-align:left}
+.table-scroll td{padding:7px 14px; text-align:right; color:var(--ink-2); border-bottom:1px solid var(--rule-soft); font-variant-numeric:tabular-nums}
+.table-scroll tr:last-child td{border-bottom:0}
+.table-scroll tr[data-phase="free"] td:first-child{color:var(--free)}
+.table-scroll td.neg{color:var(--alarm)}
+
+/* ─── story / mad-lib ─────────────────────────────────────────────────── */
+.story{padding-block:clamp(52px,8vw,104px)}
+.sentence{
+  font-size:clamp(1.28rem,3vw,2.05rem); line-height:1.72; font-weight:400;
+  max-width:920px; margin:0; color:var(--ink-2); letter-spacing:-.008em;
+}
+.chip{
+  font:inherit; font-weight:600; color:var(--free); line-height:1.24;
+  background:var(--free-soft); border:0; border-bottom:1.5px solid var(--free-line);
+  border-radius:5px 5px 0 0; padding:2px 7px 1px; margin:0 1px;
+  cursor:ew-resize; touch-action:none; text-align:center;
+  font-variant-numeric:tabular-nums; -moz-appearance:textfield;
+  transition:background .16s, border-color .16s;
+}
+.chip::-webkit-outer-spin-button,.chip::-webkit-inner-spin-button{-webkit-appearance:none; margin:0}
+.chip:hover{background:rgba(216,80,28,.2)}
+:root[data-theme="dark"] .chip:hover{background:rgba(232,98,44,.26)}
+@media (prefers-color-scheme: dark){ :root:where(:not([data-theme="light"])) .chip:hover{background:rgba(232,98,44,.26)} }
+.chip:focus{outline:none; background:transparent; border-bottom-color:var(--free); box-shadow:inset 0 -1.5px 0 var(--free)}
+.chip.scrubbing{background:var(--free); color:var(--paper); border-bottom-color:var(--free)}
+.story-hint{
+  font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-3); margin:30px 0 0; display:flex; align-items:center; gap:9px;
+}
+.story-hint svg{flex:none; color:var(--ink-3)}
+
+/* ─── assumptions ─────────────────────────────────────────────────────── */
+.assume{padding-bottom:clamp(48px,7vw,88px)}
+.assume-head{display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; justify-content:space-between; margin-bottom:26px}
+.assume-head p{margin:0; color:var(--ink-2); font-size:15px; max-width:46ch}
+.dials{display:grid; grid-template-columns:repeat(auto-fit,minmax(196px,1fr)); gap:24px 30px}
+.dial label{
+  display:block;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-3); margin-bottom:8px;
+}
+.dial output{
+  display:block; color:var(--ink); font-family:var(--sans); font-size:15px; letter-spacing:-.01em;
+  font-weight:600; font-variant-numeric:tabular-nums; margin-top:3px; text-transform:none;
+}
+.dial input[type=range]{
+  -webkit-appearance:none; appearance:none; width:100%; background:transparent; margin:0; height:20px; cursor:pointer; display:block;
+}
+.dial input[type=range]::-webkit-slider-runnable-track{height:2px; border-radius:2px;
+  background:linear-gradient(90deg,var(--ink) 0 calc(var(--p,0)*100%),var(--rule) calc(var(--p,0)*100%) 100%)}
+.dial input[type=range]::-moz-range-track{height:2px; border-radius:2px;
+  background:linear-gradient(90deg,var(--ink) 0 calc(var(--p,0)*100%),var(--rule) calc(var(--p,0)*100%) 100%)}
+.dial input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--ink);
+  margin-top:-6px; border:0; transition:transform .15s;
+}
+.dial input[type=range]::-moz-range-thumb{width:14px; height:14px; border-radius:50%; background:var(--ink); border:0}
+.dial input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.25)}
+.dial input[type=range]:active::-webkit-slider-thumb{background:var(--free); transform:scale(1.25)}
+.dial .scale{display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--ink-3); margin-top:5px; letter-spacing:.04em}
+
+/* ─── accounts ────────────────────────────────────────────────────────── */
+.sec-h2{font-family:var(--display); font-weight:500; font-size:clamp(1.5rem,3vw,2.2rem); line-height:1.14; letter-spacing:-.015em; margin:0}
+.accounts{padding-bottom:clamp(48px,7vw,88px)}
+.switch{display:inline-flex; align-items:center; gap:13px; cursor:pointer; -webkit-user-select:none; user-select:none}
+.switch input{position:absolute; opacity:0; width:0; height:0}
+.switch-track{width:42px; height:24px; border-radius:999px; background:var(--rule); position:relative; transition:background .2s; flex:none}
+.switch-track::after{content:''; position:absolute; top:4px; left:4px; width:16px; height:16px; border-radius:50%; background:var(--card); transition:transform .2s; box-shadow:0 1px 2px rgba(10,20,36,.3)}
+.switch input:checked + .switch-track{background:var(--free)}
+.switch input:checked + .switch-track::after{transform:translateX(18px)}
+.switch input:focus-visible + .switch-track{outline:2px solid var(--free); outline-offset:3px}
+.switch-text{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2)}
+.acct{margin-top:32px}
+.fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(214px,1fr)); gap:28px 30px; align-items:start}
+.field label{display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.field input{
+  width:100%; font-family:var(--sans); font-size:19px; font-weight:600; letter-spacing:-.01em;
+  color:var(--ink); background:transparent; border:0; border-bottom:1.5px solid var(--rule);
+  padding:2px 0 9px; font-variant-numeric:tabular-nums; border-radius:0;
+}
+.field input:focus{outline:none; border-bottom-color:var(--free)}
+.field p{margin:9px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.5}
+.acct-note{margin:30px 0 0; font-size:13px; color:var(--ink-3); max-width:80ch; line-height:1.7}
+.acct-note b{color:var(--ink-2); font-weight:500}
+
+/* ─── panels ──────────────────────────────────────────────────────────── */
+.panels{display:grid; grid-template-columns:repeat(12,1fr); gap:clamp(16px,2vw,24px); padding-bottom:clamp(48px,7vw,88px)}
+.panel{
+  grid-column:span 12; background:var(--card); border:1px solid var(--rule-soft);
+  border-radius:14px; padding:clamp(20px,2.6vw,32px);
+  box-shadow:var(--shadow), inset 0 1px 0 var(--card-hi);
+}
+.panel--7{grid-column:span 7; display:flex; flex-direction:column}
+.panel--7 .plot{flex:1 1 auto}
+.panel--5{grid-column:span 5}
+.panel h2{
+  font-family:var(--display); font-weight:500; font-size:clamp(1.35rem,2.6vw,1.95rem);
+  line-height:1.16; letter-spacing:-.015em; margin:0 0 10px; color:var(--ink);
+}
+.panel h2 em{font-style:normal; color:var(--free)}
+.panel .lede{margin:0 0 24px; color:var(--ink-2); font-size:14.5px; max-width:62ch}
+.plot{position:relative; width:100%}
+.plot svg{display:block; width:100%; height:auto; overflow:visible}
+.legend{display:flex; flex-wrap:wrap; gap:8px 20px; margin:18px 0 0; font-family:var(--mono); font-size:11px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-2)}
+
+/* stat list */
+.stats{display:grid; gap:0}
+.stat{display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:13px 0; border-bottom:1px solid var(--rule-soft)}
+.stat:last-child{border-bottom:0; padding-bottom:0}
+.stat dt{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin:0}
+.stat dd{margin:0; font-family:var(--display); font-size:clamp(1.15rem,2.2vw,1.5rem); font-weight:500; color:var(--ink); font-variant-numeric:tabular-nums; letter-spacing:-.01em; text-align:right}
+.stat dd small{font-family:var(--sans); font-size:11.5px; font-weight:400; color:var(--ink-3); display:block; letter-spacing:0; margin-top:1px}
+
+/* empty / unreachable state inside a panel */
+.empty{display:flex; flex-direction:column; justify-content:center; height:100%; min-height:170px}
+.empty-lead{font-family:var(--display); font-weight:500; font-size:clamp(1.15rem,2.1vw,1.45rem); margin:0 0 18px; color:var(--ink); letter-spacing:-.01em}
+.empty-list{margin:0; padding:0; list-style:none; display:grid; gap:15px}
+.empty-list li{font-size:14.5px; color:var(--ink-2); line-height:1.6; padding-left:20px; position:relative}
+.empty-list li::before{content:''; position:absolute; left:0; top:.66em; width:9px; height:2px; background:var(--free)}
+.empty-list b{color:var(--ink); font-weight:600}
+
+/* scenarios */
+.scenarios{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:20px}
+.scenario{border-top:1px solid var(--rule); padding-top:14px}
+.scenario-num{font-family:var(--display); font-size:1.5rem; font-weight:500; color:var(--ink); line-height:1; font-variant-numeric:tabular-nums}
+.scenario-label{font-family:var(--mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin:5px 0 12px}
+.scenario-out{font-size:12.5px; color:var(--ink-2); margin:10px 0 0; display:flex; align-items:center; gap:7px}
+.scenario-out i{width:8px; height:8px; border-radius:50%; flex:none}
+.scenario-out.bad{color:var(--alarm)}
+
+/* tooltip */
+.tip{
+  position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-100%);
+  background:var(--ink); color:var(--paper); border-radius:8px; padding:9px 12px;
+  font-family:var(--mono); font-size:11px; line-height:1.55; white-space:nowrap;
+  letter-spacing:.02em; transition:opacity .12s; z-index:5; box-shadow:0 8px 24px -10px rgba(0,0,0,.5);
+}
+.tip.on{opacity:1}
+.tip b{font-weight:500; letter-spacing:.09em; text-transform:uppercase; opacity:.6; display:block; font-size:9.5px; margin-bottom:3px}
+.tip .row{display:flex; justify-content:space-between; gap:14px}
+.tip .row span:last-child{font-variant-numeric:tabular-nums}
+
+/* footer */
+.foot{border-top:1px solid var(--rule); padding-block:38px 60px; display:grid; gap:26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.foot h3{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px; font-weight:500}
+.foot p{margin:0 0 9px; font-size:13.5px; color:var(--ink-2); line-height:1.62; max-width:44ch}
+.foot a{color:var(--ink); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--rule)}
+.foot a:hover{text-decoration-color:var(--free)}
+.copy-btn{
+  appearance:none; cursor:pointer; background:transparent; border:1px solid var(--rule); color:var(--ink);
+  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  padding:9px 15px; border-radius:999px; transition:border-color .18s, background .18s;
+}
+.copy-btn:hover{border-color:var(--ink-3); background:var(--card)}
+
+.sr{position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0}
+
+@media (max-width:880px){
+  .panel--7,.panel--5{grid-column:span 12}
+}
+@media (max-width:560px){
+  .masthead{flex-wrap:wrap; gap:12px}
+  .sentence{line-height:1.9}
+  .stat dd{font-size:1.15rem}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="masthead">
+    <div class="brand">
+      <svg width="26" height="16" viewBox="0 0 26 16" aria-hidden="true">
+        <g fill="currentColor" opacity=".45"><rect x="0" y="10" width="2.4" height="6"/><rect x="4" y="7" width="2.4" height="9"/><rect x="8" y="3.5" width="2.4" height="12.5"/></g>
+        <g fill="#d8501c"><rect x="13" y="0" width="2.4" height="16"/><rect x="17" y="4" width="2.4" height="12"/><rect x="21" y="8.5" width="2.4" height="7.5"/></g>
+      </svg>
+      <span>Freedom&nbsp;Date</span>
+    </div>
+    <div class="tools">
+      <div class="seg" role="group" aria-label="Dollar units">
+        <button type="button" id="u-today" aria-pressed="true">Today's dollars</button>
+        <button type="button" id="u-future" aria-pressed="false">Future dollars</button>
+      </div>
+      <button type="button" class="icon-btn" id="theme" aria-label="Switch colour theme">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
+          <circle cx="8" cy="8" r="3.2"/><path d="M8 .8v1.8M8 13.4v1.8M.8 8h1.8M13.4 8h1.8M2.9 2.9l1.3 1.3M11.8 11.8l1.3 1.3M13.1 2.9l-1.3 1.3M4.2 11.8l-1.3 1.3" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ── hero ─────────────────────────────────────────────────────── -->
+    <section class="hero">
+      <div class="hero-head">
+        <p class="eyebrow" id="verdict-eyebrow">On this path, you can stop working in</p>
+        <div class="verdict" id="verdict" aria-live="polite"></div>
+        <p class="verdict-sub" id="verdict-sub"></p>
+        <p class="verdict-note" id="verdict-note" hidden></p>
+      </div>
+
+      <figure class="lifeline">
+        <div class="lifeline-legend">
+          <span class="key"><i style="background:var(--blue)"></i>Working years</span>
+          <span class="key"><i style="background:var(--free)"></i>Free years</span>
+          <span class="key" style="margin-left:auto">Bar height = what you're worth that year</span>
+        </div>
+        <div class="lifeline-plot" id="lifeline-plot">
+          <div class="tip" id="lifeline-tip"></div>
+        </div>
+        <figcaption class="lifeline-caption" id="lifeline-cap"></figcaption>
+      </figure>
+
+      <details class="drawer">
+        <summary>The year-by-year numbers</summary>
+        <div class="table-scroll" id="year-table"></div>
+      </details>
+    </section>
+
+    <!-- ── story ────────────────────────────────────────────────────── -->
+    <section class="story">
+      <p class="eyebrow">Your situation</p>
+      <p class="sentence">
+        I'm <input class="chip" id="c-age" data-key="age" inputmode="numeric" aria-label="Your current age"> years old
+        and I earn <input class="chip" id="c-income" data-key="income" inputmode="numeric" aria-label="Your annual income"> a year.
+        I've put away <input class="chip" id="c-savings" data-key="savings" inputmode="numeric" aria-label="What you have invested today"> so far,
+        and I save <input class="chip" id="c-rate" data-key="rate" inputmode="numeric" aria-label="Share of income you save each year"> of what I make.
+        When I stop, I'll want <input class="chip" id="c-spend" data-key="spend" inputmode="numeric" aria-label="Annual spending in retirement, in today's dollars"> a year to live on.
+      </p>
+      <p class="story-hint">
+        <svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4.2 1.6 1 5l3.2 3.4M11.8 1.6 15 5l-3.2 3.4M5.6 5h4.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Drag a number sideways, or click it and type
+      </p>
+    </section>
+
+    <!-- ── assumptions ──────────────────────────────────────────────── -->
+    <section class="assume">
+      <div class="assume-head">
+        <div>
+          <p class="eyebrow">Assumptions</p>
+          <h2 class="sec-h2">Every plan rests on guesses.</h2>
+        </div>
+        <p>These are the ones that matter. Move them and watch the date above move with them.</p>
+      </div>
+      <div class="dials" id="dials"></div>
+    </section>
+
+    <!-- ── accounts ─────────────────────────────────────────────────── -->
+    <section class="accounts">
+      <div class="assume-head">
+        <div>
+          <p class="eyebrow">Accounts &amp; taxes</p>
+          <h2 class="sec-h2">Not every dollar is equally yours.</h2>
+        </div>
+        <p>A dollar in a 401(k) is taxed on the way out and fenced off until 59½. A Roth dollar is yours outright. Split the pile and the date moves.</p>
+      </div>
+
+      <label class="switch">
+        <input type="checkbox" id="split-on">
+        <span class="switch-track"></span>
+        <span class="switch-text">Split my savings into accounts</span>
+      </label>
+
+      <div class="acct" id="acct" hidden>
+        <div class="fields">
+          <div class="field">
+            <label for="f-taxable">Brokerage &amp; cash</label>
+            <input id="f-taxable" data-bucket="taxable" inputmode="numeric" aria-describedby="d-taxable">
+            <p id="d-taxable">Reachable at any age</p>
+          </div>
+          <div class="field">
+            <label for="f-pretax">401(k) or traditional IRA</label>
+            <input id="f-pretax" data-bucket="pretax" inputmode="numeric" aria-describedby="d-pretax">
+            <p id="d-pretax">Taxed on the way out · 10% penalty before 59½</p>
+          </div>
+          <div class="field">
+            <label for="f-roth">Roth</label>
+            <input id="f-roth" data-bucket="roth" inputmode="numeric" aria-describedby="d-roth">
+            <p id="d-roth">Comes out clean, no tax</p>
+          </div>
+          <div class="dial" id="dial-tax"></div>
+        </div>
+        <p class="acct-note" id="acct-note"></p>
+      </div>
+    </section>
+
+    <!-- ── panels ───────────────────────────────────────────────────── -->
+    <section class="panels">
+
+      <article class="panel">
+        <p class="eyebrow">Where the money comes from</p>
+        <h2 id="comp-head">Most of it isn't money you saved.</h2>
+        <p class="lede" id="comp-lede"></p>
+        <div class="plot" id="comp-plot"><div class="tip" id="comp-tip"></div></div>
+        <div class="legend">
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s3)"></i>Investment growth</span>
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s2)"></i>What you contributed</span>
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s1)"></i>What you'd already saved</span>
+        </div>
+      </article>
+
+      <article class="panel" id="panel-pots" hidden>
+        <p class="eyebrow">Which pot pays for it</p>
+        <h2>The order your money gets spent.</h2>
+        <p class="lede" id="pots-lede"></p>
+        <div class="plot" id="pots-plot"><div class="tip" id="pots-tip"></div></div>
+        <div class="legend">
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--a3)"></i>Roth</span>
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--a2)"></i>401(k) / IRA</span>
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--a1)"></i>Brokerage &amp; cash</span>
+        </div>
+      </article>
+
+      <article class="panel panel--7">
+        <p class="eyebrow">What moves the date</p>
+        <h2>One change at a time.</h2>
+        <p class="lede" id="lever-lede">Each bar holds everything else still and changes one thing. The length is how far your freedom date slides.</p>
+        <div class="plot" id="lever-plot"></div>
+      </article>
+
+      <article class="panel panel--5">
+        <p class="eyebrow">The numbers</p>
+        <h2>What it adds up to.</h2>
+        <p class="lede" id="stats-lede"></p>
+        <dl class="stats" id="stats"></dl>
+      </article>
+
+      <article class="panel">
+        <p class="eyebrow">If the market disagrees</p>
+        <h2>Same date. Four different futures.</h2>
+        <p class="lede" id="scen-lede"></p>
+        <div class="scenarios" id="scenarios"></div>
+      </article>
+
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div>
+      <h3>How it works</h3>
+      <p>Everything is figured in today's dollars: returns are discounted by inflation, so a dollar here always buys what a dollar buys now.</p>
+      <p>Your freedom date is the first year you could stop and still have money left at the end of the plan — not a rule of thumb, an actual year-by-year run of the money. The balance keeps compounding after you stop; only what you spend leaves.</p>
+      <p>Split the accounts and withdrawals go brokerage first, then the 401(k) grossed up for tax, then Roth. A 10% penalty applies to 401(k) money taken before 59½, and required minimum distributions start at 73 or 75 depending on your birth year.</p>
+    </div>
+    <div>
+      <h3>What it ignores</h3>
+      <p>Fees, healthcare before Medicare, a paid-off house, a bad decade at exactly the wrong moment, and the raise you're about to get. Leave the accounts un-split and it ignores tax entirely.</p>
+      <p>Capital-gains tax on the brokerage account, state tax, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty.</p>
+      <p>This is a model, not advice. Real markets don't return the same number every year, and neither will yours.</p>
+    </div>
+    <div>
+      <h3>Take it with you</h3>
+      <p>Your numbers live in the link — copy it and the whole plan travels with you.</p>
+      <p><button type="button" class="copy-btn" id="copy">Copy my plan link</button></p>
+      <p style="margin-top:16px"><a href="https://github.com/dmarkel/retirementcalculator">Source on GitHub</a></p>
+    </div>
+  </footer>
+</div>
+
+<style>
+  .plot svg text, .lifeline-plot svg text{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; fill:var(--ink-3);
+  }
+  .plot svg .t-strong, .lifeline-plot svg .t-strong{ fill:var(--ink); font-size:11px }
+  .plot svg .t-free, .lifeline-plot svg .t-free{ fill:var(--free); font-size:11px; letter-spacing:.09em }
+  .plot svg .t-neg{ fill:var(--neg) }
+  .plot svg .t-alarm{ fill:var(--alarm) }
+  .grid{ stroke:var(--rule-soft); stroke-width:1 }
+  .axis{ stroke:var(--rule); stroke-width:1 }
+  .bar{ transition:opacity .15s }
+</style>
+
+<script>
+(function(){
+"use strict";
+
+/* ── constants & state ─────────────────────────────────────────────── */
+var NOW = new Date().getFullYear();
+var DEFAULTS = { age:38, income:145000, savings:210000, rate:15, spend:70000,
+                 ret:7.0, infl:2.6, ss:24000, ssAge:67, other:0, otherAge:65, life:95,
+                 split:0, taxable:60000, pretax:120000, roth:30000, taxRate:15 };
+var LIMITS = {
+  age:[16,80,1], income:[0,3000000,1000], savings:[0,20000000,1000], rate:[0,80,1],
+  spend:[0,1000000,1000], ret:[0,14,0.1], infl:[0,8,0.1], ss:[0,80000,1000],
+  ssAge:[62,70,1], other:[0,200000,1000], otherAge:[45,80,1], life:[70,105,1],
+  split:[0,1,1], taxable:[0,20000000,1000], pretax:[0,20000000,1000],
+  roth:[0,20000000,1000], taxRate:[0,45,1]
+};
+/* IRS Uniform Lifetime Table, used for required minimum distributions */
+var RMD_DIV = {73:26.5,74:25.5,75:24.6,76:23.7,77:22.9,78:22.0,79:21.1,80:20.2,81:19.4,
+  82:18.5,83:17.7,84:16.8,85:16.0,86:15.2,87:14.4,88:13.7,89:12.9,90:12.2,91:11.5,
+  92:10.8,93:10.1,94:9.5,95:8.9,96:8.4,97:7.8,98:7.3,99:6.8,100:6.4,101:6.0,102:5.6,
+  103:5.2,104:4.9,105:4.6};
+var PENALTY_AGE = 60;   /* 59½, rounded to whole years */
+function rmdStart(st){ return (NOW - st.age) >= 1960 ? 75 : 73; }
+function rmdDivisor(a){ return RMD_DIV[Math.min(105, Math.max(73, a))]; }
+var s = Object.assign({}, DEFAULTS);
+var units = 'today';
+
+/* ── formatting ────────────────────────────────────────────────────── */
+function clampNum(k, v){ var L = LIMITS[k]; v = Math.min(L[1], Math.max(L[0], v));
+  return L[2] < 1 ? Math.round(v*10)/10 : Math.round(v/L[2])*L[2]; }
+function commas(n){ return Math.round(n).toLocaleString('en-US'); }
+function usd(n){ return (n<0?'−$':'$') + commas(Math.abs(n)); }
+function money(n){
+  var a = Math.abs(n), sign = n<0 ? '−' : '';
+  if(a >= 1e6) return sign + '$' + (a/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,'') + 'M';
+  if(a >= 1e4) return sign + '$' + Math.round(a/1e3) + 'K';
+  return sign + '$' + commas(a);
+}
+function pct(n, d){ return (Math.round(n*Math.pow(10,d||0))/Math.pow(10,d||0)) + '%'; }
+function plural(n, w){ return n + ' ' + w + (Math.abs(n)===1 ? '' : 's'); }
+
+/* ── the model ─────────────────────────────────────────────────────── */
+function realRate(st){ return (1 + st.ret/100) / (1 + st.infl/100) - 1; }
+
+function run(st, retireAge){
+  var r = realRate(st), i = st.infl/100;
+  var contrib = st.income * st.rate / 100;
+  var split = st.split === 1;
+  var tax = split ? st.taxRate/100 : 0;
+  var rAge = rmdStart(st);
+
+  var bT = split ? st.taxable : st.savings;
+  var bP = split ? st.pretax  : 0;
+  var bR = split ? st.roth    : 0;
+  var tot0 = bT + bP + bR;
+  var mT = 1, mP = 0, mR = 0;
+  if(split && tot0 > 0){ mT = bT/tot0; mP = bP/tot0; mR = bR/tot0; }
+
+  var rows = [], cc = 0, ccNom = 0, depleted = null;
+  var taxPaid = 0, penaltyPaid = 0, growthPost = 0, bridgeYears = 0;
+
+  for(var age = st.age; age <= st.life; age++){
+    var t = age - st.age, working = age < retireAge;
+    var row = { age:age, year:NOW + t, t:t, bal:bT + bP + bR, working:working, cc:cc,
+                tx:bT, pre:bP, roth:bR, flow:0, taxYr:0, ss:0, other:0, rmd:0 };
+    rows.push(row);
+    if(row.bal < 0 && depleted === null) depleted = age;
+
+    if(working){
+      bT *= (1+r); bP *= (1+r); bR *= (1+r);
+      bT += contrib*mT; bP += contrib*mP; bR += contrib*mR;
+      cc += contrib; ccNom += contrib*Math.pow(1+i, t);
+      row.flow = contrib;
+    } else {
+      var ssNow = age >= st.ssAge   ? st.ss    : 0;
+      var oth   = age >= st.otherAge ? st.other : 0;
+      row.ss = ssNow; row.other = oth;
+      var need = Math.max(0, st.spend - ssNow - oth);
+      row.flow = -need;
+      var pen = (split && age < PENALTY_AGE) ? 0.10 : 0;
+      if(pen && need > 0) bridgeYears++;
+
+      if(split && age >= rAge && bP > 0){
+        var forced = bP / rmdDivisor(age);
+        bP -= forced;
+        var ft = forced*tax; taxPaid += ft; row.taxYr += ft; row.rmd = forced;
+        var net = forced - ft, used = Math.min(net, need);
+        need -= used;
+        bT += (net - used);
+      }
+      var fromT = Math.min(Math.max(0, bT), need); bT -= fromT; need -= fromT;
+      if(need > 0 && bP > 0){
+        var keep = Math.max(0.05, 1 - tax - pen);
+        var gross = Math.min(bP, need/keep);
+        bP -= gross;
+        taxPaid += gross*tax; penaltyPaid += gross*pen; row.taxYr += gross*(tax+pen);
+        need -= gross*keep;
+      }
+      if(need > 0 && bR > 0){ var fromR = Math.min(bR, need); bR -= fromR; need -= fromR; }
+      if(need > 0.5) bT -= need;
+
+      var before = bT + bP + bR;
+      bT *= (1+r); bP *= (1+r); bR *= (1+r);
+      growthPost += Math.max(0, (bT + bP + bR) - before);
+    }
+  }
+  var end = bT + bP + bR;
+  if(end < 0 && depleted === null) depleted = st.life;
+  return { rows:rows, end:end, ok:depleted === null, depleted:depleted,
+           contribTotal:cc, contribNom:ccNom, r:r, contrib:contrib, retireAge:retireAge,
+           taxPaid:taxPaid, penaltyPaid:penaltyPaid, growthPost:growthPost,
+           bridgeYears:bridgeYears, split:split, rmdAge:rAge };
+}
+
+function solve(st){
+  for(var a = st.age; a <= 90; a++){ if(run(st, a).ok) return a; }
+  return null;
+}
+function variant(mut){
+  var v = Object.assign({}, s);
+  for(var k in mut) v[k] = clampNum(k, v[k] + mut[k]);
+  return v;
+}
+
+/* ── unit conversion ───────────────────────────────────────────────── */
+function inf(t){ return units === 'future' ? Math.pow(1 + s.infl/100, t) : 1; }
+function disp(v, t){ return v * inf(t); }
+
+/* ── svg helpers ───────────────────────────────────────────────────── */
+var NS = 'http://www.w3.org/2000/svg';
+function E(tag, at, parent){
+  var n = document.createElementNS(NS, tag);
+  if(at) for(var k in at){ if(at[k] !== null && at[k] !== undefined) n.setAttribute(k, at[k]); }
+  if(parent) parent.appendChild(n);
+  return n;
+}
+function T(parent, x, y, str, cls, anchor){
+  var n = E('text', {x:x, y:y, 'text-anchor':anchor||'start', class:cls||null}, parent);
+  n.textContent = str; return n;
+}
+function capTop(x, y, w, h, r){
+  if(h <= 0.6) return 'M' + x + ',' + (y+h) + 'h' + w + 'v-0.6h' + (-w) + 'Z';
+  r = Math.min(r, w/2, h);
+  return 'M'+x+','+(y+h)+'V'+(y+r)+'A'+r+','+r+' 0 0 1 '+(x+r)+','+y+
+         'H'+(x+w-r)+'A'+r+','+r+' 0 0 1 '+(x+w)+','+(y+r)+'V'+(y+h)+'Z';
+}
+function capRight(x, y, w, h, r){
+  r = Math.min(r, w, h/2);
+  return 'M'+x+','+y+'H'+(x+w-r)+'A'+r+','+r+' 0 0 1 '+(x+w)+','+(y+r)+
+         'V'+(y+h-r)+'A'+r+','+r+' 0 0 1 '+(x+w-r)+','+(y+h)+'H'+x+'Z';
+}
+function capLeft(x, y, w, h, r){
+  r = Math.min(r, w, h/2);
+  return 'M'+(x+w)+','+y+'H'+(x+r)+'A'+r+','+r+' 0 0 0 '+x+','+(y+r)+
+         'V'+(y+h-r)+'A'+r+','+r+' 0 0 0 '+(x+r)+','+(y+h)+'H'+(x+w)+'Z';
+}
+function fresh(host){
+  var t = host.querySelector('.tip');
+  host.innerHTML = ''; if(t) host.appendChild(t);
+  var svg = E('svg', {}, null); host.insertBefore(svg, host.firstChild); return svg;
+}
+function ticks(max, n){
+  var raw = Math.max(1e-9, max/n), p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p;
+  var stp = (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  var top = Math.ceil(max/stp)*stp, list = [];
+  for(var v = stp; v <= top + stp*1e-6; v += stp) list.push(v);
+  return { step:stp, list:list, top:top };
+}
+function niceMax(v){
+  if(v <= 0) return 1;
+  var p = Math.pow(10, Math.floor(Math.log10(v))), n = v / p;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p;
+}
+var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function tween(from, to, ms, step){
+  if(reduceMotion || !from || from.length !== to.length){ step(to); return; }
+  var t0 = performance.now();
+  (function frame(now){
+    var p = Math.min(1, (now - t0)/ms), e = 1 - Math.pow(1-p, 3), out = new Array(to.length);
+    for(var i=0;i<to.length;i++) out[i] = from[i] + (to[i]-from[i])*e;
+    step(out);
+    if(p < 1) requestAnimationFrame(frame);
+  })(t0);
+}
+
+/* ── verdict ───────────────────────────────────────────────────────── */
+var vEl = document.getElementById('verdict'), vPrev = '';
+function setVerdict(str, isNull){
+  vEl.classList.toggle('is-null', !!isNull);
+  if(str === vPrev) return;
+  vEl.innerHTML = '';
+  if(isNull){ vEl.textContent = str; vPrev = str; return; }
+  for(var i=0;i<str.length;i++){
+    var sp = document.createElement('span');
+    sp.className = 'd' + (vPrev.charAt(i) !== str.charAt(i) ? ' rolling' : '');
+    sp.textContent = str.charAt(i);
+    vEl.appendChild(sp);
+  }
+  vPrev = str;
+}
+
+/* ── lifeline ──────────────────────────────────────────────────────── */
+var lifePrev = null;
+function renderLifeline(res, free){
+  var host = document.getElementById('lifeline-plot');
+  var tip  = document.getElementById('lifeline-tip');
+  var W = Math.max(280, host.clientWidth || 900);
+  var H = W < 560 ? 176 : W < 900 ? 208 : 246;
+  var padT = 34, padB = 30, plotH = H - padT - padB, base = padT + plotH;
+  var rows = res.rows, n = rows.length;
+  var gap = W/n < 6 ? 1.5 : W/n < 12 ? 2 : 3;
+  var bw = Math.max(1.6, (W - gap*(n-1))/n);
+  var step = bw + gap;
+
+  var vals = rows.map(function(r){ return Math.max(0, disp(r.bal, r.t)); });
+  var maxV = Math.max.apply(null, vals) || 1;
+  var norm = vals.map(function(v){ return v/maxV; });
+
+  var svg = fresh(host);
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+  svg.setAttribute('role', 'img');
+  svg.setAttribute('aria-label', 'One bar for every year of your life from age ' + s.age +
+    ' to ' + s.life + '. Bar height is your portfolio that year.');
+
+  var gBars = E('g', {}, svg);
+  var bars = [], i;
+  for(i=0;i<n;i++){
+    var free_ = !rows[i].working;
+    bars.push(E('path', { class:'bar', fill: free_ ? 'var(--free)' : 'var(--blue)',
+      opacity: free_ ? 1 : .92 }, gBars));
+    if(rows[i].bal < 0){
+      E('rect', { x:i*step, y:base+2, width:bw, height:5, fill:'var(--alarm)', rx:1 }, gBars);
+    }
+  }
+
+  /* baseline + age ticks */
+  E('line', {x1:0, y1:base+.5, x2:W, y2:base+.5, class:'axis'}, svg);
+  T(svg, 0, base+18, 'AGE ' + s.age, null, 'start');
+  T(svg, W, base+18, String(s.life), null, 'end');
+  for(var a = Math.ceil((s.age+1)/10)*10; a < s.life; a += 10){
+    if(a - s.age < 7 || s.life - a < 7) continue;
+    var x = (a - s.age)*step + bw/2;
+    E('line', {x1:x, y1:base, x2:x, y2:base+4, class:'axis'}, svg);
+    T(svg, x, base+18, String(a), null, 'middle');
+  }
+
+  /* social security tick */
+  if(s.ss > 0 && free !== null && s.ssAge > free && s.ssAge <= s.life){
+    var xs = (s.ssAge - s.age)*step - gap/2;
+    var farRight = xs > W - 170;
+    E('line', {x1:xs, y1:padT+7, x2:xs, y2:base, stroke:'var(--ink)', 'stroke-width':1,
+               'stroke-dasharray':'2 4', opacity:.32}, svg);
+    E('circle', {cx:xs, cy:padT+7, r:2.5, fill:'var(--ink)', opacity:.45}, svg);
+    T(svg, xs + (farRight ? -7 : 7), padT+11, 'SOCIAL SECURITY', null, farRight ? 'end' : 'start');
+  }
+
+  /* freedom marker */
+  if(free !== null && free > s.age && free <= s.life){
+    var xf = (free - s.age)*step - gap/2;
+    E('line', {x1:xf, y1:padT-14, x2:xf, y2:base+8, stroke:'var(--free)', 'stroke-width':1.25,
+               'stroke-dasharray':'3 3'}, svg);
+    var atR = disp(res.rows[free - s.age].bal, free - s.age);
+    var lbl = money(atR) + '  ·  FREE AT ' + free;
+    T(svg, Math.min(xf+7, W-4), padT-19, lbl, 't-free', xf > W-160 ? 'end' : 'start');
+  }
+
+  var draw = function(hs){
+    for(var k=0;k<n;k++){
+      var h = Math.max(0, hs[k]) * plotH;
+      bars[k].setAttribute('d', capTop(k*step, base-h, bw, h, Math.min(3, bw/2)));
+    }
+  };
+  tween(lifePrev, norm, 460, draw);
+  lifePrev = norm;
+
+  /* hover */
+  var hi = E('rect', {fill:'var(--ink)', opacity:0, y:padT-24, height:plotH+32, rx:2}, svg);
+  function move(ev){
+    var r = host.getBoundingClientRect();
+    var x = (ev.clientX - r.left) * (W / r.width);
+    var k = Math.max(0, Math.min(n-1, Math.floor(x/step)));
+    var row = rows[k];
+    hi.setAttribute('x', k*step - gap/2); hi.setAttribute('width', bw+gap);
+    hi.setAttribute('opacity', .07);
+    tip.innerHTML = '<b>' + (row.working ? 'Working' : 'Free') + ' · age ' + row.age + '</b>' +
+      '<div class="row"><span>' + row.year + '</span><span>' + usd(disp(row.bal, row.t)) + '</span></div>';
+    var px = Math.max(60, Math.min(r.width - 60, (k*step + bw/2) * (r.width / W)));
+    tip.style.left = px + 'px';
+    tip.style.top = (base - Math.max(0, norm[k])*plotH - 14) * (r.width / W) + 'px';
+    tip.classList.add('on');
+  }
+  host.onpointermove = move;
+  host.onpointerleave = function(){ tip.classList.remove('on'); hi.setAttribute('opacity', 0); };
+}
+
+/* ── year-by-year table ────────────────────────────────────────────── */
+var drawer = document.querySelector('.drawer');
+var lastRun = null;
+function renderTable(){
+  if(!drawer.open || !lastRun) return;
+  var res = lastRun.res;
+  var split = res.split;
+  var rows = res.rows.map(function(r){
+    return '<tr data-phase="' + (r.working ? 'work' : 'free') + '">' +
+      '<td>' + r.age + '</td><td>' + r.year + '</td>' +
+      '<td>' + (r.working ? 'Working' : 'Free') + '</td>' +
+      '<td>' + (r.flow >= 0 ? '+' : '') + usd(disp(r.flow, r.t)) + '</td>' +
+      '<td>' + (r.ss + r.other ? usd(disp(r.ss + r.other, r.t)) : '—') + '</td>' +
+      (split
+        ? '<td>' + usd(disp(r.tx, r.t)) + '</td><td>' + usd(disp(r.pre, r.t)) + '</td>' +
+          '<td>' + usd(disp(r.roth, r.t)) + '</td>' +
+          '<td>' + (r.taxYr ? usd(disp(r.taxYr, r.t)) : '—') + '</td>'
+        : '') +
+      '<td' + (r.bal < 0 ? ' class="neg"' : '') + '>' + usd(disp(r.bal, r.t)) + '</td></tr>';
+  }).join('');
+  document.getElementById('year-table').innerHTML =
+    '<table><caption class="sr">Your money year by year, from age ' + s.age + ' to ' + s.life + '</caption><thead><tr>' +
+    '<th scope="col">Age</th><th scope="col">Year</th><th scope="col">Phase</th>' +
+    '<th scope="col">In / out</th><th scope="col">Other income</th>' +
+    (split ? '<th scope="col">Brokerage</th><th scope="col">401(k)</th><th scope="col">Roth</th><th scope="col">Tax paid</th>' : '') +
+    '<th scope="col">Balance</th>' +
+    '</tr></thead><tbody>' + rows + '</tbody></table>';
+}
+drawer.addEventListener('toggle', renderTable);
+
+/* ── composition ───────────────────────────────────────────────────── */
+function renderComp(res, free){
+  var host = document.getElementById('comp-plot');
+  var tip  = document.getElementById('comp-tip');
+  var W = Math.max(280, host.clientWidth || 700);
+  var narrow = W < 560;
+  var H = narrow ? 230 : 300;
+  var padT = 12, padB = 28, padR = narrow ? 4 : 96, padL = 0;
+  var plotH = H - padT - padB, plotW = W - padL - padR, base = padT + plotH;
+
+  var end = (free === null ? Math.min(s.life, 67) : free);
+  var acc = res.rows.filter(function(r){ return r.age <= end; });
+  if(acc.length < 2) acc = res.rows.slice(0, 2);
+  var n = acc.length;
+  var X = function(k){ return padL + (n === 1 ? 0 : k/(n-1)*plotW); };
+
+  var layers = acc.map(function(r){
+    var total = Math.max(0, disp(r.bal, r.t));
+    var l1 = Math.min(disp(s.savings, r.t), total);
+    var l2 = Math.min(disp(s.savings + r.cc, r.t), total);
+    return [l1, l2, total];
+  });
+  var peak = Math.max.apply(null, layers.map(function(l){ return l[2]; })) || 1;
+  var tk = ticks(peak, 3), maxV = tk.top;
+  var Y = function(v){ return base - Math.min(1, v/maxV)*plotH; };
+
+  var svg = fresh(host);
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+  svg.setAttribute('role','img');
+  svg.setAttribute('aria-label','Stacked areas showing your balance split into starting savings, contributions and investment growth, from age ' + s.age + ' to ' + end + '.');
+
+  tk.list.forEach(function(yv){
+    E('line', {x1:0, y1:Y(yv), x2:padL+plotW, y2:Y(yv), class:'grid'}, svg);
+    T(svg, 0, Y(yv)-6, money(yv), null, 'start');
+  });
+
+  var fills = ['var(--s1)','var(--s2)','var(--s3)'];
+  for(var li=0; li<3; li++){
+    var top = '', bot = '';
+    for(var k=0;k<n;k++){
+      top += (k?'L':'M') + X(k) + ',' + Y(layers[k][li]);
+      var below = li === 0 ? 0 : layers[n-1-k][li-1];
+      bot += 'L' + X(n-1-k) + ',' + Y(below);
+    }
+    E('path', {d: top + bot + 'Z', fill: fills[li]}, svg);
+    if(li > 0){
+      var ln = '';
+      for(var k2=0;k2<n;k2++) ln += (k2?'L':'M') + X(k2) + ',' + Y(layers[k2][li-1]);
+      E('path', {d: ln, fill:'none', stroke:'var(--card)', 'stroke-width':2}, svg);
+    }
+  }
+
+  E('line', {x1:0, y1:base+.5, x2:padL+plotW, y2:base+.5, class:'axis'}, svg);
+  T(svg, 0, base+18, 'AGE ' + s.age, null, 'start');
+  T(svg, padL+plotW, base+18, 'AGE ' + end, null, 'end');
+
+  if(!narrow){
+    var last = layers[n-1];
+    var segs = [[last[2]-last[1], last[2], 'Growth'], [last[1]-last[0], last[1], 'Contributed'], [last[0], last[0], 'Started with']];
+    var used = [];
+    segs.forEach(function(sg, idx){
+      var mid = idx === 0 ? (last[1]+last[2])/2 : idx === 1 ? (last[0]+last[1])/2 : last[0]/2;
+      var y = Math.max(padT+10, Math.min(base, Y(mid)));
+      while(used.some(function(u){ return Math.abs(u-y) < 26; })) y += 26;
+      used.push(y);
+      T(svg, padL+plotW+10, y, money(sg[0]), 't-strong', 'start');
+      T(svg, padL+plotW+10, y+13, sg[2].toUpperCase(), null, 'start');
+    });
+  }
+
+  var cross = E('line', {x1:0, y1:padT, x2:0, y2:base, stroke:'var(--ink)',
+                         'stroke-width':1, opacity:0}, svg);
+  host.onpointermove = function(ev){
+    var r = host.getBoundingClientRect();
+    var x = (ev.clientX - r.left) * (W / r.width);
+    var k = Math.max(0, Math.min(n-1, Math.round((x - padL)/plotW*(n-1))));
+    var L = layers[k], row = acc[k];
+    cross.setAttribute('x1', X(k)); cross.setAttribute('x2', X(k)); cross.setAttribute('opacity', .22);
+    tip.innerHTML = '<b>Age ' + row.age + ' · ' + row.year + '</b>' +
+      '<div class="row"><span>Growth</span><span>' + usd(L[2]-L[1]) + '</span></div>' +
+      '<div class="row"><span>Contributed</span><span>' + usd(L[1]-L[0]) + '</span></div>' +
+      '<div class="row"><span>Started with</span><span>' + usd(L[0]) + '</span></div>' +
+      '<div class="row" style="margin-top:4px;opacity:.7"><span>Total</span><span>' + usd(L[2]) + '</span></div>';
+    tip.style.left = Math.max(90, Math.min(r.width-90, X(k) * (r.width/W))) + 'px';
+    tip.style.top  = Math.max(50, Y(L[2]) * (r.width/W) - 10) + 'px';
+    tip.classList.add('on');
+  };
+  host.onpointerleave = function(){ tip.classList.remove('on'); cross.setAttribute('opacity', 0); };
+
+  return { growth: layers[n-1][2]-layers[n-1][1], total: layers[n-1][2],
+           contributed: layers[n-1][1]-layers[n-1][0], startedWith: layers[n-1][0], endAge: end };
+}
+
+/* ── which pot pays ────────────────────────────────────────────────── */
+function renderPots(res, free){
+  var host = document.getElementById('pots-plot');
+  var tip  = document.getElementById('pots-tip');
+  var W = Math.max(280, host.clientWidth || 700);
+  var narrow = W < 560;
+  var H = narrow ? 250 : 330;
+  var padT = 34, padB = 28, padR = narrow ? 4 : 108;
+  var plotH = H - padT - padB, plotW = W - padR, base = padT + plotH;
+  var rows = res.rows, n = rows.length;
+  var X = function(k){ return (n === 1 ? 0 : k/(n-1)*plotW); };
+  var layers = rows.map(function(r){
+    var a = Math.max(0, disp(r.tx, r.t));
+    var b = a + Math.max(0, disp(r.pre, r.t));
+    return [a, b, b + Math.max(0, disp(r.roth, r.t))];
+  });
+  var peak = Math.max.apply(null, layers.map(function(l){ return l[2]; })) || 1;
+  var tk = ticks(peak, 3), maxV = tk.top;
+  var Y = function(v){ return base - Math.min(1, v/maxV)*plotH; };
+
+  var svg = fresh(host);
+  svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+  svg.setAttribute('role','img');
+  svg.setAttribute('aria-label','Stacked balances of your brokerage, 401(k) and Roth accounts from age ' +
+    s.age + ' to ' + s.life + ', showing which one pays for each year.');
+
+  tk.list.forEach(function(yv){
+    E('line', {x1:0, y1:Y(yv), x2:plotW, y2:Y(yv), class:'grid'}, svg);
+    T(svg, 0, Y(yv)-6, money(yv), null, 'start');
+  });
+
+  var fills = ['var(--a1)','var(--a2)','var(--a3)'];
+  for(var li=0; li<3; li++){
+    var top = '', bot = '';
+    for(var k=0;k<n;k++){
+      top += (k?'L':'M') + X(k) + ',' + Y(layers[k][li]);
+      bot += 'L' + X(n-1-k) + ',' + Y(li === 0 ? 0 : layers[n-1-k][li-1]);
+    }
+    E('path', {d: top + bot + 'Z', fill: fills[li]}, svg);
+    if(li > 0){
+      var ln = '';
+      for(var k2=0;k2<n;k2++) ln += (k2?'L':'M') + X(k2) + ',' + Y(layers[k2][li-1]);
+      E('path', {d:ln, fill:'none', stroke:'var(--card)', 'stroke-width':2}, svg);
+    }
+  }
+
+  E('line', {x1:0, y1:base+.5, x2:plotW, y2:base+.5, class:'axis'}, svg);
+  T(svg, 0, base+18, 'AGE ' + s.age, null, 'start');
+  T(svg, plotW, base+18, String(s.life), null, 'end');
+
+  var marks = [];
+  if(free !== null && free > s.age) marks.push([free, 'YOU STOP', 'var(--free)']);
+  if(PENALTY_AGE > s.age && PENALTY_AGE < s.life) marks.push([PENALTY_AGE, '59½ — NO MORE PENALTY', 'var(--ink-3)']);
+  if(res.rmdAge < s.life) marks.push([res.rmdAge, 'RMDs BEGIN', 'var(--ink-3)']);
+  marks.sort(function(a,b){ return a[0]-b[0]; });
+  var lastX = -999;
+  marks.forEach(function(m){
+    var x = X(m[0] - s.age);
+    E('line', {x1:x, y1:padT-6, x2:x, y2:base, stroke:m[2], 'stroke-width':1,
+               'stroke-dasharray':'3 3', opacity: m[2] === 'var(--free)' ? .9 : .5}, svg);
+    var y = (x - lastX < 130) ? padT-22 : padT-11;
+    if(x - lastX >= 130) lastX = x;
+    T(svg, Math.min(x+6, plotW), y, m[1],
+      m[2] === 'var(--free)' ? 't-free' : null, x > plotW-130 ? 'end' : 'start');
+  });
+
+  if(!narrow){
+    var last = layers[n-1];
+    var segs = [[last[2]-last[1], (last[1]+last[2])/2, 'Roth'],
+                [last[1]-last[0], (last[0]+last[1])/2, '401(k) / IRA'],
+                [last[0], last[0]/2, 'Brokerage']];
+    var used = [];
+    segs.forEach(function(sg){
+      if(sg[0] < maxV*0.012) return;
+      var y = Math.max(padT+10, Math.min(base, Y(sg[1])));
+      while(used.some(function(u){ return Math.abs(u-y) < 26; })) y += 26;
+      used.push(y);
+      T(svg, plotW+10, y, money(sg[0]), 't-strong', 'start');
+      T(svg, plotW+10, y+13, sg[2].toUpperCase(), null, 'start');
+    });
+  }
+
+  var cross = E('line', {x1:0, y1:padT, x2:0, y2:base, stroke:'var(--ink)', 'stroke-width':1, opacity:0}, svg);
+  host.onpointermove = function(ev){
+    var rc = host.getBoundingClientRect();
+    var x = (ev.clientX - rc.left) * (W / rc.width);
+    var k = Math.max(0, Math.min(n-1, Math.round(x/plotW*(n-1))));
+    var L = layers[k], row = rows[k];
+    cross.setAttribute('x1', X(k)); cross.setAttribute('x2', X(k)); cross.setAttribute('opacity', .22);
+    tip.innerHTML = '<b>Age ' + row.age + ' · ' + row.year + '</b>' +
+      '<div class="row"><span>Roth</span><span>' + usd(L[2]-L[1]) + '</span></div>' +
+      '<div class="row"><span>401(k) / IRA</span><span>' + usd(L[1]-L[0]) + '</span></div>' +
+      '<div class="row"><span>Brokerage</span><span>' + usd(L[0]) + '</span></div>' +
+      (row.rmd ? '<div class="row" style="margin-top:4px;opacity:.7"><span>RMD</span><span>' + usd(disp(row.rmd,row.t)) + '</span></div>' : '') +
+      (row.taxYr ? '<div class="row" style="opacity:.7"><span>Tax + penalty</span><span>' + usd(disp(row.taxYr,row.t)) + '</span></div>' : '');
+    tip.style.left = Math.max(100, Math.min(rc.width-100, X(k) * (rc.width/W))) + 'px';
+    tip.style.top  = Math.max(60, Y(L[2]) * (rc.width/W) - 10) + 'px';
+    tip.classList.add('on');
+  };
+  host.onpointerleave = function(){ tip.classList.remove('on'); cross.setAttribute('opacity', 0); };
+}
+
+/* ── levers ────────────────────────────────────────────────────────── */
+var LEVERS = [
+  { label:'Savings rate',        note:'± 5 points of income', good:{rate:5},       bad:{rate:-5} },
+  { label:'Retirement spending', note:'± $10,000 a year',     good:{spend:-10000}, bad:{spend:10000} },
+  { label:'Market return',       note:'± 1 point a year',     good:{ret:1},        bad:{ret:-1} },
+  { label:'Inflation',           note:'± 1 point a year',     good:{infl:-1},      bad:{infl:1} },
+  { label:'Invested today',      note:'± $50,000',            good:{savings:50000},bad:{savings:-50000} }
+];
+function renderLevers(free, fillH){
+  var host = document.getElementById('lever-plot');
+  if(free === null){
+    var nr = neededRate(), ns = neededSpend();
+    var lines = [];
+    if(nr !== null) lines.push('<b>Save ' + nr + '%</b> of what you earn instead of ' + s.rate + '%, and you are out at 67.');
+    if(ns !== null) lines.push('<b>Live on ' + money(ns) + '</b> a year instead of ' + money(s.spend) + ', and you are out at 67.');
+    lines.push('Every year you add to the plan’s end age needs a bigger pile behind it.');
+    host.innerHTML = '<div class="empty"><p class="empty-lead">There is no date to move yet.</p>' +
+      '<ul class="empty-list"><li>' + lines.join('</li><li>') + '</li></ul></div>';
+    return;
+  }
+  var W = Math.max(280, host.clientWidth || 600);
+  var narrow = W < 520;
+  var headH = 26;
+  var rowH = narrow ? 62 : 46;
+  if(fillH) rowH = Math.max(rowH, Math.min(94, (fillH - headH - 6)/LEVERS.length));
+  var labelW = narrow ? 0 : Math.min(184, W*0.34);
+  var H = headH + LEVERS.length*rowH + 6;
+  var svg = fresh(host);
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+  svg.setAttribute('role','img'); svg.setAttribute('aria-label','How far each change moves your freedom date.');
+
+  var data = LEVERS.map(function(L){
+    var g = solve(variant(L.good)), b = solve(variant(L.bad));
+    return { L:L, g: g === null ? null : g - free, b: b === null ? null : b - free };
+  });
+  var cap = 1;
+  data.forEach(function(d){
+    if(d.g !== null) cap = Math.max(cap, Math.abs(d.g));
+    if(d.b !== null) cap = Math.max(cap, Math.abs(d.b));
+  });
+  var axisL = labelW, axisW = W - labelW, cx = axisL + axisW/2;
+  var half = axisW/2 - (narrow ? 54 : 74);
+  var X = function(d){ return cx + (d/cap)*half; };
+
+  T(svg, cx-10, 12, 'EARLIER', null, 'end');
+  T(svg, cx+10, 12, 'LATER',   null, 'start');
+  E('line',{x1:cx, y1:headH-14, x2:cx, y2:headH+LEVERS.length*rowH-8, class:'axis'}, svg);
+
+  data.forEach(function(d, i){
+    var top = headH + i*rowH;
+    var by  = narrow ? top + 28 : top + rowH/2 - 7;
+    if(narrow){
+      T(svg, 0, top+12, d.L.label.toUpperCase(), 't-strong', 'start');
+      T(svg, W, top+12, d.L.note, null, 'end');
+    } else {
+      T(svg, 0, top + rowH/2 - 1, d.L.label.toUpperCase(), 't-strong', 'start');
+      T(svg, 0, top + rowH/2 + 12, d.L.note, null, 'start');
+    }
+    var pair = [d.g, d.b];
+    var sameSide = d.g !== null && d.b !== null && d.g !== 0 && d.b !== 0 &&
+                   ((d.g < 0) === (d.b < 0));
+    pair.sort(function(a,b){ return (b === null ? 1e9 : Math.abs(b)) - (a === null ? 1e9 : Math.abs(a)); });
+    pair.forEach(function(v, j){
+      if(v === 0) return;
+      var never = v === null;
+      var dir = never ? 1 : (v < 0 ? -1 : 1);
+      var len = Math.max(4, ((never ? cap : Math.abs(v))/cap)*half);
+      var col = dir === -1 ? 'var(--blue)' : 'var(--neg)';
+      var path = dir === -1 ? capLeft(cx-len, by, len-2, 14, 4) : capRight(cx+2, by, len-2, 14, 4);
+      E('path', {d:path, fill:col, opacity: never ? .38 : 1,
+                 stroke: (sameSide && j === 1) ? 'var(--card)' : null,
+                 'stroke-width': (sameSide && j === 1) ? 2 : null}, svg);
+      var txt = never ? 'never'
+                      : narrow ? plural(Math.abs(v),'yr')
+                               : plural(Math.abs(v),'yr') + (dir === -1 ? ' sooner' : ' later');
+      T(svg, dir === -1 ? cx-len-7 : cx+len+7, by+11, txt,
+        dir === -1 ? null : 't-neg', dir === -1 ? 'end' : 'start');
+    });
+    if(d.g === 0 && d.b === 0) T(svg, cx+10, by+11, 'no change', null, 'start');
+  });
+}
+
+/* ── stats ─────────────────────────────────────────────────────────── */
+function renderStats(res, free, comp){
+  var host = document.getElementById('stats');
+  var lede = document.getElementById('stats-lede');
+  var at = free === null ? null : res.rows[free - s.age];
+  var t = free === null ? 0 : free - s.age;
+  var balAt = at ? disp(at.bal, t) : 0;
+  var need = Math.max(0, s.spend - (free !== null && free >= s.ssAge ? s.ss : 0));
+  var wr = balAt > 0 ? disp(need, t)/balAt*100 : 0;
+  var endT = s.life - s.age;
+  var items = [];
+
+  if(free !== null){
+    items.push(['Portfolio the day you stop', money(balAt), 'age ' + free + ', ' + (units==='future'?'future':"today's") + ' dollars']);
+    items.push(['First year you withdraw', pct(wr,1), usd(disp(need,t)) + ' out of it']);
+    items.push(['Years of freedom', String(Math.max(0, s.life - free + 1)), 'through age ' + s.life]);
+    items.push(['Total you put in', money(units==='future' ? res.contribNom : res.contribTotal), plural(free - s.age,'year') + ' of saving']);
+    items.push(['What the market added', money(comp.growth), comp.total>0 ? pct(comp.growth/comp.total*100,0) + ' of the pile' : '—']);
+    items.push(['It keeps earning after you stop', money(res.growthPost), 'growth during retirement, today\u2019s dollars']);
+    if(res.split) items.push(['Tax and penalties on the way out', money(res.taxPaid + res.penaltyPaid),
+      res.penaltyPaid > 0 ? money(res.penaltyPaid) + ' of it early-withdrawal penalty' : 'on 401(k) withdrawals']);
+    items.push(['Left at age ' + s.life, money(disp(res.end, endT+1)), res.end > s.spend*3 ? 'room to spare' : 'cutting it fine']);
+    lede.textContent = 'Everything below is measured on the day you walk out, in ' +
+      (units === 'future' ? 'the dollars of that year' : "today's dollars") + '.';
+  } else {
+    var worked = run(s, 90);
+    items.push(['Money runs out at age', String(worked.depleted || s.life), 'even working to 90']);
+    items.push(['Yearly gap to close', money(disp(Math.max(0, s.spend - s.ss), 0)), 'after Social Security']);
+    items.push(['You would need roughly', money(Math.max(0, s.spend - s.ss)*25), 'invested, at a 4% draw']);
+    items.push(['You have now', money(s.savings), 'invested']);
+    items.push(['You add each year', money(s.income*s.rate/100), pct(s.rate,0) + ' of income']);
+    lede.textContent = 'The plan as written does not finish. Here is the size of the gap.';
+  }
+
+  host.innerHTML = items.map(function(it){
+    return '<div class="stat"><dt>'+it[0]+'</dt><dd>'+it[1]+'<small>'+it[2]+'</small></dd></div>';
+  }).join('');
+}
+
+/* ── scenarios ─────────────────────────────────────────────────────── */
+function renderScenarios(free){
+  var host = document.getElementById('scenarios');
+  var lede = document.getElementById('scen-lede');
+  var target = free === null ? 90 : free;
+  lede.textContent = free === null
+    ? 'Your plan assumes ' + pct(s.ret,1) + ' a year. None of these get you there either.'
+    : 'Your plan assumes ' + pct(s.ret,1) + ' a year and stopping at ' + target +
+      '. Markets do not take requests — here is that same date under four of them, drawn to one shared scale.';
+
+  var cases = [-2,-1,0,1].map(function(off){
+    var st = Object.assign({}, s); st.ret = clampNum('ret', s.ret + off);
+    var res = run(st, target);
+    return { off:off, ret:st.ret, res:res,
+             vals: res.rows.map(function(r){ return Math.max(0, disp(r.bal, r.t)); }) };
+  });
+  var maxV = 1;
+  cases.forEach(function(c){ maxV = Math.max(maxV, Math.max.apply(null, c.vals)); });
+
+  var VB_W = 240, VB_H = 84;
+  var Y = function(v){ return VB_H - 2 - v/maxV*(VB_H - 6); };
+
+  host.innerHTML = '';
+  cases.forEach(function(c){
+    var n = c.vals.length, X = function(k){ return k/(n-1||1)*VB_W; };
+    var ok = c.res.ok, col = ok ? 'var(--blue)' : 'var(--neg)';
+    var line = '';
+    for(var k=0;k<n;k++) line += (k?'L':'M') + X(k).toFixed(1) + ',' + Y(c.vals[k]).toFixed(1);
+    var area = line + 'L' + VB_W + ',' + Y(0) + 'L0,' + Y(0) + 'Z';
+    var rx = X(Math.max(0, target - s.age)).toFixed(1);
+    var dx = X(Math.max(0, (c.res.depleted || s.life) - s.age)).toFixed(1);
+    var box = document.createElement('div'); box.className = 'scenario';
+    box.innerHTML =
+      '<div class="scenario-num">' + c.ret.toFixed(1) + '%</div>' +
+      '<div class="scenario-label">' + (c.off === 0 ? 'Your assumption'
+          : (c.off > 0 ? '+' : '−') + Math.abs(c.off) + ' point' + (Math.abs(c.off) === 1 ? '' : 's')) + '</div>' +
+      '<svg viewBox="0 0 '+VB_W+' '+VB_H+'" preserveAspectRatio="none" style="width:100%;height:84px;display:block" aria-hidden="true">' +
+        '<path d="'+area+'" fill="'+col+'" opacity=".13"/>' +
+        '<line x1="0" y1="'+Y(0)+'" x2="'+VB_W+'" y2="'+Y(0)+'" stroke="var(--rule)" stroke-width="1" vector-effect="non-scaling-stroke"/>' +
+        '<line x1="'+rx+'" y1="0" x2="'+rx+'" y2="'+VB_H+'" stroke="var(--ink-3)" stroke-width="1" stroke-dasharray="2 3" opacity=".5" vector-effect="non-scaling-stroke"/>' +
+        '<path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>' +
+        (ok ? '' : '<circle cx="'+dx+'" cy="'+Y(0)+'" r="3.5" fill="'+col+'" stroke="var(--card)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>') +
+      '</svg>' +
+      '<p class="scenario-out' + (ok ? '' : ' bad') + '"><i style="background:'+col+'"></i>' +
+        (ok ? 'Lasts past ' + s.life : 'Runs dry at ' + c.res.depleted) + '</p>';
+    host.appendChild(box);
+  });
+}
+
+/* ── orchestration ─────────────────────────────────────────────────── */
+function headlineFor(share){
+  if(share >= .55) return 'Most of it isn’t money you saved.';
+  if(share >= .3)  return 'A big slice is money you never earned.';
+  if(share > 0)    return 'You’re doing most of the lifting.';
+  return 'Right now, it’s all you.';
+}
+function neededSpend(){
+  var probe = function(x){
+    var v = Object.assign({}, s); v.spend = x;
+    var f = solve(v); return f !== null && f <= 67;
+  };
+  if(!probe(0)) return null;
+  var lo = 0, hi = Math.max(1000, s.spend);
+  for(var k=0;k<22;k++){ var mid = (lo+hi)/2; if(probe(mid)) lo = mid; else hi = mid; }
+  return Math.max(0, Math.round(lo/500)*500);
+}
+function neededRate(){
+  for(var r = 0; r <= 80; r++){
+    var v = Object.assign({}, s); v.rate = r;
+    var f = solve(v);
+    if(f !== null && f <= 67) return r;
+  }
+  return null;
+}
+
+var vSub  = document.getElementById('verdict-sub');
+var vNote = document.getElementById('verdict-note');
+var vEye  = document.getElementById('verdict-eyebrow');
+var vCap  = document.getElementById('lifeline-cap');
+
+function update(){
+  var free = solve(s);
+  var res  = run(s, free === null ? 90 : free);
+
+  if(free === null){
+    var worked = run(s, 90), need = neededRate();
+    vEye.textContent = 'On this path';
+    setVerdict('You don’t get there.', true);
+    vSub.innerHTML = 'Even working to 90, the money runs out at age <b>' +
+      (worked.depleted || s.life) + '</b>. ' +
+      (need === null
+        ? 'Saving alone won’t close it — the spending has to come down.'
+        : 'Save <b>' + need + '%</b> instead of <b>' + s.rate + '%</b> and you’re out at 67.');
+    vNote.hidden = true;
+  } else {
+    var t = free - s.age, at = res.rows[t];
+    vEye.textContent = free === s.age ? 'You are already there. You could stop in' : 'On this path, you can stop working in';
+    setVerdict(String(NOW + t), false);
+    vSub.innerHTML = 'Age <b>' + free + '</b>' +
+      (t === 0 ? '' : ' · <b>' + plural(t, 'year') + '</b> from now') +
+      ' · <b>' + money(disp(at.bal, t)) + '</b> the day you walk out';
+    var thin = res.end < s.spend;
+    if(res.penaltyPaid > 500){
+      vNote.hidden = false;
+      vNote.textContent = 'Reaching the 401(k) before 59½ costs ' + money(res.penaltyPaid) + ' in penalties';
+    } else if(thin){
+      vNote.hidden = false;
+      vNote.textContent = 'Thin margin — you finish with less than one year of spending left';
+    } else { vNote.hidden = true; }
+  }
+
+  lastRun = { res:res, free:free };
+  potsPanel.hidden = s.split !== 1;
+  renderLifeline(res, free);
+  renderTable();
+  var comp = renderComp(res, free);
+  if(s.split === 1){
+    renderPots(res, free);
+    document.getElementById('pots-lede').textContent = free === null
+      ? 'Working to 90 and still short — but here is the order the money would go.'
+      : (free < PENALTY_AGE
+          ? 'You stop at ' + free + ', which leaves ' + plural(Math.min(PENALTY_AGE, s.life) - free, 'year') +
+            ' to cover before the retirement accounts open at 59½. That bridge comes out of the brokerage account.'
+          : 'Brokerage first, then the 401(k), then Roth last — the order that keeps the taxable money working longest.');
+    document.getElementById('acct-note').innerHTML =
+      'What you save each year lands in the same proportions as the balances above. Withdrawals come out brokerage first, then the 401(k) — grossed up for tax — then Roth. ' +
+      'Required minimum distributions start at <b>age ' + res.rmdAge + '</b> for someone born in ' + (NOW - s.age) +
+      '; anything the RMD forces out that you do not spend goes back into the brokerage account. ' +
+      'Capital-gains tax on the brokerage account is not modelled.';
+  }
+  renderStats(res, free, comp);
+  renderLevers(free);
+  fitLevers(free);
+  renderScenarios(free);
+
+  document.getElementById('comp-head').textContent =
+    headlineFor(comp.total > 0 ? comp.growth/comp.total : 0);
+  document.getElementById('comp-lede').textContent = free === null
+    ? 'Here is how the pile builds if you keep working to 90 — the shape is the same, it just never gets big enough.'
+    : 'By age ' + comp.endAge + ' you are holding ' + money(comp.total) + '. Of that, ' +
+      money(comp.growth) + ' — ' + pct(comp.total ? comp.growth/comp.total*100 : 0, 0) +
+      ' — is money the market made while you were doing something else.';
+
+  document.getElementById('lever-lede').textContent = free === null
+    ? 'There is nothing to compare until the plan finishes. Here is what would get it there.'
+    : 'Each bar holds everything else still and changes one thing. The length is how far your freedom date slides.';
+
+  vCap.textContent = free === null
+    ? 'Every year from ' + s.age + ' to ' + s.life + '. Red marks the years you are underwater.'
+    : plural(free - s.age, 'more working year') + ', then ' + plural(s.life - free + 1, 'year') + ' of your own.';
+
+  saveState();
+}
+
+function fitLevers(free){
+  var host = document.getElementById('lever-plot');
+  var svg = host.querySelector('svg');
+  if(!svg) return;
+  var avail = host.getBoundingClientRect().height;
+  if(avail - svg.getBoundingClientRect().height > 14) renderLevers(free, avail);
+}
+
+var queued = false;
+function refresh(){
+  if(queued) return; queued = true;
+  requestAnimationFrame(function(){ queued = false; update(); });
+}
+
+/* ── chips ─────────────────────────────────────────────────────────── */
+var CHIP_FMT = {
+  age:    function(v){ return String(v); },
+  income: function(v){ return '$' + commas(v); },
+  savings:function(v){ return '$' + commas(v); },
+  spend:  function(v){ return '$' + commas(v); },
+  rate:   function(v){ return v + '%'; }
+};
+var CHIP_STEP = { age:1, income:1000, savings:1000, spend:500, rate:1 };
+var ruler = document.createElement('span');
+ruler.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0';
+document.body.appendChild(ruler);
+
+function sizeChip(el){
+  var cs = getComputedStyle(el);
+  ruler.style.font = cs.fontWeight + ' ' + cs.fontSize + '/' + cs.lineHeight + ' ' + cs.fontFamily;
+  ruler.style.letterSpacing = cs.letterSpacing;
+  ruler.textContent = el.value || '0';
+  el.style.width = (ruler.offsetWidth + 16) + 'px';
+}
+function paintChip(el){ el.value = CHIP_FMT[el.dataset.key](s[el.dataset.key]); sizeChip(el); }
+
+function wireChip(el){
+  var key = el.dataset.key, step = CHIP_STEP[key];
+  el.addEventListener('focus', function(){
+    el.value = String(s[key]); sizeChip(el); setTimeout(function(){ el.select(); }, 0);
+  });
+  el.addEventListener('input', function(){
+    var raw = parseFloat(el.value.replace(/[^0-9.\-]/g, ''));
+    if(!isNaN(raw)){ s[key] = clampNum(key, raw); afterChip(key); refresh(); }
+    sizeChip(el);
+  });
+  el.addEventListener('blur', function(){ paintChip(el); refresh(); });
+  el.addEventListener('keydown', function(ev){
+    if(ev.key === 'Enter'){ ev.preventDefault(); el.blur(); return; }
+    var d = ev.key === 'ArrowUp' ? 1 : ev.key === 'ArrowDown' ? -1 : 0;
+    if(!d) return;
+    ev.preventDefault();
+    s[key] = clampNum(key, s[key] + d*step*(ev.shiftKey ? 10 : 1));
+    afterChip(key); el.value = String(s[key]); sizeChip(el); refresh();
+  });
+
+  var drag = null;
+  el.addEventListener('pointerdown', function(ev){
+    if(ev.button) return;
+    if(document.activeElement === el) return;
+    ev.preventDefault();
+    drag = { x:ev.clientX, v:s[key], moved:false, id:ev.pointerId };
+    el.setPointerCapture(ev.pointerId);
+  });
+  el.addEventListener('pointermove', function(ev){
+    if(!drag) return;
+    var dx = ev.clientX - drag.x;
+    if(!drag.moved && Math.abs(dx) < 3) return;
+    drag.moved = true; el.classList.add('scrubbing');
+    s[key] = clampNum(key, drag.v + Math.round(dx/3)*step);
+    afterChip(key); paintChip(el); refresh();
+  });
+  function done(ev){
+    if(!drag) return;
+    el.releasePointerCapture(drag.id);
+    el.classList.remove('scrubbing');
+    if(!drag.moved){ el.focus(); }
+    drag = null; paintChip(el);
+  }
+  el.addEventListener('pointerup', done);
+  el.addEventListener('pointercancel', done);
+}
+var chips = [].slice.call(document.querySelectorAll('.chip'));
+chips.forEach(wireChip);
+
+/* ── dials ─────────────────────────────────────────────────────────── */
+var DIALS = [
+  { key:'ret',   label:'Market return',     lo:'0%',  hi:'14%', fmt:function(v){ return v.toFixed(1) + '% a year'; } },
+  { key:'infl',  label:'Inflation',         lo:'0%',  hi:'8%',  fmt:function(v){ return v.toFixed(1) + '% a year'; } },
+  { key:'ss',    label:'Social Security',   lo:'$0',  hi:'$80K',fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
+  { key:'ssAge', label:'Benefits start at', lo:'62',  hi:'70',  fmt:function(v){ return 'Age ' + v; } },
+  { key:'other', label:'Pension or other income', lo:'$0', hi:'$200K',
+    fmt:function(v){ return v ? usd(v) + ' a year' : 'None'; } },
+  { key:'otherAge', label:'That income starts at', lo:'45', hi:'80', fmt:function(v){ return 'Age ' + v; } },
+  { key:'life',  label:'Plan through age',  lo:'70',  hi:'105', fmt:function(v){ return 'Age ' + v; } },
+  { key:'taxRate', label:'Tax rate on 401(k) money', lo:'0%', hi:'45%', host:'dial-tax',
+    fmt:function(v){ return v + '% effective'; } }
+];
+var dialHost = document.getElementById('dials');
+DIALS.forEach(function(D){
+  var L = LIMITS[D.key];
+  var wrap = D.host ? document.getElementById(D.host) : document.createElement('div');
+  wrap.className = 'dial';
+  wrap.innerHTML =
+    '<label for="r-'+D.key+'"><span>'+D.label+'</span><output id="o-'+D.key+'"></output></label>' +
+    '<input type="range" id="r-'+D.key+'" min="'+L[0]+'" max="'+L[1]+'" step="'+L[2]+'">' +
+    '<div class="scale"><span>'+D.lo+'</span><span>'+D.hi+'</span></div>';
+  if(!D.host) dialHost.appendChild(wrap);
+  var input = wrap.querySelector('input'), out = wrap.querySelector('output');
+  D.el = input; D.out = out;
+  input.addEventListener('input', function(){
+    s[D.key] = clampNum(D.key, parseFloat(input.value));
+    out.textContent = D.fmt(s[D.key]);
+    dialFill(D);
+    refresh();
+  });
+});
+function dialFill(D){
+  var L = LIMITS[D.key];
+  D.el.style.setProperty('--p', ((s[D.key] - L[0]) / (L[1] - L[0])).toFixed(4));
+}
+function paintDials(){
+  DIALS.forEach(function(D){ D.el.value = s[D.key]; D.out.textContent = D.fmt(s[D.key]); dialFill(D); });
+}
+
+/* ── account buckets ───────────────────────────────────────────────── */
+var BUCKETS = ['taxable','pretax','roth'];
+var splitEl = document.getElementById('split-on');
+var acctBox = document.getElementById('acct');
+var potsPanel = document.getElementById('panel-pots');
+
+function sumBuckets(){ return s.taxable + s.pretax + s.roth; }
+function paintBuckets(){
+  BUCKETS.forEach(function(k){
+    var el = document.getElementById('f-' + k);
+    if(document.activeElement !== el) el.value = '$' + commas(s[k]);
+  });
+}
+function bucketsToTotal(){
+  s.savings = clampNum('savings', sumBuckets());
+  chips.forEach(paintChip);
+}
+function totalToBuckets(){
+  var t = sumBuckets();
+  if(t <= 0){ s.taxable = s.savings; s.pretax = 0; s.roth = 0; }
+  else {
+    var f = s.savings / t;
+    s.taxable = Math.round(s.taxable*f);
+    s.pretax  = Math.round(s.pretax*f);
+    s.roth    = Math.max(0, s.savings - s.taxable - s.pretax);
+  }
+  paintBuckets();
+}
+function afterChip(key){ if(key === 'savings' && s.split === 1) totalToBuckets(); }
+
+BUCKETS.forEach(function(k){
+  var el = document.getElementById('f-' + k);
+  el.addEventListener('input', function(){
+    var raw = parseFloat(el.value.replace(/[^0-9.]/g, ''));
+    s[k] = clampNum(k, isNaN(raw) ? 0 : raw);
+    bucketsToTotal(); refresh();
+  });
+  el.addEventListener('blur', function(){ paintBuckets(); });
+  el.addEventListener('focus', function(){ el.value = String(s[k]); setTimeout(function(){ el.select(); }, 0); });
+});
+
+function paintSplit(){
+  splitEl.checked = s.split === 1;
+  acctBox.hidden = s.split !== 1;
+  potsPanel.hidden = s.split !== 1;
+  paintBuckets();
+}
+splitEl.addEventListener('change', function(){
+  s.split = splitEl.checked ? 1 : 0;
+  if(s.split === 1) totalToBuckets();
+  paintSplit(); refresh();
+});
+
+/* ── toggles, state, boot ──────────────────────────────────────────── */
+function setUnits(u){
+  units = u;
+  document.getElementById('u-today').setAttribute('aria-pressed', String(u === 'today'));
+  document.getElementById('u-future').setAttribute('aria-pressed', String(u === 'future'));
+  lifePrev = null; refresh();
+}
+document.getElementById('u-today').onclick  = function(){ setUnits('today'); };
+document.getElementById('u-future').onclick = function(){ setUnits('future'); };
+
+var themeBtn = document.getElementById('theme');
+themeBtn.onclick = function(){
+  var cur = document.documentElement.getAttribute('data-theme');
+  if(!cur) cur = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  var next = cur === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try{ localStorage.setItem('fd-theme', next); }catch(e){}
+};
+try{
+  var savedTheme = localStorage.getItem('fd-theme');
+  if(savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+}catch(e){}
+
+function serialize(){
+  var out = [];
+  for(var k in DEFAULTS){ if(s[k] !== DEFAULTS[k]) out.push(k + '=' + s[k]); }
+  if(units !== 'today') out.push('u=f');
+  return out.join('&');
+}
+function saveState(){
+  var q = serialize();
+  try{ history.replaceState(null, '', q ? '#' + q : location.pathname + location.search); }catch(e){}
+  try{ localStorage.setItem('fd-state', q); }catch(e){}
+}
+function load(q){
+  if(!q) return false;
+  var hit = false;
+  q.replace(/^#/,'').split('&').forEach(function(kv){
+    var p = kv.split('='), k = p[0], v = parseFloat(p[1]);
+    if(k === 'u'){ units = p[1] === 'f' ? 'future' : 'today'; hit = true; return; }
+    if(LIMITS[k] && !isNaN(v)){ s[k] = clampNum(k, v); hit = true; }
+  });
+  return hit;
+}
+if(!load(location.hash)){
+  try{ load(localStorage.getItem('fd-state')); }catch(e){}
+}
+
+document.getElementById('copy').onclick = function(){
+  var btn = this, url = location.href;
+  var done = function(){ btn.textContent = 'Copied'; setTimeout(function(){ btn.textContent = 'Copy my plan link'; }, 1800); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(url).then(done, done); }
+  else { done(); }
+};
+
+var rt;
+window.addEventListener('resize', function(){
+  clearTimeout(rt); rt = setTimeout(function(){ lifePrev = null; update(); }, 140);
+});
+
+chips.forEach(paintChip);
+paintDials();
+paintSplit();
+setUnits(units);
+if(document.fonts && document.fonts.ready){
+  document.fonts.ready.then(function(){ chips.forEach(paintChip); update(); });
+}
+})();
+</script>
+</body>
+</html>
