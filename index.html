@@ -202,7 +202,7 @@ body::before{
 
 /* ─── the exchange rate ───────────────────────────────────────────────── */
 .rates{
-  margin-top:clamp(36px,5vw,58px); padding-top:clamp(30px,4vw,44px);
+  padding-top:clamp(34px,4.5vw,52px); padding-bottom:clamp(48px,7vw,88px);
   border-top:1px solid var(--rule-soft);
 }
 .rates-head{display:flex; flex-wrap:wrap; gap:6px 24px; align-items:baseline; justify-content:space-between}
@@ -304,7 +304,7 @@ body::before{
 
 /* ─── accounts ────────────────────────────────────────────────────────── */
 .sec-h2{font-family:var(--display); font-weight:500; font-size:clamp(1.5rem,3vw,2.2rem); line-height:1.14; letter-spacing:-.015em; margin:0}
-.accounts{padding-bottom:clamp(48px,7vw,88px)}
+.accounts{padding-bottom:clamp(44px,6vw,72px)}
 .switch{display:inline-flex; align-items:center; gap:13px; cursor:pointer; -webkit-user-select:none; user-select:none}
 .switch input{position:absolute; opacity:0; width:0; height:0}
 .switch-track{width:42px; height:24px; border-radius:999px; background:var(--rule); position:relative; transition:background .2s; flex:none}
@@ -475,20 +475,10 @@ body::before{
       </details>
     </section>
 
-    <section class="rates" id="rates" hidden>
-      <div class="rates-head">
-        <div>
-          <p class="eyebrow">The exchange rate</p>
-          <h2 class="sec-h2">What buys you time.</h2>
-        </div>
-        <p>Roughly what each lever is worth from where you stand now, holding everything else still.</p>
-      </div>
-      <div class="rate-grid" id="rate-grid"></div>
-    </section>
-
     <!-- ── story ────────────────────────────────────────────────────── -->
     <section class="story">
       <p class="eyebrow">Your situation</p>
+      <h2 class="sec-h2" style="margin-bottom:26px">Everything above comes from these numbers.</h2>
       <p class="sentence">
         I'm <input class="chip" id="c-age" data-key="age" inputmode="numeric" aria-label="Your current age"> years old
         and I earn <input class="chip" id="c-income" data-key="income" inputmode="numeric" aria-label="Your annual income"> a year.
@@ -558,6 +548,18 @@ body::before{
         </div>
         <p class="acct-note" id="acct-note"></p>
       </div>
+    </section>
+
+    <!-- ── the exchange rate ─────────────────────────────────────────── -->
+    <section class="rates" id="rates" hidden>
+      <div class="rates-head">
+        <div>
+          <p class="eyebrow">The exchange rate</p>
+          <h2 class="sec-h2">What buys you time.</h2>
+        </div>
+        <p>Roughly what each lever is worth from where you stand now, holding everything else still.</p>
+      </div>
+      <div class="rate-grid" id="rate-grid"></div>
     </section>
 
     <!-- ── panels ───────────────────────────────────────────────────── -->
