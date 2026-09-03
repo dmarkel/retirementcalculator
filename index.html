@@ -68,6 +68,7 @@
 
 /* ─── base ────────────────────────────────────────────────────────────── */
 *{box-sizing:border-box}
+[hidden]{display:none !important}
 html{-webkit-text-size-adjust:100%}
 body{
   margin:0; background:var(--paper); color:var(--ink);
@@ -146,6 +147,14 @@ body::before{
 }
 .verdict-odds b{color:var(--ink); font-weight:500}
 .verdict-odds.bad b{color:var(--alarm)}
+.verdict-vs{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--ink-2);
+  margin:11px 0 0; text-transform:uppercase; display:inline-flex; align-items:center; gap:9px;
+}
+.verdict-vs::before{
+  content:''; width:16px; height:0; border-top:1.5px dashed var(--ink-3); flex:none;
+}
+.verdict-vs b{color:var(--ink); font-weight:500}
 .verdict-note{
   font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--alarm);
   margin:11px 0 0; text-transform:uppercase;
@@ -243,6 +252,7 @@ body::before{
   display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
   gap:14px 24px; margin-top:32px;
 }
+.story-acts{display:flex; flex-wrap:wrap; gap:10px}
 .story-hint{
   font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--ink-3); margin:0; display:flex; align-items:center; gap:9px;
@@ -266,6 +276,7 @@ body::before{
 .dials{display:grid; grid-template-columns:repeat(12,1fr); gap:32px 30px}
 .dials > .dgroup{grid-column:span 3}
 .dials > .dgroup--pair{grid-column:span 6}
+.dials > .dgroup--wide{grid-column:span 6}
 .dgroup-title{
   font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
   color:var(--ink-3); margin:0 0 11px; padding-bottom:9px; border-bottom:1px solid var(--rule-soft);
@@ -275,10 +286,10 @@ body::before{
 .dgroup--pair .dgroup-body{grid-template-columns:1fr 1fr}
 @media (max-width:1040px){
   .dials > .dgroup{grid-column:span 6}
-  .dials > .dgroup--pair{grid-column:span 12}
+  .dials > .dgroup--pair, .dials > .dgroup--wide{grid-column:span 12}
 }
 @media (max-width:560px){
-  .dials > .dgroup, .dials > .dgroup--pair{grid-column:span 12}
+  .dials > .dgroup, .dials > .dgroup--pair, .dials > .dgroup--wide{grid-column:span 12}
 }
 @media (max-width:400px){
   .dgroup--pair .dgroup-body{grid-template-columns:1fr}
@@ -314,6 +325,12 @@ body::before{
 .switch input:checked + .switch-track::after{transform:translateX(18px)}
 .switch input:focus-visible + .switch-track{outline:2px solid var(--free); outline-offset:3px}
 .switch-text{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2)}
+.switch--sm{margin-top:20px; gap:10px}
+.switch--sm .switch-track{width:34px; height:20px}
+.switch--sm .switch-track::after{top:3.5px; left:3.5px; width:13px; height:13px}
+.switch--sm input:checked + .switch-track::after{transform:translateX(14px)}
+.switch--sm .switch-text{font-size:10.5px; letter-spacing:.11em; color:var(--ink-3)}
+.switch--sm input:checked ~ .switch-text{color:var(--ink-2)}
 .acct{margin-top:32px}
 .fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(214px,1fr)); gap:28px 30px; align-items:start}
 .field label{display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
@@ -455,6 +472,7 @@ body::before{
         <div class="verdict" id="verdict" aria-live="polite"></div>
         <p class="verdict-sub" id="verdict-sub"></p>
         <p class="verdict-odds" id="verdict-odds" hidden></p>
+        <p class="verdict-vs" id="verdict-vs" hidden></p>
         <p class="verdict-note" id="verdict-note" hidden></p>
       </div>
 
@@ -493,10 +511,16 @@ body::before{
           <svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4.2 1.6 1 5l3.2 3.4M11.8 1.6 15 5l-3.2 3.4M5.6 5h4.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Drag a number sideways, or click it and type
         </p>
-        <button type="button" class="reset-btn" id="reset">
-          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12.2 7a5.2 5.2 0 1 1-1.6-3.75" stroke-linecap="round"/><path d="M12.5 1.2v3.1H9.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Reset the numbers
-        </button>
+        <span class="story-acts">
+          <button type="button" class="reset-btn" id="pin">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M7 1.2v5.2M7 12.8V6.4M2.6 6.4h8.8" stroke-linecap="round"/></svg>
+            <span id="pin-label">Pin this plan</span>
+          </button>
+          <button type="button" class="reset-btn" id="reset">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12.2 7a5.2 5.2 0 1 1-1.6-3.75" stroke-linecap="round"/><path d="M12.5 1.2v3.1H9.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Reset the numbers
+          </button>
+        </span>
       </div>
     </section>
 
@@ -677,12 +701,14 @@ body::before{
 /* ── constants & state ─────────────────────────────────────────────── */
 var NOW = new Date().getFullYear();
 var DEFAULTS = { age:38, income:145000, savings:210000, rate:15, spend:70000,
-                 ret:7.0, infl:2.6, ss:24000, ssAge:67, other:0, otherAge:65, life:95, health:8000,
+                 ret:7.0, infl:2.6, raise:0.5, ss:24000, ssAge:67,
+                 other:0, otherAge:65, otherCola:0, life:95, health:8000,
                  split:0, taxable:60000, pretax:120000, roth:30000, taxRate:15, stocks:80 };
 var LIMITS = {
   age:[16,80,1], income:[0,3000000,1000], savings:[0,20000000,1000], rate:[0,80,1],
   spend:[0,1000000,1000], ret:[0,14,0.1], infl:[0,8,0.1], ss:[0,80000,1000],
-  ssAge:[62,70,1], other:[0,200000,1000], otherAge:[45,80,1], life:[70,105,1], health:[0,60000,500],
+  ssAge:[62,70,1], other:[0,200000,1000], otherAge:[45,80,1], life:[70,105,1],
+  health:[0,60000,500], raise:[0,4,0.1], otherCola:[0,1,1],
   split:[0,1,1], taxable:[0,20000000,1000], pretax:[0,20000000,1000],
   roth:[0,20000000,1000], taxRate:[0,45,1], stocks:[0,100,5]
 };
@@ -738,7 +764,8 @@ function realRate(st){ return (1 + st.ret/100) / (1 + st.infl/100) - 1; }
 
 function run(st, retireAge, rates){
   var r0 = realRate(st), i = st.infl/100;
-  var contrib = st.income * st.rate / 100;
+  var contrib0 = st.income * st.rate / 100;
+  var grow = st.raise / 100;
   var split = st.split === 1;
   var tax = split ? st.taxRate/100 : 0;
   var rAge = rmdStart(st);
@@ -762,13 +789,18 @@ function run(st, retireAge, rates){
     if(row.bal < 0 && depleted === null) depleted = age;
 
     if(working){
+      var contrib = contrib0 * Math.pow(1 + grow, t);
       bT *= (1+r); bP *= (1+r); bR *= (1+r);
       bT += contrib*mT; bP += contrib*mP; bR += contrib*mR;
       cc += contrib; ccNom += contrib*Math.pow(1+i, t);
       row.flow = contrib;
     } else {
       var ssNow = age >= st.ssAge   ? st.ss    : 0;
-      var oth   = age >= st.otherAge ? st.other : 0;
+      var oth = 0;
+      if(st.other > 0 && age >= st.otherAge){
+        oth = st.otherCola === 1 ? st.other
+            : st.other / Math.pow(1 + i, age - st.otherAge);
+      }
       row.ss = ssNow; row.other = oth;
       var med = age < MEDICARE_AGE ? st.health : 0;
       row.med = med;
@@ -805,7 +837,7 @@ function run(st, retireAge, rates){
   var end = bT + bP + bR;
   if(end < 0 && depleted === null) depleted = st.life;
   return { rows:rows, end:end, ok:depleted === null, depleted:depleted,
-           contribTotal:cc, contribNom:ccNom, r:r0, contrib:contrib, retireAge:retireAge,
+           contribTotal:cc, contribNom:ccNom, r:r0, contrib:contrib0, retireAge:retireAge,
            taxPaid:taxPaid, penaltyPaid:penaltyPaid, growthPost:growthPost,
            bridgeYears:bridgeYears, split:split, rmdAge:rAge, r0:r0, medPaid:medPaid };
 }
@@ -969,7 +1001,14 @@ function renderLifeline(res, free){
   var step = bw + gap;
 
   var vals = rows.map(function(r){ return Math.max(0, disp(r.bal, r.t)); });
-  var maxV = Math.max.apply(null, vals) || 1;
+  var ghost = [];
+  if(pinned){
+    for(var pi=0; pi<pinned.bal.length; pi++){
+      var idx = pinned.bal[pi].age - s.age;
+      if(idx >= 0 && idx < n) ghost.push([idx, Math.max(0, disp(pinned.bal[pi].v, idx))]);
+    }
+  }
+  var maxV = Math.max.apply(null, vals.concat(ghost.map(function(g){ return g[1]; }))) || 1;
   var norm = vals.map(function(v){ return v/maxV; });
 
   var svg = fresh(host);
@@ -1019,6 +1058,20 @@ function renderLifeline(res, free){
     var atR = disp(res.rows[free - s.age].bal, free - s.age);
     var lbl = money(atR) + '  ·  FREE AT ' + free;
     T(svg, Math.min(xf+7, W-4), padT-19, lbl, 't-free', xf > W-160 ? 'end' : 'start');
+  }
+
+  if(ghost.length > 1){
+    var gd = '';
+    ghost.forEach(function(g, gi){
+      gd += (gi ? 'L' : 'M') + (g[0]*step + bw/2).toFixed(1) + ',' +
+            (base - Math.min(1, g[1]/maxV)*plotH).toFixed(1);
+    });
+    E('path', {d:gd, fill:'none', stroke:'var(--ink)', 'stroke-width':1.5,
+               'stroke-dasharray':'4 3', opacity:.45}, svg);
+    if(pinned.free !== null){
+      var gx = (pinned.free - s.age)*step + bw/2;
+      if(gx >= 0 && gx <= W) E('circle', {cx:gx, cy:base, r:3, fill:'var(--ink)', opacity:.5}, svg);
+    }
   }
 
   var draw = function(hs){
@@ -1102,7 +1155,7 @@ function renderComp(res, free){
     var l1 = Math.min(disp(s.savings, r.t), total);
     var l2 = Math.min(disp(s.savings + r.cc, r.t), total);
     return [l1, l2, total];
-  });
+  });   /* r.cc already carries the rising contributions */
   var peak = Math.max.apply(null, layers.map(function(l){ return l[2]; })) || 1;
   var tk = ticks(peak, 3), maxV = tk.top;
   var Y = function(v){ return base - Math.min(1, v/maxV)*plotH; };
@@ -1712,6 +1765,16 @@ function update(){
   renderLevers(free);
   fitLevers(free);
 
+  var vs = document.getElementById('verdict-vs');
+  if(pinned && pinned.free !== null && free !== null){
+    var gap = free - pinned.free;
+    vs.hidden = false;
+    vs.innerHTML = gap === 0
+      ? 'Same date as your pinned plan'
+      : '<b>' + plural(Math.abs(gap), 'year') + ' ' + (gap < 0 ? 'earlier' : 'later') +
+        '</b> than your pinned plan, ' + pinned.year;
+  } else { vs.hidden = true; }
+
   var hist = free === null ? null : histTest(s, free);
   renderHist(hist, free);
   var odds = document.getElementById('verdict-odds');
@@ -1838,32 +1901,45 @@ chips.forEach(wireChip);
 
 /* ── dials ─────────────────────────────────────────────────────────── */
 var GROUPS = [
-  { title:'Market return', dials:[
-    { key:'ret', a11y:'Expected market return, percent a year', lo:'0%', hi:'14%',
-      fmt:function(v){ return v.toFixed(1) + '% a year'; } } ] },
-  { title:'Stocks vs bonds', dials:[
-    { key:'stocks', a11y:'Share of the portfolio held in stocks', lo:'All bonds', hi:'All stocks',
-      fmt:function(v){ return v + '% stocks · ' + (100-v) + '% bonds'; } } ] },
-  { title:'Inflation', dials:[
-    { key:'infl', a11y:'Inflation, percent a year', lo:'0%', hi:'8%',
-      fmt:function(v){ return v.toFixed(1) + '% a year'; } } ] },
-  { title:'Plan runs through', dials:[
-    { key:'life', a11y:'Plan through age', lo:'70', hi:'105',
-      fmt:function(v){ return 'Age ' + v; } } ] },
-  { title:'Social Security', pair:true,
+  { title:'The market', pair:true,
+    note:'The return sets your date. The mix decides what history would have done to it.',
+    dials:[
+      { key:'ret', a11y:'Expected market return, percent a year', lo:'0%', hi:'14%',
+        fmt:function(v){ return v.toFixed(1) + '% a year'; } },
+      { key:'stocks', a11y:'Share of the portfolio held in stocks', lo:'All bonds', hi:'All stocks',
+        fmt:function(v){ return v + '% stocks \u00b7 ' + (100-v) + '% bonds'; } } ] },
+
+  { title:'Prices and pay', pair:true,
+    note:'Pay rises sit on top of inflation, so what you put away climbs in real terms every year you keep working.',
+    dials:[
+      { key:'infl', a11y:'Inflation, percent a year', lo:'0%', hi:'8%',
+        fmt:function(v){ return 'Prices +' + v.toFixed(1) + '% a year'; } },
+      { key:'raise', a11y:'Pay rises above inflation, percent a year', lo:'0%', hi:'4%',
+        fmt:function(v){ return v ? 'Pay +' + v.toFixed(1) + '% above that' : 'Pay flat in real terms'; } } ] },
+
+  { title:'Social Security', pair:true, gate:'ss',
+    hint:'Set an amount and you can say when it starts.',
     note:'In today\u2019s dollars \u2014 benefits have carried an automatic cost-of-living rise since 1975, so this keeps its buying power for life. Use the estimate on your SSA statement. One caveat: the 2026 Trustees Report has the trust funds running down in 2034, with about 83% of scheduled benefits funded after that unless Congress acts. To plan for that, enter roughly 83% of your estimate.',
     dials:[
-    { key:'ss', a11y:'Social Security, dollars a year', lo:'$0', hi:'$80K',
-      fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
-    { key:'ssAge', a11y:'Age Social Security starts', lo:'62', hi:'70',
-      fmt:function(v){ return 'Starts at ' + v; } } ] },
-  { title:'Pension or other income', pair:true,
-    note:'Also treated as holding its buying power. Most private pensions do not \u2014 if yours has no cost-of-living rise, enter less than the headline figure.',
+      { key:'ss', a11y:'Social Security, dollars a year', lo:'$0', hi:'$80K',
+        fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
+      { key:'ssAge', a11y:'Age Social Security starts', lo:'62', hi:'70',
+        fmt:function(v){ return 'Starts at ' + v; } } ] },
+
+  { title:'Pension or other income', pair:true, gate:'other',
+    toggle:{ key:'otherCola', label:'Rises with inflation' },
+    hint:'A pension, an annuity, rent \u2014 anything that starts later and keeps paying. Set an amount to fill in the rest.',
+    note:'Most private pensions are fixed for life. Leave the switch off and this loses buying power every year after it starts \u2014 which is what actually happens.',
     dials:[
-    { key:'other', a11y:'Pension or other income, dollars a year', lo:'$0', hi:'$200K',
-      fmt:function(v){ return v ? usd(v) + ' a year' : 'None'; } },
-    { key:'otherAge', a11y:'Age that income starts', lo:'45', hi:'80',
-      fmt:function(v){ return 'Starts at ' + v; } } ] },
+      { key:'other', a11y:'Pension or other income, dollars a year', lo:'$0', hi:'$200K',
+        fmt:function(v){ return v ? usd(v) + ' a year' : 'None'; } },
+      { key:'otherAge', a11y:'Age that income starts', lo:'45', hi:'80',
+        fmt:function(v){ return 'Starts at ' + v; } } ] },
+
+  { title:'Plan runs through', wide:true, dials:[
+    { key:'life', a11y:'Plan through age', lo:'70', hi:'105',
+      fmt:function(v){ return 'Age ' + v; } } ] },
+
   { title:'Tax rate on 401(k) money', host:'dial-tax', dials:[
     { key:'taxRate', a11y:'Effective tax rate on 401(k) withdrawals', lo:'0%', hi:'45%',
       fmt:function(v){ return v + '% effective'; } } ] }
@@ -1873,10 +1949,11 @@ var dialHost = document.getElementById('dials');
 
 GROUPS.forEach(function(G){
   var box = G.host ? document.getElementById(G.host) : document.createElement('div');
-  box.className = 'dgroup' + (G.pair ? ' dgroup--pair' : '');
+  box.className = 'dgroup';
+  G.box = box;
   var body = G.dials.map(function(D){
     var L = LIMITS[D.key];
-    return '<div class="dial">' +
+    return '<div class="dial" data-for="' + D.key + '">' +
       '<label class="sr" for="r-'+D.key+'">'+D.a11y+'</label>' +
       '<output id="o-'+D.key+'" for="r-'+D.key+'"></output>' +
       '<input type="range" id="r-'+D.key+'" min="'+L[0]+'" max="'+L[1]+'" step="'+L[2]+'" ' +
@@ -1885,29 +1962,62 @@ GROUPS.forEach(function(G){
     '</div>';
   }).join('');
   box.innerHTML = '<p class="dgroup-title">' + G.title + '</p>' +
-                  '<div class="dgroup-body">' + body + '</div>' +
-                  (G.note ? '<p class="dgroup-note">' + G.note + '</p>' : '');
+    '<div class="dgroup-body">' + body + '</div>' +
+    (G.toggle ? '<label class="switch switch--sm" data-role="toggle">' +
+        '<input type="checkbox" id="t-'+G.toggle.key+'">' +
+        '<span class="switch-track"></span>' +
+        '<span class="switch-text">'+G.toggle.label+'</span></label>' : '') +
+    (G.hint ? '<p class="dgroup-note" data-role="hint">' + G.hint + '</p>' : '') +
+    (G.note ? '<p class="dgroup-note" data-role="note">' + G.note + '</p>' : '');
   if(!G.host) dialHost.appendChild(box);
+
+  G.noteEl   = box.querySelector('[data-role="note"]');
+  G.hintEl   = box.querySelector('[data-role="hint"]');
+  G.toggleEl = box.querySelector('[data-role="toggle"]');
+  if(G.toggle){
+    G.toggleInput = box.querySelector('#t-' + G.toggle.key);
+    G.toggleInput.addEventListener('change', function(){
+      s[G.toggle.key] = G.toggleInput.checked ? 1 : 0;
+      refresh();
+    });
+  }
 
   G.dials.forEach(function(D){
     D.el  = box.querySelector('#r-' + D.key);
     D.out = box.querySelector('#o-' + D.key);
+    D.box = box.querySelector('[data-for="' + D.key + '"]');
     DIALS.push(D);
     D.el.addEventListener('input', function(){
       s[D.key] = clampNum(D.key, parseFloat(D.el.value));
       D.out.textContent = D.fmt(s[D.key]);
       dialFill(D);
+      syncGroups();
       refresh();
     });
   });
 });
 
+/* a start age and a cost-of-living switch mean nothing until there is money */
+function syncGroups(){
+  GROUPS.forEach(function(G){
+    G.box.classList.toggle('dgroup--pair', !!G.pair && (!G.gate || s[G.gate] > 0));
+    G.box.classList.toggle('dgroup--wide', !!G.wide);
+    if(!G.gate) return;
+    var on = s[G.gate] > 0;
+    G.dials.forEach(function(D, i){ if(i > 0) D.box.hidden = !on; });
+    if(G.toggleEl) G.toggleEl.hidden = !on;
+    if(G.noteEl)   G.noteEl.hidden   = !on;
+    if(G.hintEl)   G.hintEl.hidden   = on;
+  });
+}
 function dialFill(D){
   var L = LIMITS[D.key];
   D.el.style.setProperty('--p', ((s[D.key] - L[0]) / (L[1] - L[0])).toFixed(4));
 }
 function paintDials(){
   DIALS.forEach(function(D){ D.el.value = s[D.key]; D.out.textContent = D.fmt(s[D.key]); dialFill(D); });
+  GROUPS.forEach(function(G){ if(G.toggleInput) G.toggleInput.checked = s[G.toggle.key] === 1; });
+  syncGroups();
 }
 
 /* ── account buckets ───────────────────────────────────────────────── */
@@ -2011,6 +2121,30 @@ function load(q){
 if(!load(location.hash)){
   try{ load(localStorage.getItem('fd-state')); }catch(e){}
 }
+
+var pinned = null;
+var pinBtn = document.getElementById('pin');
+var pinLabel = document.getElementById('pin-label');
+try{
+  var raw = localStorage.getItem('fd-pin');
+  if(raw) pinned = JSON.parse(raw);
+}catch(e){ pinned = null; }
+
+function paintPin(){ pinLabel.textContent = pinned ? 'Clear the pin' : 'Pin this plan'; }
+pinBtn.onclick = function(){
+  if(pinned){ pinned = null; try{ localStorage.removeItem('fd-pin'); }catch(e){} }
+  else if(lastRun){
+    pinned = {
+      free: lastRun.free,
+      year: lastRun.free === null ? null : NOW + (lastRun.free - s.age),
+      age: s.age,
+      bal: lastRun.res.rows.map(function(r){ return { age:r.age, v:Math.max(0, r.bal) }; })
+    };
+    try{ localStorage.setItem('fd-pin', JSON.stringify(pinned)); }catch(e){}
+  }
+  paintPin(); lifePrev = null; refresh();
+};
+paintPin();
 
 var resetBtn = document.getElementById('reset');
 resetBtn.onclick = function(){
