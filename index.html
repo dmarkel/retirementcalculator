@@ -214,25 +214,54 @@ body::before{
 @media (prefers-color-scheme: dark){ :root:where(:not([data-theme="light"])) .chip:hover{background:rgba(232,98,44,.26)} }
 .chip:focus{outline:none; background:transparent; border-bottom-color:var(--free); box-shadow:inset 0 -1.5px 0 var(--free)}
 .chip.scrubbing{background:var(--free); color:var(--paper); border-bottom-color:var(--free)}
+.story-foot{
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+  gap:14px 24px; margin-top:32px;
+}
 .story-hint{
   font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
-  color:var(--ink-3); margin:30px 0 0; display:flex; align-items:center; gap:9px;
+  color:var(--ink-3); margin:0; display:flex; align-items:center; gap:9px;
 }
 .story-hint svg{flex:none; color:var(--ink-3)}
+.reset-btn{
+  appearance:none; cursor:pointer; background:transparent; color:var(--ink);
+  border:1px solid var(--rule); border-radius:999px; padding:8px 15px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:9px;
+  transition:border-color .18s, color .18s, opacity .18s;
+}
+.reset-btn svg{flex:none}
+.reset-btn:hover:not(:disabled){border-color:var(--free); color:var(--free)}
+.reset-btn:disabled{opacity:.38; cursor:default}
 
 /* ─── assumptions ─────────────────────────────────────────────────────── */
 .assume{padding-bottom:clamp(48px,7vw,88px)}
 .assume-head{display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; justify-content:space-between; margin-bottom:26px}
 .assume-head p{margin:0; color:var(--ink-2); font-size:15px; max-width:46ch}
-.dials{display:grid; grid-template-columns:repeat(auto-fit,minmax(196px,1fr)); gap:24px 30px}
-.dial label{
-  display:block;
+.dials{display:grid; grid-template-columns:repeat(6,1fr); gap:32px 30px}
+.dials > .dgroup{grid-column:span 2}
+.dials > .dgroup--pair{grid-column:span 3}
+.dgroup-title{
   font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
-  color:var(--ink-3); margin-bottom:8px;
+  color:var(--ink-3); margin:0 0 11px; padding-bottom:9px; border-bottom:1px solid var(--rule-soft);
+}
+.dgroup-body{display:grid; gap:22px 26px; grid-template-columns:1fr}
+.dgroup--pair .dgroup-body{grid-template-columns:1fr 1fr}
+@media (max-width:940px){
+  .dials{grid-template-columns:repeat(2,1fr)}
+  .dials > .dgroup{grid-column:span 1}
+  .dials > .dgroup--pair{grid-column:span 2}
+}
+@media (max-width:560px){
+  .dials{grid-template-columns:1fr}
+  .dials > .dgroup, .dials > .dgroup--pair{grid-column:span 1}
+}
+@media (max-width:400px){
+  .dgroup--pair .dgroup-body{grid-template-columns:1fr}
 }
 .dial output{
   display:block; color:var(--ink); font-family:var(--sans); font-size:15px; letter-spacing:-.01em;
-  font-weight:600; font-variant-numeric:tabular-nums; margin-top:3px; text-transform:none;
+  font-weight:600; font-variant-numeric:tabular-nums; margin:0 0 9px; text-transform:none;
 }
 .dial input[type=range]{
   -webkit-appearance:none; appearance:none; width:100%; background:transparent; margin:0; height:20px; cursor:pointer; display:block;
@@ -421,10 +450,16 @@ body::before{
         and I save <input class="chip" id="c-rate" data-key="rate" inputmode="numeric" aria-label="Share of income you save each year"> of what I make.
         When I stop, I'll want <input class="chip" id="c-spend" data-key="spend" inputmode="numeric" aria-label="Annual spending in retirement, in today's dollars"> a year to live on.
       </p>
-      <p class="story-hint">
-        <svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4.2 1.6 1 5l3.2 3.4M11.8 1.6 15 5l-3.2 3.4M5.6 5h4.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Drag a number sideways, or click it and type
-      </p>
+      <div class="story-foot">
+        <p class="story-hint">
+          <svg width="16" height="10" viewBox="0 0 16 10" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M4.2 1.6 1 5l3.2 3.4M11.8 1.6 15 5l-3.2 3.4M5.6 5h4.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Drag a number sideways, or click it and type
+        </p>
+        <button type="button" class="reset-btn" id="reset">
+          <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12.2 7a5.2 5.2 0 1 1-1.6-3.75" stroke-linecap="round"/><path d="M12.5 1.2v3.1H9.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Reset the numbers
+        </button>
+      </div>
     </section>
 
     <!-- ── assumptions ──────────────────────────────────────────────── -->
@@ -472,7 +507,7 @@ body::before{
             <input id="f-roth" data-bucket="roth" inputmode="numeric" aria-describedby="d-roth">
             <p id="d-roth">Comes out clean, no tax</p>
           </div>
-          <div class="dial" id="dial-tax"></div>
+          <div class="dgroup" id="dial-tax"></div>
         </div>
         <p class="acct-note" id="acct-note"></p>
       </div>
@@ -1449,37 +1484,63 @@ var chips = [].slice.call(document.querySelectorAll('.chip'));
 chips.forEach(wireChip);
 
 /* ── dials ─────────────────────────────────────────────────────────── */
-var DIALS = [
-  { key:'ret',   label:'Market return',     lo:'0%',  hi:'14%', fmt:function(v){ return v.toFixed(1) + '% a year'; } },
-  { key:'infl',  label:'Inflation',         lo:'0%',  hi:'8%',  fmt:function(v){ return v.toFixed(1) + '% a year'; } },
-  { key:'ss',    label:'Social Security',   lo:'$0',  hi:'$80K',fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
-  { key:'ssAge', label:'Benefits start at', lo:'62',  hi:'70',  fmt:function(v){ return 'Age ' + v; } },
-  { key:'other', label:'Pension or other income', lo:'$0', hi:'$200K',
-    fmt:function(v){ return v ? usd(v) + ' a year' : 'None'; } },
-  { key:'otherAge', label:'That income starts at', lo:'45', hi:'80', fmt:function(v){ return 'Age ' + v; } },
-  { key:'life',  label:'Plan through age',  lo:'70',  hi:'105', fmt:function(v){ return 'Age ' + v; } },
-  { key:'taxRate', label:'Tax rate on 401(k) money', lo:'0%', hi:'45%', host:'dial-tax',
-    fmt:function(v){ return v + '% effective'; } }
+var GROUPS = [
+  { title:'Market return', dials:[
+    { key:'ret', a11y:'Expected market return, percent a year', lo:'0%', hi:'14%',
+      fmt:function(v){ return v.toFixed(1) + '% a year'; } } ] },
+  { title:'Inflation', dials:[
+    { key:'infl', a11y:'Inflation, percent a year', lo:'0%', hi:'8%',
+      fmt:function(v){ return v.toFixed(1) + '% a year'; } } ] },
+  { title:'Plan runs through', dials:[
+    { key:'life', a11y:'Plan through age', lo:'70', hi:'105',
+      fmt:function(v){ return 'Age ' + v; } } ] },
+  { title:'Social Security', pair:true, dials:[
+    { key:'ss', a11y:'Social Security, dollars a year', lo:'$0', hi:'$80K',
+      fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
+    { key:'ssAge', a11y:'Age Social Security starts', lo:'62', hi:'70',
+      fmt:function(v){ return 'Starts at ' + v; } } ] },
+  { title:'Pension or other income', pair:true, dials:[
+    { key:'other', a11y:'Pension or other income, dollars a year', lo:'$0', hi:'$200K',
+      fmt:function(v){ return v ? usd(v) + ' a year' : 'None'; } },
+    { key:'otherAge', a11y:'Age that income starts', lo:'45', hi:'80',
+      fmt:function(v){ return 'Starts at ' + v; } } ] },
+  { title:'Tax rate on 401(k) money', host:'dial-tax', dials:[
+    { key:'taxRate', a11y:'Effective tax rate on 401(k) withdrawals', lo:'0%', hi:'45%',
+      fmt:function(v){ return v + '% effective'; } } ] }
 ];
+var DIALS = [];
 var dialHost = document.getElementById('dials');
-DIALS.forEach(function(D){
-  var L = LIMITS[D.key];
-  var wrap = D.host ? document.getElementById(D.host) : document.createElement('div');
-  wrap.className = 'dial';
-  wrap.innerHTML =
-    '<label for="r-'+D.key+'"><span>'+D.label+'</span><output id="o-'+D.key+'"></output></label>' +
-    '<input type="range" id="r-'+D.key+'" min="'+L[0]+'" max="'+L[1]+'" step="'+L[2]+'">' +
-    '<div class="scale"><span>'+D.lo+'</span><span>'+D.hi+'</span></div>';
-  if(!D.host) dialHost.appendChild(wrap);
-  var input = wrap.querySelector('input'), out = wrap.querySelector('output');
-  D.el = input; D.out = out;
-  input.addEventListener('input', function(){
-    s[D.key] = clampNum(D.key, parseFloat(input.value));
-    out.textContent = D.fmt(s[D.key]);
-    dialFill(D);
-    refresh();
+
+GROUPS.forEach(function(G){
+  var box = G.host ? document.getElementById(G.host) : document.createElement('div');
+  box.className = 'dgroup' + (G.pair ? ' dgroup--pair' : '');
+  var body = G.dials.map(function(D){
+    var L = LIMITS[D.key];
+    return '<div class="dial">' +
+      '<label class="sr" for="r-'+D.key+'">'+D.a11y+'</label>' +
+      '<output id="o-'+D.key+'" for="r-'+D.key+'"></output>' +
+      '<input type="range" id="r-'+D.key+'" min="'+L[0]+'" max="'+L[1]+'" step="'+L[2]+'" ' +
+        'aria-label="'+D.a11y+'">' +
+      '<div class="scale"><span>'+D.lo+'</span><span>'+D.hi+'</span></div>' +
+    '</div>';
+  }).join('');
+  box.innerHTML = '<p class="dgroup-title">' + G.title + '</p>' +
+                  '<div class="dgroup-body">' + body + '</div>';
+  if(!G.host) dialHost.appendChild(box);
+
+  G.dials.forEach(function(D){
+    D.el  = box.querySelector('#r-' + D.key);
+    D.out = box.querySelector('#o-' + D.key);
+    DIALS.push(D);
+    D.el.addEventListener('input', function(){
+      s[D.key] = clampNum(D.key, parseFloat(D.el.value));
+      D.out.textContent = D.fmt(s[D.key]);
+      dialFill(D);
+      refresh();
+    });
   });
 });
+
 function dialFill(D){
   var L = LIMITS[D.key];
   D.el.style.setProperty('--p', ((s[D.key] - L[0]) / (L[1] - L[0])).toFixed(4));
@@ -1572,6 +1633,7 @@ function serialize(){
 }
 function saveState(){
   var q = serialize();
+  if(resetBtn) resetBtn.disabled = q === '';
   try{ history.replaceState(null, '', q ? '#' + q : location.pathname + location.search); }catch(e){}
   try{ localStorage.setItem('fd-state', q); }catch(e){}
 }
@@ -1588,6 +1650,22 @@ function load(q){
 if(!load(location.hash)){
   try{ load(localStorage.getItem('fd-state')); }catch(e){}
 }
+
+var resetBtn = document.getElementById('reset');
+resetBtn.onclick = function(){
+  if(resetBtn.disabled) return;
+  var live = document.activeElement;
+  if(live && (live.classList.contains('chip') || live.dataset.bucket)) live.blur();
+  s = Object.assign({}, DEFAULTS);
+  units = 'today';
+  document.getElementById('u-today').setAttribute('aria-pressed', 'true');
+  document.getElementById('u-future').setAttribute('aria-pressed', 'false');
+  try{ localStorage.removeItem('fd-state'); }catch(e){}
+  chips.forEach(paintChip);
+  paintDials();
+  paintSplit();
+  refresh();
+};
 
 document.getElementById('copy').onclick = function(){
   var btn = this, url = location.href;

@@ -48,6 +48,8 @@ Then open http://localhost:8000.
 
 Every input lives in the URL fragment, so a link carries the whole plan. "Copy my plan link" in the footer puts it on your clipboard.
 
+"Reset the numbers" — next to the sentence — puts every input back to the example and clears the link. It greys out when you are already at the defaults.
+
 ## Design notes
 
 - Type: Bodoni Moda (display), Archivo (text), IBM Plex Mono (data).
