@@ -271,6 +271,7 @@ body::before{
   color:var(--ink-3); margin:0 0 11px; padding-bottom:9px; border-bottom:1px solid var(--rule-soft);
 }
 .dgroup-body{display:grid; gap:22px 26px; grid-template-columns:1fr}
+.dgroup-note{margin:14px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.55; max-width:52ch}
 .dgroup--pair .dgroup-body{grid-template-columns:1fr 1fr}
 @media (max-width:1040px){
   .dials > .dgroup{grid-column:span 6}
@@ -461,7 +462,7 @@ body::before{
         <div class="lifeline-legend">
           <span class="key"><i style="background:var(--blue)"></i>Working years</span>
           <span class="key"><i style="background:var(--free)"></i>Free years</span>
-          <span class="key" style="margin-left:auto">Bar height = what you're worth that year</span>
+          <span class="key" style="margin-left:auto">Bar height = what's in the pot that year</span>
         </div>
         <div class="lifeline-plot" id="lifeline-plot">
           <div class="tip" id="lifeline-tip"></div>
@@ -566,14 +567,14 @@ body::before{
     <section class="panels">
 
       <article class="panel">
-        <p class="eyebrow">Where the money comes from</p>
-        <h2 id="comp-head">Most of it isn't money you saved.</h2>
+        <p class="eyebrow">What builds the pot from here</p>
+        <h2 id="comp-head">Where the next dollars come from.</h2>
         <p class="lede" id="comp-lede"></p>
         <div class="plot" id="comp-plot"><div class="tip" id="comp-tip"></div></div>
         <div class="legend">
-          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s3)"></i>Investment growth</span>
-          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s2)"></i>What you contributed</span>
-          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s1)"></i>What you'd already saved</span>
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s3)"></i>Growth from here</span>
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s2)"></i>What you add from here</span>
+          <span class="key"><i style="width:9px;height:9px;border-radius:2px;display:block;background:var(--s1)"></i>What you already have</span>
         </div>
       </article>
 
@@ -633,7 +634,7 @@ body::before{
   <footer class="foot">
     <div>
       <h3>How it works</h3>
-      <p>Everything is figured in today's dollars: returns are discounted by inflation, so a dollar here always buys what a dollar buys now.</p>
+      <p>Everything is figured in today's dollars: returns are discounted by inflation, so a dollar here always buys what a dollar buys now. Social Security holds its value the same way, which matches the real thing — benefits have carried an automatic cost-of-living rise since 1975.</p>
       <p>Your freedom date is the first year you could stop and still have money left at the end of the plan — not a rule of thumb, an actual year-by-year run of the money. The balance keeps compounding after you stop; only what you spend leaves.</p>
       <p>Health cover before Medicare is charged on top of your spending in every retired year up to 65, in today's dollars. ACA subsidies can cut that bill sharply if your reported income is low, and this does not model them — set it to what you expect to actually pay.</p>
       <p>The history panel re-runs that same plan on real returns: S&amp;P 500 with dividends, 10-year Treasuries and CPI for every year from 1928 to 2024, blended to your stock/bond mix and rebalanced once a year. Each run starts in a different year and takes the returns in the order they came. Source: Damodaran, NYU Stern.</p>
@@ -1138,7 +1139,7 @@ function renderComp(res, free){
 
   if(!narrow){
     var last = layers[n-1];
-    var segs = [[last[2]-last[1], last[2], 'Growth'], [last[1]-last[0], last[1], 'Contributed'], [last[0], last[0], 'Started with']];
+    var segs = [[last[2]-last[1], last[2], 'Growth'], [last[1]-last[0], last[1], 'You add'], [last[0], last[0], 'Today']];
     var used = [];
     segs.forEach(function(sg, idx){
       var mid = idx === 0 ? (last[1]+last[2])/2 : idx === 1 ? (last[0]+last[1])/2 : last[0]/2;
@@ -1159,9 +1160,9 @@ function renderComp(res, free){
     var L = layers[k], row = acc[k];
     cross.setAttribute('x1', X(k)); cross.setAttribute('x2', X(k)); cross.setAttribute('opacity', .22);
     tip.innerHTML = '<b>Age ' + row.age + ' · ' + row.year + '</b>' +
-      '<div class="row"><span>Growth</span><span>' + usd(L[2]-L[1]) + '</span></div>' +
-      '<div class="row"><span>Contributed</span><span>' + usd(L[1]-L[0]) + '</span></div>' +
-      '<div class="row"><span>Started with</span><span>' + usd(L[0]) + '</span></div>' +
+      '<div class="row"><span>Growth from here</span><span>' + usd(L[2]-L[1]) + '</span></div>' +
+      '<div class="row"><span>You added</span><span>' + usd(L[1]-L[0]) + '</span></div>' +
+      '<div class="row"><span>Already had</span><span>' + usd(L[0]) + '</span></div>' +
       '<div class="row" style="margin-top:4px;opacity:.7"><span>Total</span><span>' + usd(L[2]) + '</span></div>';
     tip.style.left = Math.max(90, Math.min(r.width-90, X(k) * (r.width/W))) + 'px';
     tip.style.top  = Math.max(50, Y(L[2]) * (r.width/W) - 10) + 'px';
@@ -1170,7 +1171,8 @@ function renderComp(res, free){
   host.onpointerleave = function(){ tip.classList.remove('on'); cross.setAttribute('opacity', 0); };
 
   return { growth: layers[n-1][2]-layers[n-1][1], total: layers[n-1][2],
-           contributed: layers[n-1][1]-layers[n-1][0], startedWith: layers[n-1][0], endAge: end };
+           contributed: layers[n-1][1]-layers[n-1][0], startedWith: layers[n-1][0],
+           endAge: end, tooShort: (free !== null && free - s.age < 2) };
 }
 
 /* ── the exchange rate ─────────────────────────────────────────────── */
@@ -1204,7 +1206,7 @@ function renderRates(free){
   add(per({spend:15000},  {spend:-15000},  30),
       'for every <b>$1,000 a year</b> you won\u2019t need once you stop');
   add(per({rate:-5},      {rate:5},        10),
-      'for every extra <b>point of your income</b> you put away');
+      'for every extra <b>1% of your pay</b> you save');
   add(per({savings:-50000},{savings:50000},10),
       'for every <b>$10,000</b> more invested today');
 
@@ -1326,10 +1328,10 @@ function renderPots(res, free){
 
 /* ── levers ────────────────────────────────────────────────────────── */
 var LEVERS = [
-  { label:'Savings rate',        note:'± 5 points of income', good:{rate:5},       bad:{rate:-5} },
+  { label:'How much you save',   note:'± 5% of your pay',     good:{rate:5},       bad:{rate:-5} },
   { label:'Retirement spending', note:'± $10,000 a year',     good:{spend:-10000}, bad:{spend:10000} },
-  { label:'Market return',       note:'± 1 point a year',     good:{ret:1},        bad:{ret:-1} },
-  { label:'Inflation',           note:'± 1 point a year',     good:{infl:-1},      bad:{infl:1} },
+  { label:'Market return',       note:'± 1% a year',         good:{ret:1},        bad:{ret:-1} },
+  { label:'Inflation',           note:'± 1% a year',         good:{infl:-1},      bad:{infl:1} },
   { label:'Invested today',      note:'± $50,000',            good:{savings:50000},bad:{savings:-50000} }
 ];
 function renderLevers(free, fillH){
@@ -1337,7 +1339,7 @@ function renderLevers(free, fillH){
   if(free === null){
     var nr = neededRate(), ns = neededSpend();
     var lines = [];
-    if(nr !== null) lines.push('<b>Save ' + nr + '%</b> of what you earn instead of ' + s.rate + '%, and you are out at 67.');
+    if(nr !== null) lines.push('<b>Save ' + nr + '%</b> of your pay instead of ' + s.rate + '%, and you are out at 67.');
     if(ns !== null) lines.push('<b>Live on ' + money(ns) + '</b> a year instead of ' + money(s.spend) + ', and you are out at 67.');
     lines.push('Every year you add to the plan’s end age needs a bigger pile behind it.');
     host.innerHTML = '<div class="empty"><p class="empty-lead">There is no date to move yet.</p>' +
@@ -1421,10 +1423,13 @@ function renderStats(res, free, comp){
 
   if(free !== null){
     items.push(['Portfolio the day you stop', money(balAt), 'age ' + free + ', ' + (units==='future'?'future':"today's") + ' dollars']);
-    items.push(['First year you withdraw', pct(wr,1), usd(disp(need,t)) + ' out of it']);
+    items.push(['What you pull out in year one', pct(wr,1),
+      usd(disp(need,t)) + ' \u2014 ' + (wr > 4.3 ? 'above' : wr < 3.7 ? 'below' : 'right at') + ' the 4% rule of thumb']);
     items.push(['Years of freedom', String(Math.max(0, s.life - free + 1)), 'through age ' + s.life]);
-    items.push(['Total you put in', money(units==='future' ? res.contribNom : res.contribTotal), plural(free - s.age,'year') + ' of saving']);
-    items.push(['What the market added', money(comp.growth), comp.total>0 ? pct(comp.growth/comp.total*100,0) + ' of the pile' : '—']);
+    items.push(['What you add from here', money(units==='future' ? res.contribNom : res.contribTotal), plural(free - s.age,'year') + ' of saving']);
+    items.push(['What the market adds from here', money(comp.growth),
+      comp.contributed > 0 ? '$' + (comp.growth/comp.contributed).toFixed(2) + ' for every $1 you put in'
+                           : 'all of the build-up']);
     if(res.medPaid > 0) items.push(['Health cover before Medicare', money(res.medPaid),
       plural(Math.max(0, Math.min(MEDICARE_AGE, s.life) - free), 'year') + ' of it, on top of spending']);
     items.push(['It keeps earning after you stop', money(res.growthPost), 'growth during retirement, today\u2019s dollars']);
@@ -1617,11 +1622,15 @@ function renderHist(h, free){
 }
 
 /* ── orchestration ─────────────────────────────────────────────────── */
+/* share = growth as a fraction of the money that ARRIVES from today onward.
+   The starting balance is left out on purpose - whatever built it happened
+   before this model begins, and counting it here made the market's share
+   look tiny for anyone who already has a pile. */
 function headlineFor(share){
-  if(share >= .55) return 'Most of it isn’t money you saved.';
-  if(share >= .3)  return 'A big slice is money you never earned.';
-  if(share > 0)    return 'You’re doing most of the lifting.';
-  return 'Right now, it’s all you.';
+  if(share >= .7)  return 'The market does most of the work from here.';
+  if(share >= .45) return 'From here, it’s about an even split.';
+  if(share > 0)    return 'From here, most of it is money you put in.';
+  return 'From here, the market is taking rather than giving.';
 }
 function neededSpend(){
   var probe = function(x){
@@ -1714,13 +1723,20 @@ function update(){
       : 'It held up in <b>' + hist.ok + ' of ' + hist.total + '</b> real market histories · <b>' + pc + '%</b>';
   } else { odds.hidden = true; }
 
-  document.getElementById('comp-head').textContent =
-    headlineFor(comp.total > 0 ? comp.growth/comp.total : 0);
-  document.getElementById('comp-lede').textContent = free === null
-    ? 'Here is how the pile builds if you keep working to 90 — the shape is the same, it just never gets big enough.'
-    : 'By age ' + comp.endAge + ' you are holding ' + money(comp.total) + '. Of that, ' +
-      money(comp.growth) + ' — ' + pct(comp.total ? comp.growth/comp.total*100 : 0, 0) +
-      ' — is money the market made while you were doing something else.';
+  var added = comp.growth + comp.contributed;
+  var gShare = added > 0 ? comp.growth/added : 0;
+  document.getElementById('comp-head').textContent = headlineFor(gShare);
+  document.getElementById('comp-lede').innerHTML = free === null
+    ? 'Here is how the pot builds if you keep working to 90 \u2014 the shape is the same, it just never gets big enough.'
+    : comp.tooShort
+      ? 'You stop almost immediately, so there is no build-up left to break down. What you have now is very nearly what you retire on.'
+      : 'Between now and age ' + comp.endAge + ' your pot goes from ' + money(comp.startedWith) +
+        ' to ' + money(comp.total) + '. Of the ' + money(added) + ' that shows up in between, ' +
+        money(comp.growth) + ' is growth and ' + money(comp.contributed) + ' is money you put in' +
+        (comp.contributed > 0
+          ? ' \u2014 the market adds <b>$' + (comp.growth/comp.contributed).toFixed(2) + ' for every $1 you save</b>. '
+          : '. ') +
+        'What built the ' + money(comp.startedWith) + ' you already have is its own story; this counts only from today.';
 
   document.getElementById('lever-lede').textContent = free === null
     ? 'There is nothing to compare until the plan finishes. Here is what would get it there.'
@@ -1833,12 +1849,16 @@ var GROUPS = [
   { title:'Plan runs through', dials:[
     { key:'life', a11y:'Plan through age', lo:'70', hi:'105',
       fmt:function(v){ return 'Age ' + v; } } ] },
-  { title:'Social Security', pair:true, dials:[
+  { title:'Social Security', pair:true,
+    note:'In today\u2019s dollars. Benefits carry an annual cost-of-living rise, so this keeps its buying power for life \u2014 enter the figure from your SSA statement.',
+    dials:[
     { key:'ss', a11y:'Social Security, dollars a year', lo:'$0', hi:'$80K',
       fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
     { key:'ssAge', a11y:'Age Social Security starts', lo:'62', hi:'70',
       fmt:function(v){ return 'Starts at ' + v; } } ] },
-  { title:'Pension or other income', pair:true, dials:[
+  { title:'Pension or other income', pair:true,
+    note:'Also treated as holding its buying power. Most private pensions do not \u2014 if yours has no cost-of-living rise, enter less than the headline figure.',
+    dials:[
     { key:'other', a11y:'Pension or other income, dollars a year', lo:'$0', hi:'$200K',
       fmt:function(v){ return v ? usd(v) + ' a year' : 'None'; } },
     { key:'otherAge', a11y:'Age that income starts', lo:'45', hi:'80',
@@ -1864,7 +1884,8 @@ GROUPS.forEach(function(G){
     '</div>';
   }).join('');
   box.innerHTML = '<p class="dgroup-title">' + G.title + '</p>' +
-                  '<div class="dgroup-body">' + body + '</div>';
+                  '<div class="dgroup-body">' + body + '</div>' +
+                  (G.note ? '<p class="dgroup-note">' + G.note + '</p>' : '');
   if(!G.host) dialHost.appendChild(box);
 
   G.dials.forEach(function(D){
