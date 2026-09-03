@@ -271,7 +271,7 @@ body::before{
   color:var(--ink-3); margin:0 0 11px; padding-bottom:9px; border-bottom:1px solid var(--rule-soft);
 }
 .dgroup-body{display:grid; gap:22px 26px; grid-template-columns:1fr}
-.dgroup-note{margin:14px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.55; max-width:52ch}
+.dgroup-note{margin:14px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.6; max-width:64ch}
 .dgroup--pair .dgroup-body{grid-template-columns:1fr 1fr}
 @media (max-width:1040px){
   .dials > .dgroup{grid-column:span 6}
@@ -635,6 +635,7 @@ body::before{
     <div>
       <h3>How it works</h3>
       <p>Everything is figured in today's dollars: returns are discounted by inflation, so a dollar here always buys what a dollar buys now. Social Security holds its value the same way, which matches the real thing — benefits have carried an automatic cost-of-living rise since 1975.</p>
+      <p>What it does not do is trim those benefits. The <a href="https://www.ssa.gov/oact/tr/2026/">2026 Trustees Report</a> projects the combined trust funds run down in 2034, with roughly 83% of scheduled benefits funded after that absent legislation. Lower the Social Security figure yourself if you want to plan for it.</p>
       <p>Your freedom date is the first year you could stop and still have money left at the end of the plan — not a rule of thumb, an actual year-by-year run of the money. The balance keeps compounding after you stop; only what you spend leaves.</p>
       <p>Health cover before Medicare is charged on top of your spending in every retired year up to 65, in today's dollars. ACA subsidies can cut that bill sharply if your reported income is low, and this does not model them — set it to what you expect to actually pay.</p>
       <p>The history panel re-runs that same plan on real returns: S&amp;P 500 with dividends, 10-year Treasuries and CPI for every year from 1928 to 2024, blended to your stock/bond mix and rebalanced once a year. Each run starts in a different year and takes the returns in the order they came. Source: Damodaran, NYU Stern.</p>
@@ -1850,7 +1851,7 @@ var GROUPS = [
     { key:'life', a11y:'Plan through age', lo:'70', hi:'105',
       fmt:function(v){ return 'Age ' + v; } } ] },
   { title:'Social Security', pair:true,
-    note:'In today\u2019s dollars. Benefits carry an annual cost-of-living rise, so this keeps its buying power for life \u2014 enter the figure from your SSA statement.',
+    note:'In today\u2019s dollars \u2014 benefits have carried an automatic cost-of-living rise since 1975, so this keeps its buying power for life. Use the estimate on your SSA statement. One caveat: the 2026 Trustees Report has the trust funds running down in 2034, with about 83% of scheduled benefits funded after that unless Congress acts. To plan for that, enter roughly 83% of your estimate.',
     dials:[
     { key:'ss', a11y:'Social Security, dollars a year', lo:'$0', hi:'$80K',
       fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
