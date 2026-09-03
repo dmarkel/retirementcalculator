@@ -200,6 +200,25 @@ body::before{
 .table-scroll tr[data-phase="free"] td:first-child{color:var(--free)}
 .table-scroll td.neg{color:var(--alarm)}
 
+/* ─── the exchange rate ───────────────────────────────────────────────── */
+.rates{
+  margin-top:clamp(36px,5vw,58px); padding-top:clamp(30px,4vw,44px);
+  border-top:1px solid var(--rule-soft);
+}
+.rates-head{display:flex; flex-wrap:wrap; gap:6px 24px; align-items:baseline; justify-content:space-between}
+.rates-head p{margin:0; color:var(--ink-2); font-size:14.5px; max-width:44ch}
+.rate-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(196px,1fr)); gap:28px 34px; margin-top:28px}
+.rate-num{
+  font-family:var(--display); font-weight:500; font-size:clamp(2.1rem,3.8vw,2.9rem);
+  line-height:.95; letter-spacing:-.022em; color:var(--free); display:block;
+  font-variant-numeric:tabular-nums;
+}
+.rate-unit{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-top:9px;
+}
+.rate-cap{margin:10px 0 0; font-size:13.5px; color:var(--ink-2); line-height:1.55; max-width:27ch}
+
 /* ─── story / mad-lib ─────────────────────────────────────────────────── */
 .story{padding-block:clamp(52px,8vw,104px)}
 .sentence{
@@ -345,13 +364,18 @@ body::before{
 
 /* tested against history */
 .hist-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 28px; margin:0 0 26px}
-.hist-score{display:flex; align-items:baseline; gap:9px; flex:none}
+.hist-score{display:flex; align-items:baseline; gap:13px; flex:none}
 .hist-num{
   font-family:var(--display); font-weight:500; font-size:clamp(2.4rem,5.5vw,3.6rem);
   line-height:.9; letter-spacing:-.02em; color:var(--ink); font-variant-numeric:tabular-nums;
 }
 .hist-num.bad{color:var(--alarm)}
-.hist-den{font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); max-width:16ch; line-height:1.5}
+.hist-pct{
+  font-family:var(--display); font-weight:500; font-size:clamp(1.2rem,2.4vw,1.7rem);
+  line-height:1; letter-spacing:-.01em; color:var(--ink-3); font-variant-numeric:tabular-nums;
+}
+.hist-pct.bad{color:var(--alarm); opacity:.75}
+.hist-den{font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); max-width:21ch; line-height:1.5; padding-left:3px}
 .hist-verdict{margin:0; font-size:15px; color:var(--ink-2); max-width:48ch; line-height:1.6}
 .hist-verdict b{color:var(--ink); font-weight:600}
 .hist-note{margin:22px 0 0; font-size:13px; color:var(--ink-3); line-height:1.7; max-width:80ch}
@@ -451,6 +475,17 @@ body::before{
       </details>
     </section>
 
+    <section class="rates" id="rates" hidden>
+      <div class="rates-head">
+        <div>
+          <p class="eyebrow">The exchange rate</p>
+          <h2 class="sec-h2">What buys you time.</h2>
+        </div>
+        <p>Roughly what each lever is worth from where you stand now, holding everything else still.</p>
+      </div>
+      <div class="rate-grid" id="rate-grid"></div>
+    </section>
+
     <!-- ── story ────────────────────────────────────────────────────── -->
     <section class="story">
       <p class="eyebrow">Your situation</p>
@@ -459,7 +494,8 @@ body::before{
         and I earn <input class="chip" id="c-income" data-key="income" inputmode="numeric" aria-label="Your annual income"> a year.
         I've put away <input class="chip" id="c-savings" data-key="savings" inputmode="numeric" aria-label="What you have invested today"> so far,
         and I save <input class="chip" id="c-rate" data-key="rate" inputmode="numeric" aria-label="Share of income you save each year"> of what I make.
-        When I stop, I'll want <input class="chip" id="c-spend" data-key="spend" inputmode="numeric" aria-label="Annual spending in retirement, in today's dollars"> a year to live on.
+        When I stop, I'll want <input class="chip" id="c-spend" data-key="spend" inputmode="numeric" aria-label="Annual spending in retirement, in today's dollars"> a year to live on,
+        plus <input class="chip" id="c-health" data-key="health" inputmode="numeric" aria-label="Annual cost of health cover before Medicare, in today's dollars"> a year for health cover until Medicare starts at 65.
       </p>
       <div class="story-foot">
         <p class="story-hint">
@@ -572,6 +608,7 @@ body::before{
         <div class="hist-head">
           <div class="hist-score">
             <span class="hist-num" id="hist-num">—</span>
+            <span class="hist-pct" id="hist-pct"></span>
             <span class="hist-den" id="hist-den"></span>
           </div>
           <p class="hist-verdict" id="hist-verdict"></p>
@@ -596,12 +633,13 @@ body::before{
       <h3>How it works</h3>
       <p>Everything is figured in today's dollars: returns are discounted by inflation, so a dollar here always buys what a dollar buys now.</p>
       <p>Your freedom date is the first year you could stop and still have money left at the end of the plan — not a rule of thumb, an actual year-by-year run of the money. The balance keeps compounding after you stop; only what you spend leaves.</p>
+      <p>Health cover before Medicare is charged on top of your spending in every retired year up to 65, in today's dollars. ACA subsidies can cut that bill sharply if your reported income is low, and this does not model them — set it to what you expect to actually pay.</p>
       <p>The history panel re-runs that same plan on real returns: S&amp;P 500 with dividends, 10-year Treasuries and CPI for every year from 1928 to 2024, blended to your stock/bond mix and rebalanced once a year. Each run starts in a different year and takes the returns in the order they came. Source: Damodaran, NYU Stern.</p>
       <p>Split the accounts and withdrawals go brokerage first, then the 401(k) grossed up for tax, then Roth. A 10% penalty applies to 401(k) money taken before 59½, and required minimum distributions start at 73 or 75 depending on your birth year.</p>
     </div>
     <div>
       <h3>What it ignores</h3>
-      <p>Fees, healthcare before Medicare, a paid-off house, a bad decade at exactly the wrong moment, and the raise you're about to get. Leave the accounts un-split and it ignores tax entirely.</p>
+      <p>Fees, a paid-off house, a bad decade at exactly the wrong moment, and the raise you're about to get. Leave the accounts un-split and it ignores tax entirely.</p>
       <p>Capital-gains tax on the brokerage account, state tax, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty.</p>
       <p>The historical runs overlap heavily — a 58-year plan only fits 40 times into 97 years of data, and neighbouring runs share most of their years. Treat the count as a stress test, not a probability.</p>
       <p>This is a model, not advice. Real markets don't return the same number every year, and neither will yours.</p>
@@ -635,12 +673,12 @@ body::before{
 /* ── constants & state ─────────────────────────────────────────────── */
 var NOW = new Date().getFullYear();
 var DEFAULTS = { age:38, income:145000, savings:210000, rate:15, spend:70000,
-                 ret:7.0, infl:2.6, ss:24000, ssAge:67, other:0, otherAge:65, life:95,
+                 ret:7.0, infl:2.6, ss:24000, ssAge:67, other:0, otherAge:65, life:95, health:8000,
                  split:0, taxable:60000, pretax:120000, roth:30000, taxRate:15, stocks:80 };
 var LIMITS = {
   age:[16,80,1], income:[0,3000000,1000], savings:[0,20000000,1000], rate:[0,80,1],
   spend:[0,1000000,1000], ret:[0,14,0.1], infl:[0,8,0.1], ss:[0,80000,1000],
-  ssAge:[62,70,1], other:[0,200000,1000], otherAge:[45,80,1], life:[70,105,1],
+  ssAge:[62,70,1], other:[0,200000,1000], otherAge:[45,80,1], life:[70,105,1], health:[0,60000,500],
   split:[0,1,1], taxable:[0,20000000,1000], pretax:[0,20000000,1000],
   roth:[0,20000000,1000], taxRate:[0,45,1], stocks:[0,100,5]
 };
@@ -671,6 +709,7 @@ var RMD_DIV = {73:26.5,74:25.5,75:24.6,76:23.7,77:22.9,78:22.0,79:21.1,80:20.2,8
   92:10.8,93:10.1,94:9.5,95:8.9,96:8.4,97:7.8,98:7.3,99:6.8,100:6.4,101:6.0,102:5.6,
   103:5.2,104:4.9,105:4.6};
 var PENALTY_AGE = 60;   /* 59½, rounded to whole years */
+var MEDICARE_AGE = 65;
 function rmdStart(st){ return (NOW - st.age) >= 1960 ? 75 : 73; }
 function rmdDivisor(a){ return RMD_DIV[Math.min(105, Math.max(73, a))]; }
 var s = Object.assign({}, DEFAULTS);
@@ -708,13 +747,13 @@ function run(st, retireAge, rates){
   if(split && tot0 > 0){ mT = bT/tot0; mP = bP/tot0; mR = bR/tot0; }
 
   var rows = [], cc = 0, ccNom = 0, depleted = null;
-  var taxPaid = 0, penaltyPaid = 0, growthPost = 0, bridgeYears = 0;
+  var taxPaid = 0, penaltyPaid = 0, growthPost = 0, bridgeYears = 0, medPaid = 0;
 
   for(var age = st.age; age <= st.life; age++){
     var t = age - st.age, working = age < retireAge;
     var r = rates ? rates[t] : r0;
     var row = { age:age, year:NOW + t, t:t, bal:bT + bP + bR, working:working, cc:cc,
-                tx:bT, pre:bP, roth:bR, flow:0, taxYr:0, ss:0, other:0, rmd:0 };
+                tx:bT, pre:bP, roth:bR, flow:0, taxYr:0, ss:0, other:0, rmd:0, med:0 };
     rows.push(row);
     if(row.bal < 0 && depleted === null) depleted = age;
 
@@ -727,7 +766,9 @@ function run(st, retireAge, rates){
       var ssNow = age >= st.ssAge   ? st.ss    : 0;
       var oth   = age >= st.otherAge ? st.other : 0;
       row.ss = ssNow; row.other = oth;
-      var need = Math.max(0, st.spend - ssNow - oth);
+      var med = age < MEDICARE_AGE ? st.health : 0;
+      row.med = med;
+      var need = Math.max(0, st.spend + med - ssNow - oth);
       row.flow = -need;
       var pen = (split && age < PENALTY_AGE) ? 0.10 : 0;
       if(pen && need > 0) bridgeYears++;
@@ -740,6 +781,7 @@ function run(st, retireAge, rates){
         need -= used;
         bT += (net - used);
       }
+      medPaid += med;
       var fromT = Math.min(Math.max(0, bT), need); bT -= fromT; need -= fromT;
       if(need > 0 && bP > 0){
         var keep = Math.max(0.05, 1 - tax - pen);
@@ -761,7 +803,7 @@ function run(st, retireAge, rates){
   return { rows:rows, end:end, ok:depleted === null, depleted:depleted,
            contribTotal:cc, contribNom:ccNom, r:r0, contrib:contrib, retireAge:retireAge,
            taxPaid:taxPaid, penaltyPaid:penaltyPaid, growthPost:growthPost,
-           bridgeYears:bridgeYears, split:split, rmdAge:rAge, r0:r0 };
+           bridgeYears:bridgeYears, split:split, rmdAge:rAge, r0:r0, medPaid:medPaid };
 }
 
 var rateCache = { key:'', tab:null };
@@ -822,6 +864,13 @@ function solve(st){
 function variant(mut){
   var v = Object.assign({}, s);
   for(var k in mut) v[k] = clampNum(k, v[k] + mut[k]);
+  if(v.split === 1 && mut.savings){
+    var tot = s.taxable + s.pretax + s.roth;
+    if(tot > 0){
+      var f = v.savings / tot;
+      v.taxable = s.taxable*f; v.pretax = s.pretax*f; v.roth = s.roth*f;
+    } else { v.taxable = v.savings; v.pretax = 0; v.roth = 0; }
+  }
   return v;
 }
 
@@ -1009,6 +1058,7 @@ function renderTable(){
       '<td>' + r.age + '</td><td>' + r.year + '</td>' +
       '<td>' + (r.working ? 'Working' : 'Free') + '</td>' +
       '<td>' + (r.flow >= 0 ? '+' : '') + usd(disp(r.flow, r.t)) + '</td>' +
+      '<td>' + (r.med ? usd(disp(r.med, r.t)) : '—') + '</td>' +
       '<td>' + (r.ss + r.other ? usd(disp(r.ss + r.other, r.t)) : '—') + '</td>' +
       (split
         ? '<td>' + usd(disp(r.tx, r.t)) + '</td><td>' + usd(disp(r.pre, r.t)) + '</td>' +
@@ -1020,7 +1070,7 @@ function renderTable(){
   document.getElementById('year-table').innerHTML =
     '<table><caption class="sr">Your money year by year, from age ' + s.age + ' to ' + s.life + '</caption><thead><tr>' +
     '<th scope="col">Age</th><th scope="col">Year</th><th scope="col">Phase</th>' +
-    '<th scope="col">In / out</th><th scope="col">Other income</th>' +
+    '<th scope="col">In / out</th><th scope="col">Health</th><th scope="col">Other income</th>' +
     (split ? '<th scope="col">Brokerage</th><th scope="col">401(k)</th><th scope="col">Roth</th><th scope="col">Tax paid</th>' : '') +
     '<th scope="col">Balance</th>' +
     '</tr></thead><tbody>' + rows + '</tbody></table>';
@@ -1119,6 +1169,54 @@ function renderComp(res, free){
 
   return { growth: layers[n-1][2]-layers[n-1][1], total: layers[n-1][2],
            contributed: layers[n-1][1]-layers[n-1][0], startedWith: layers[n-1][0], endAge: end };
+}
+
+/* ── the exchange rate ─────────────────────────────────────────────── */
+function sooner(m){
+  var v = Math.abs(m), later = m < 0;
+  var word = later ? ' later' : ' sooner';
+  if(v < 0.5)  return ['&lt;1', 'month' + word];
+  if(v < 18)   return [String(Math.round(v)), (Math.round(v) === 1 ? 'month' : 'months') + word];
+  var y = Math.round(v/12*10)/10;
+  return [String(y), (y === 1 ? 'year' : 'years') + word];
+}
+function renderRates(free){
+  var box = document.getElementById('rates');
+  if(free === null){ box.hidden = true; return; }
+  box.hidden = false;
+
+  var A = function(mut){ return solve(variant(mut)); };
+  var per = function(up, down, units){
+    var hi = A(up), lo = A(down);
+    if(hi === null || lo === null) return null;
+    return (hi - lo) / units * 12;
+  };
+  var tiles = [];
+  var add = function(m, cap){
+    if(m === null) return;
+    var f = sooner(m);
+    tiles.push('<div><span class="rate-num">' + f[0] + '</span>' +
+               '<span class="rate-unit">' + f[1] + '</span>' +
+               '<p class="rate-cap">' + cap + '</p></div>');
+  };
+  add(per({spend:15000},  {spend:-15000},  30),
+      'for every <b>$1,000 a year</b> you won\u2019t need once you stop');
+  add(per({rate:-5},      {rate:5},        10),
+      'for every extra <b>point of your income</b> you put away');
+  add(per({savings:-50000},{savings:50000},10),
+      'for every <b>$10,000</b> more invested today');
+
+  if(free + 1 <= s.life){
+    var now = run(s, free), plus = run(s, free + 1);
+    var gain = disp(plus.rows[free + 1 - s.age].bal, free + 1 - s.age) -
+               disp(now.rows[free - s.age].bal, free - s.age);
+    if(gain > 0){
+      tiles.push('<div><span class="rate-num">' + money(gain) + '</span>' +
+        '<span class="rate-unit">bigger pot</span>' +
+        '<p class="rate-cap">for <b>one more year</b> of work \u2014 and one less year of your own</p></div>');
+    }
+  }
+  document.getElementById('rate-grid').innerHTML = tiles.join('');
 }
 
 /* ── which pot pays ────────────────────────────────────────────────── */
@@ -1325,6 +1423,8 @@ function renderStats(res, free, comp){
     items.push(['Years of freedom', String(Math.max(0, s.life - free + 1)), 'through age ' + s.life]);
     items.push(['Total you put in', money(units==='future' ? res.contribNom : res.contribTotal), plural(free - s.age,'year') + ' of saving']);
     items.push(['What the market added', money(comp.growth), comp.total>0 ? pct(comp.growth/comp.total*100,0) + ' of the pile' : '—']);
+    if(res.medPaid > 0) items.push(['Health cover before Medicare', money(res.medPaid),
+      plural(Math.max(0, Math.min(MEDICARE_AGE, s.life) - free), 'year') + ' of it, on top of spending']);
     items.push(['It keeps earning after you stop', money(res.growthPost), 'growth during retirement, today\u2019s dollars']);
     if(res.split) items.push(['Tax and penalties on the way out', money(res.taxPaid + res.penaltyPaid),
       res.penaltyPaid > 0 ? money(res.penaltyPaid) + ' of it early-withdrawal penalty' : 'on 401(k) withdrawals']);
@@ -1465,8 +1565,11 @@ function renderHist(h, free){
 
   /* ── the words ── */
   var lost = h.total - h.ok, share = h.ok / h.total;
+  var pctEl = document.getElementById('hist-pct');
   numEl.textContent = h.ok + '/' + h.total;
   numEl.className = 'hist-num' + (share < .75 ? ' bad' : '');
+  pctEl.textContent = Math.round(share*100) + '%';
+  pctEl.className = 'hist-pct' + (share < .75 ? ' bad' : '');
   denEl.textContent = 'histories where the money lasted';
 
   document.getElementById('hist-lede').textContent =
@@ -1576,6 +1679,7 @@ function update(){
   lastRun = { res:res, free:free };
   potsPanel.hidden = s.split !== 1;
   renderLifeline(res, free);
+  renderRates(free);
   renderTable();
   var comp = renderComp(res, free);
   if(s.split === 1){
@@ -1602,9 +1706,10 @@ function update(){
   if(hist){
     odds.hidden = false;
     odds.className = 'verdict-odds' + (hist.ok / hist.total < .75 ? ' bad' : '');
+    var pc = Math.round(hist.ok / hist.total * 100);
     odds.innerHTML = hist.ok === hist.total
-      ? 'It held up in <b>all ' + hist.total + '</b> real market histories'
-      : 'It held up in <b>' + hist.ok + ' of ' + hist.total + '</b> real market histories';
+      ? 'It held up in <b>all ' + hist.total + '</b> real market histories · <b>100%</b>'
+      : 'It held up in <b>' + hist.ok + ' of ' + hist.total + '</b> real market histories · <b>' + pc + '%</b>';
   } else { odds.hidden = true; }
 
   document.getElementById('comp-head').textContent =
@@ -1646,9 +1751,10 @@ var CHIP_FMT = {
   income: function(v){ return '$' + commas(v); },
   savings:function(v){ return '$' + commas(v); },
   spend:  function(v){ return '$' + commas(v); },
+  health: function(v){ return '$' + commas(v); },
   rate:   function(v){ return v + '%'; }
 };
-var CHIP_STEP = { age:1, income:1000, savings:1000, spend:500, rate:1 };
+var CHIP_STEP = { age:1, income:1000, savings:1000, spend:500, rate:1, health:250 };
 var ruler = document.createElement('span');
 ruler.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0';
 document.body.appendChild(ruler);

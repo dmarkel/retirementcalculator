@@ -11,6 +11,8 @@ Drag any number in the sentence, or type it. Everything on the page — the year
 - **Finds the date, it doesn't assume one.** For every candidate retirement age it runs the money year by year to the end of the plan. The freedom date is the earliest age where the money survives — not a 25× rule of thumb.
 - **Keeps compounding after you stop.** The portfolio earns its return every year of retirement too. Only what you spend leaves the account.
 - **Works in today's dollars.** Returns are discounted by inflation, so a dollar on the chart always buys what a dollar buys now. A toggle switches everything to future dollars.
+- **Prices the levers.** An exchange rate under the hero: months sooner per $1,000 of retirement spending you drop, per extra point of income saved, per $10,000 invested today — and what one more year of work adds to the pot.
+- **Charges for health cover before Medicare.** The biggest surprise cost of stopping early, on top of your spending, in every retired year up to 65.
 - **Shows what actually moves the date.** One change at a time — savings rate, spending, returns, inflation, starting balance — and how many years each one shifts things.
 - **Tests the date against real history.** Not a smooth average — the actual returns of 1928–2024, in the order they happened. See below.
 
@@ -22,7 +24,7 @@ So the plan is re-run on real markets. For every starting year from 1928 onward,
 
 The result is a count, not a point estimate:
 
-> **35 of 40** histories where the money lasted — and the five that failed all began between 1955 and 1960. Work to 59 instead of 58 and every one of them survives.
+> **32 of 40** histories where the money lasted — **80%** — and the ones that failed all began in the 1950s. Work one year longer and every one of them survives.
 
 The chart shows the middle half and the middle eight-tenths of those histories as bands, every failure as its own red line, and your steady-return assumption as a dashed line so you can see how optimistic or cautious it was against what actually happened.
 
@@ -46,7 +48,7 @@ This is what surfaces the **bridge problem**: retire at 52 and you need nine yea
 
 ## What it ignores
 
-Fees, healthcare before Medicare, home equity, state tax, capital-gains tax on the brokerage account, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty. The projected date still rests on a steady real return; only the history panel varies it.
+Fees, ACA premium subsidies (which can cut the health-cover bill sharply at low reported income), home equity, state tax, capital-gains tax on the brokerage account, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty. The projected date still rests on a steady real return; only the history panel varies it.
 
 **This is a model, not advice.**
 
