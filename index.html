@@ -739,6 +739,7 @@ body::before{
         </div>
       </div>
       <div class="ss-work" id="ss-work"></div>
+      <p class="modal-fine" id="ss-claim" style="margin-top:16px"></p>
       <div class="modal-acts">
         <button type="button" class="reset-btn" id="ss-use">Use this figure</button>
         <a href="https://www.ssa.gov/myaccount/" target="_blank" rel="noopener">Get your real number from SSA</a>
@@ -870,6 +871,7 @@ function run(st, retireAge, rates){
   var mT = 1, mP = 0, mR = 0;
   if(split && tot0 > 0){ mT = bT/tot0; mP = bP/tot0; mR = bR/tot0; }
 
+  var ssPaid = st.ss > 0 ? st.ss * claimFactor(st.ssAge, fraFor(NOW - st.age)) : 0;
   var rows = [], cc = 0, ccNom = 0, depleted = null;
   var taxPaid = 0, penaltyPaid = 0, growthPost = 0, bridgeYears = 0, medPaid = 0;
 
@@ -888,7 +890,7 @@ function run(st, retireAge, rates){
       cc += contrib; ccNom += contrib*Math.pow(1+i, t);
       row.flow = contrib;
     } else {
-      var ssNow = age >= st.ssAge   ? st.ss    : 0;
+      var ssNow = age >= st.ssAge ? ssPaid : 0;
       var oth = 0;
       if(st.other > 0 && age >= st.otherAge){
         oth = st.otherCola === 1 ? st.other
@@ -1055,6 +1057,10 @@ function histRealCAGR(st){
 
 /* 2026 PIA formula. Verified against SSA's published bend points. */
 var BEND1 = 1286, BEND2 = 7749, TAXMAX = 184500;
+function fraLabel(fra){
+  var whole = Math.floor(fra + 1e-9), m = Math.round((fra - whole) * 12);
+  return m ? whole + ' and ' + m + ' months' : String(whole);
+}
 function fraFor(birthYear){
   if(birthYear <= 1954) return 66;
   if(birthYear >= 1960) return 67;
@@ -1684,7 +1690,8 @@ function renderStats(res, free, comp){
   } else {
     var worked = run(s, 90);
     items.push(['Money runs out at age', String(worked.depleted || s.life), 'even working to 90']);
-    items.push(['Yearly gap to close', money(disp(Math.max(0, s.spend - s.ss), 0)), 'after Social Security']);
+    var ssReal = s.ss * claimFactor(s.ssAge, fraFor(NOW - s.age));
+    items.push(['Yearly gap to close', money(disp(Math.max(0, s.spend - ssReal), 0)), 'after Social Security']);
     items.push(['You would need roughly', money(Math.max(0, s.spend - s.ss)*25), 'invested, at a 4% draw']);
     items.push(['You have now', money(s.savings), 'invested']);
     items.push(['You add each year', money(s.income*s.rate/100), pct(s.rate,0) + ' of income']);
@@ -2125,7 +2132,7 @@ function wireChip(el){
     if(document.activeElement === el) return;
     ev.preventDefault();
     drag = { x:ev.clientX, v:chipValue(key), moved:false, id:ev.pointerId };
-    el.setPointerCapture(ev.pointerId);
+    try{ el.setPointerCapture(ev.pointerId); }catch(e){}
   });
   el.addEventListener('pointermove', function(ev){
     if(!drag) return;
@@ -2137,7 +2144,7 @@ function wireChip(el){
   });
   function done(ev){
     if(!drag) return;
-    el.releasePointerCapture(drag.id);
+    try{ el.releasePointerCapture(drag.id); }catch(e){}
     el.classList.remove('scrubbing');
     if(!drag.moved){ el.focus(); }
     drag = null; paintChip(el);
@@ -2177,10 +2184,18 @@ var GROUPS = [
 
   { title:'Social Security', pair:true, gate:'ss', helper:'Estimate it',
     hint:'Set an amount and you can say when it starts.',
-    note:'In today\u2019s dollars \u2014 benefits have carried an automatic cost-of-living rise since 1975, so this keeps its buying power for life. Use the estimate on your SSA statement. One caveat: the 2026 Trustees Report has the trust funds running down in 2034, with about 83% of scheduled benefits funded after that unless Congress acts. To plan for that, enter roughly 83% of your estimate.',
+    noteFn:function(){
+      var fra = fraFor(NOW - s.age), f = claimFactor(s.ssAge, fra), pc = Math.round(Math.abs(f - 1) * 100);
+      var head = Math.abs(f - 1) < 0.005
+        ? 'You are claiming at your full age of ' + fraLabel(fra) + ', so the figure is paid as entered. '
+        : 'Enter the figure for your full age of ' + fraLabel(fra) + '. Claiming at ' + s.ssAge +
+          ' changes it permanently to <b>' + usd(Math.round(s.ss * f)) + ' a year</b> \u2014 ' +
+          (f < 1 ? 'a ' + pc + '% cut you never get back.' : 'a ' + pc + '% rise for life.') + ' ';
+      return head + 'It is in today\u2019s dollars and keeps its buying power \u2014 benefits have carried an automatic cost-of-living rise since 1975. One caveat: the 2026 Trustees Report has the trust funds running down in 2034, with about 83% of scheduled benefits funded after that unless Congress acts. To plan for that, enter roughly 83% of your estimate.';
+    },
     dials:[
-      { key:'ss', a11y:'Social Security, dollars a year', lo:'$0', hi:'$80K',
-        fmt:function(v){ return v ? usd(v) + ' a year' : 'Assume none'; } },
+      { key:'ss', a11y:'Social Security at full retirement age, dollars a year', lo:'$0', hi:'$80K',
+        fmt:function(v){ return v ? usd(v) + ' at full age' : 'Assume none'; } },
       { key:'ssAge', a11y:'Age Social Security starts', lo:'62', hi:'70',
         fmt:function(v){ return 'Starts at ' + v; } } ] },
 
@@ -2272,7 +2287,7 @@ function syncGroups(){
     if(G.toggleEl && !G.toggleAlways) G.toggleEl.hidden = !on;
     if(G.noteEl){
       G.noteEl.hidden = !on;
-      if(on && G.noteFn) G.noteEl.textContent = G.noteFn();
+      if(on && G.noteFn) G.noteEl.innerHTML = G.noteFn();
     }
     if(G.hintEl) G.hintEl.hidden = on;
   });
@@ -2297,7 +2312,7 @@ function ssRender(){
   var avg = parseFloat((ssAvg.value || '').replace(/[^0-9.]/g, '')) || 0;
   var yrs = Math.max(1, Math.min(45, parseFloat(ssYrs.value) || 35));
   var e = ssEstimate(avg, yrs, s.ssAge, NOW - s.age);
-  ssPick = Math.round(e.annual / 500) * 500;
+  ssPick = Math.round(e.pia * 12 / 500) * 500;
   var row = function(a, b, cls){
     return '<div class="ss-row' + (cls || '') + '"><span>' + a + '</span><span>' + b + '</span></div>';
   };
@@ -2309,10 +2324,14 @@ function ssRender(){
     row('90% of the first ' + usd(e.b1), usd(e.p1)) +
     row('32% of the next ' + usd(e.b2), usd(e.p2)) +
     row('15% of the remaining ' + usd(e.b3), usd(e.p3)) +
-    row('A month at your full age of ' + fra, usd(e.pia)) +
-    row('Claimed at ' + s.ssAge + ', that is ' + (e.factor >= 1 ? '+' : '') +
-        Math.round((e.factor - 1) * 100) + '%', usd(e.pia * e.factor)) +
-    row('A year, in today\u2019s money', usd(ssPick), ' total');
+    row('A month at your full age of ' + fraLabel(e.fra), usd(e.pia)) +
+    row('A year at that age, in today\u2019s money', usd(ssPick), ' total');
+  document.getElementById('ss-claim').innerHTML = Math.abs(e.factor - 1) < 0.005
+    ? 'You are claiming at your full age, so this is what the model will pay.'
+    : 'You plan to claim at <b>' + s.ssAge + '</b>, so the model will pay <b>' +
+      usd(Math.round(ssPick * e.factor)) + ' a year</b> \u2014 ' +
+      (e.factor < 1 ? 'a permanent ' + Math.round((1 - e.factor) * 100) + '% cut for starting early.'
+                    : 'a permanent ' + Math.round((e.factor - 1) * 100) + '% rise for waiting.');
   ssUse.textContent = 'Use ' + usd(ssPick) + ' a year';
 }
 function openSS(){
