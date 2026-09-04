@@ -141,7 +141,7 @@ body::before{
   font-size:clamp(15px,1.6vw,19px); color:var(--ink-2); margin:26px auto 0; max-width:620px;
 }
 .verdict-sub b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
-.chip--sub{font-weight:600; padding:1px 6px 0; border-radius:4px 4px 0 0}
+.chip--sub{font-weight:600; padding:2px 9px 1px; border-radius:5px 5px 0 0}
 .verdict-earliest{
   appearance:none; background:transparent; border:0; cursor:pointer; padding:0;
   font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
@@ -1937,7 +1937,7 @@ var vCap  = document.getElementById('lifeline-cap');
 
 function update(){
   var earliest = solve(s);
-  var chosen   = s.stopAt > 0 ? Math.max(s.age, Math.min(s.stopAt, 90)) : null;
+  var chosen   = (s.stopAt >= s.age && s.stopAt > 0) ? Math.min(s.stopAt, 90) : null;
   var free     = chosen !== null ? chosen : earliest;
   var res      = run(s, free === null ? 90 : free);
   currentFree  = free;
@@ -1972,7 +1972,8 @@ function update(){
         ? 'On your assumptions you are already there \u2014 you could stop in'
         : 'On your assumptions, you could stop working in';
     setVerdict(String(NOW + t), false);
-    paintChip(document.getElementById('c-stop'));
+    var stopEl = document.getElementById('c-stop');
+    if(document.activeElement !== stopEl) paintChip(stopEl);
     tailEl.innerHTML =
       (t === 0 ? '' : ' · <b>' + plural(t, 'year') + '</b> from now') +
       ' · <b>' + money(disp(at.bal, t)) + '</b> the day you walk out';
@@ -2082,7 +2083,8 @@ var currentFree = null;
 /* the stop-at chip shows the solved age until you take hold of it */
 function chipValue(key){
   if(key !== 'stopAt') return s[key];
-  return s.stopAt > 0 ? s.stopAt : (currentFree === null ? s.age : currentFree);
+  return (s.stopAt >= s.age && s.stopAt > 0) ? s.stopAt
+       : (currentFree === null ? s.age : currentFree);
 }
 var ruler = document.createElement('span');
 ruler.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0';
@@ -2107,7 +2109,7 @@ function wireChip(el){
     if(!isNaN(raw)){ s[key] = clampNum(key, raw); afterChip(key); refresh(); }
     sizeChip(el);
   });
-  el.addEventListener('blur', function(){ paintChip(el); refresh(); });
+  el.addEventListener('blur', function(){ commitChip(key); paintChip(el); refresh(); });
   el.addEventListener('keydown', function(ev){
     if(ev.key === 'Enter'){ ev.preventDefault(); el.blur(); return; }
     var d = ev.key === 'ArrowUp' ? 1 : ev.key === 'ArrowDown' ? -1 : 0;
@@ -2358,7 +2360,13 @@ function totalToBuckets(){
 }
 function afterChip(key){
   if(key === 'savings' && s.split === 1) totalToBuckets();
-  if(key === 'stopAt' && s.stopAt > 0) s.stopAt = Math.max(s.age, Math.min(90, s.stopAt));
+}
+/* called when the field is left, not on every keystroke - otherwise the
+   first digit of "62" is clamped up to your current age mid-type */
+function commitChip(key){
+  if(key !== 'stopAt' || s.stopAt === 0) return;
+  if(s.stopAt < s.age) s.stopAt = 0;
+  else if(s.stopAt > 90) s.stopAt = 90;
 }
 
 BUCKETS.forEach(function(k){
