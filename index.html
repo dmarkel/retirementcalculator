@@ -141,6 +141,14 @@ body::before{
   font-size:clamp(15px,1.6vw,19px); color:var(--ink-2); margin:26px auto 0; max-width:620px;
 }
 .verdict-sub b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+.chip--sub{font-weight:600; padding:1px 6px 0; border-radius:4px 4px 0 0}
+.verdict-earliest{
+  appearance:none; background:transparent; border:0; cursor:pointer; padding:0;
+  font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--ink-3); margin:14px 0 0; border-bottom:1px solid var(--rule);
+  transition:color .18s, border-color .18s;
+}
+.verdict-earliest:hover{color:var(--free); border-bottom-color:var(--free)}
 .verdict-vs{
   font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--ink-2);
   margin:18px 0 0; text-transform:uppercase; display:inline-flex; align-items:center; gap:9px;
@@ -307,6 +315,43 @@ body::before{
 .dial input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.25)}
 .dial input[type=range]:active::-webkit-slider-thumb{background:var(--free); transform:scale(1.25)}
 .dial .scale{display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--ink-3); margin-top:5px; letter-spacing:.04em}
+
+/* ─── estimator modal ─────────────────────────────────────────────────── */
+.helper-btn{
+  appearance:none; cursor:pointer; background:transparent; border:1px solid var(--rule);
+  color:var(--ink-2); border-radius:999px; padding:4px 11px; margin-left:10px;
+  font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+  transition:border-color .18s, color .18s; vertical-align:1px;
+}
+.helper-btn:hover{border-color:var(--free); color:var(--free)}
+.modal{
+  border:0; padding:0; background:transparent; max-width:min(620px, 92vw); width:100%;
+  color:var(--ink);
+}
+.modal::backdrop{background:rgba(6,9,15,.62); backdrop-filter:blur(3px)}
+.modal-card{
+  background:var(--card); border:1px solid var(--rule-soft); border-radius:16px;
+  padding:clamp(22px,3.4vw,36px); box-shadow:0 30px 80px -30px rgba(0,0,0,.6);
+  max-height:88vh; overflow:auto;
+}
+.modal-x{
+  position:absolute; top:14px; right:14px; appearance:none; cursor:pointer;
+  width:30px; height:30px; border-radius:50%; border:1px solid var(--rule);
+  background:var(--card); color:var(--ink-2); font-size:15px; line-height:1;
+}
+.modal-x:hover{color:var(--ink); border-color:var(--ink-3)}
+.modal-lede{margin:0 0 24px; color:var(--ink-2); font-size:14.5px; line-height:1.6; max-width:56ch}
+.ss-work{margin:26px 0 0; border-top:1px solid var(--rule)}
+.ss-row{display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:11px 0; border-bottom:1px solid var(--rule-soft)}
+.ss-row span:first-child{font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-3)}
+.ss-row span:last-child{font-family:var(--sans); font-weight:600; font-variant-numeric:tabular-nums}
+.ss-row.total{border-bottom:0; padding-top:16px}
+.ss-row.total span:first-child{color:var(--ink-2); text-transform:uppercase; letter-spacing:.1em}
+.ss-row.total span:last-child{font-family:var(--display); font-weight:500; font-size:1.6rem; color:var(--free)}
+.modal-acts{display:flex; flex-wrap:wrap; align-items:center; gap:14px 20px; margin-top:26px}
+.modal-acts a{font-size:12.5px; color:var(--ink-2); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--rule)}
+.modal-acts a:hover{color:var(--ink)}
+.modal-fine{margin:20px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.6}
 
 /* ─── accounts ────────────────────────────────────────────────────────── */
 .sec-h2{font-family:var(--display); font-weight:500; font-size:clamp(1.5rem,3vw,2.2rem); line-height:1.14; letter-spacing:-.015em; margin:0}
@@ -482,7 +527,9 @@ body::before{
       <div class="hero-head">
         <p class="eyebrow" id="verdict-eyebrow">On this path, you can stop working in</p>
         <div class="verdict" id="verdict" aria-live="polite"></div>
-        <p class="verdict-sub" id="verdict-sub"></p>
+        <p class="verdict-sub" id="verdict-sub">Age <input class="chip chip--sub" id="c-stop" data-key="stopAt" inputmode="numeric" aria-label="The age you stop working"><span id="verdict-tail"></span></p>
+        <p class="verdict-sub" id="verdict-alt" hidden></p>
+        <button type="button" class="verdict-earliest" id="verdict-earliest" hidden></button>
         <p class="verdict-vs" id="verdict-vs" hidden></p>
         <p class="verdict-note" id="verdict-note" hidden></p>
       </div>
@@ -649,6 +696,10 @@ body::before{
             <span class="hist-pct" id="hist-pct"></span>
             <span class="hist-den" id="hist-den"></span>
           </div>
+          <div class="hist-score" id="mc-score" hidden>
+            <span class="hist-num" id="mc-pct"></span>
+            <span class="hist-den" id="mc-den"></span>
+          </div>
           <p class="hist-verdict" id="hist-verdict"></p>
         </div>
         <div class="plot" id="hist-plot"><div class="tip" id="hist-tip"></div></div>
@@ -663,10 +714,38 @@ body::before{
         <div class="ladder" id="ladder" hidden></div>
         <p class="hist-note" id="hist-fails"></p>
         <p class="hist-note" id="hist-real"></p>
+        <p class="hist-note" id="hist-mc"></p>
       </article>
 
     </section>
   </main>
+
+  <dialog class="modal" id="ss-modal" aria-labelledby="ss-modal-title">
+    <div class="modal-card" style="position:relative">
+      <button type="button" class="modal-x" id="ss-close" aria-label="Close">&times;</button>
+      <p class="eyebrow">Estimate Social Security</p>
+      <h2 class="sec-h2" id="ss-modal-title">What the formula actually does.</h2>
+      <p class="modal-lede">Social Security replaces a share of your career-average pay, and that share falls the more you earned. Here is the 2026 formula with your numbers in it.</p>
+      <div class="fields">
+        <div class="field">
+          <label for="ss-avg">Career-average pay, today's money</label>
+          <input id="ss-avg" inputmode="numeric">
+          <p>Not today's salary — the average across your whole working life. Early years pull it down.</p>
+        </div>
+        <div class="field">
+          <label for="ss-yrs">Years you'll have worked</label>
+          <input id="ss-yrs" inputmode="numeric">
+          <p>The best 35 are averaged. Short of 35 and the missing years count as zeros.</p>
+        </div>
+      </div>
+      <div class="ss-work" id="ss-work"></div>
+      <div class="modal-acts">
+        <button type="button" class="reset-btn" id="ss-use">Use this figure</button>
+        <a href="https://www.ssa.gov/myaccount/" target="_blank" rel="noopener">Get your real number from SSA</a>
+      </div>
+      <p class="modal-fine">2026 bend points, $1,286 and $7,749 a month, with the 90/32/15 factors fixed in law and earnings capped at the $184,500 taxable maximum. Claiming before your full retirement age cuts the benefit permanently; waiting past it adds 8% a year to 70. This is an estimate from one number — your SSA statement uses your actual earnings record.</p>
+    </div>
+  </dialog>
 
   <footer class="foot">
     <div>
@@ -716,12 +795,13 @@ var NOW = new Date().getFullYear();
 var DEFAULTS = { age:38, income:145000, savings:210000, rate:15, spend:70000,
                  ret:7.0, infl:2.6, payOn:0, payRate:3.0, ss:24000, ssAge:67,
                  other:0, otherAge:65, otherCola:0, life:95, health:8000,
-                 split:0, taxable:60000, pretax:120000, roth:30000, taxRate:15, stocks:80 };
+                 split:0, taxable:60000, pretax:120000, roth:30000, taxRate:15, stocks:80,
+                 stopAt:0 };
 var LIMITS = {
   age:[16,80,1], income:[0,3000000,1000], savings:[0,20000000,1000], rate:[0,80,1],
   spend:[0,1000000,1000], ret:[0,14,0.1], infl:[0,8,0.1], ss:[0,80000,1000],
   ssAge:[62,70,1], other:[0,200000,1000], otherAge:[45,80,1], life:[70,105,1],
-  health:[0,60000,500], payOn:[0,1,1], payRate:[0,8,0.1], otherCola:[0,1,1],
+  health:[0,60000,500], payOn:[0,1,1], payRate:[0,8,0.1], otherCola:[0,1,1], stopAt:[0,90,1],
   split:[0,1,1], taxable:[0,20000000,1000], pretax:[0,20000000,1000],
   roth:[0,20000000,1000], taxRate:[0,45,1], stocks:[0,100,5]
 };
@@ -873,6 +953,61 @@ function rateTable(st){
   rateCache = { key:key, tab:tab };
   return tab;
 }
+/* Block bootstrap. Real history resampled in contiguous 8-year chunks, so
+   crashes keep their real size and a bad decade stays a bad decade. The
+   draws are seeded, so the same 1,000 futures are reused on every pass -
+   moving a slider then shows a real change rather than reshuffled noise. */
+var MC_TRIALS = 1000, MC_BLOCK = 8, MC_SEED = 20260903;
+function mulberry32(a){
+  return function(){
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    var t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+var mcIdx = { key:'', seqs:null };
+function mcIndexes(span){
+  var key = span + ':' + MC_TRIALS + ':' + MC_BLOCK;
+  if(mcIdx.key === key) return mcIdx.seqs;
+  var rnd = mulberry32(MC_SEED), n = H_SP.length;
+  var last = n - MC_BLOCK, seqs = new Array(MC_TRIALS);
+  for(var t=0;t<MC_TRIALS;t++){
+    var seq = new Int16Array(span), k = 0;
+    while(k < span){
+      var start = Math.floor(rnd() * (last + 1));
+      for(var b=0; b<MC_BLOCK && k<span; b++, k++) seq[k] = start + b;
+    }
+    seqs[t] = seq;
+  }
+  mcIdx = { key:key, seqs:seqs };
+  return seqs;
+}
+function realSeries(st){
+  var w = st.stocks/100, n = H_SP.length, out = new Float64Array(n);
+  for(var j=0;j<n;j++){
+    var nom = (w*H_SP[j] + (1-w)*H_GB[j]) / 100;
+    out[j] = (1 + nom) / (1 + H_CPI[j]/100) - 1;
+  }
+  return out;
+}
+function mcTest(st, retireAge){
+  if(retireAge === null) return null;
+  var span = st.life - st.age + 1;
+  var real = realSeries(st), seqs = mcIndexes(span);
+  var rates = new Array(span), ok = 0, dry = [];
+  for(var t=0;t<seqs.length;t++){
+    var ix = seqs[t];
+    for(var k=0;k<span;k++) rates[k] = real[ix[k]];
+    var r = run(st, retireAge, rates);
+    if(r.ok) ok++; else dry.push(r.depleted);
+  }
+  dry.sort(function(a,b){ return a-b; });
+  return { ok:ok, total:seqs.length, share:ok/seqs.length,
+           worstDry: dry.length ? dry[0] : null,
+           medianDry: dry.length ? dry[dry.length >> 1] : null };
+}
+
 function histTest(st, retireAge){
   if(retireAge === null) return null;
   var tab = rateTable(st);
@@ -916,6 +1051,35 @@ function histRealCAGR(st){
     p *= (1 + nom) / (1 + H_CPI[j]/100);
   }
   return (Math.pow(p, 1/H_SP.length) - 1) * 100;
+}
+
+/* 2026 PIA formula. Verified against SSA's published bend points. */
+var BEND1 = 1286, BEND2 = 7749, TAXMAX = 184500;
+function fraFor(birthYear){
+  if(birthYear <= 1954) return 66;
+  if(birthYear >= 1960) return 67;
+  return 66 + (birthYear - 1954) * 2 / 12;
+}
+function claimFactor(claimAge, fra){
+  var m = Math.round((claimAge - fra) * 12);
+  if(m === 0) return 1;
+  if(m < 0){
+    var e = -m;
+    return 1 - (Math.min(e, 36) * (5/900) + Math.max(0, e - 36) * (5/1200));
+  }
+  return 1 + Math.min(m, 36) * (2/300);
+}
+function ssEstimate(avgPay, years, claimAge, birthYear){
+  var capped = Math.min(Math.max(0, avgPay), TAXMAX);
+  var aime = capped * Math.min(years, 35) / 35 / 12;
+  var b1 = Math.min(aime, BEND1);
+  var b2 = Math.max(0, Math.min(aime, BEND2) - BEND1);
+  var b3 = Math.max(0, aime - BEND2);
+  var pia = 0.90*b1 + 0.32*b2 + 0.15*b3;
+  var fra = fraFor(birthYear);
+  var f = claimFactor(claimAge, fra);
+  return { aime:aime, b1:b1, b2:b2, b3:b3, p1:0.90*b1, p2:0.32*b2, p3:0.15*b3,
+           pia:pia, fra:fra, factor:f, annual: pia * 12 * f };
 }
 
 function solve(st){
@@ -1533,7 +1697,7 @@ function renderStats(res, free, comp){
 }
 
 /* ── tested against history ────────────────────────────────────────── */
-function renderHist(h, free, lad){
+function renderHist(h, free, lad, mc){
   var host = document.getElementById('hist-plot');
   var tip  = document.getElementById('hist-tip');
   var numEl = document.getElementById('hist-num');
@@ -1544,6 +1708,8 @@ function renderHist(h, free, lad){
     document.getElementById('hist-lede').textContent =
       'There is no date to test yet. History can only tell you how a finished plan would have fared.';
     head.hidden = true; leg.hidden = true;
+    document.getElementById('mc-score').hidden = true;
+    document.getElementById('hist-mc').textContent = '';
     document.getElementById('hist-fails').textContent = '';
     document.getElementById('ladder-head').hidden = true;
     document.getElementById('ladder').hidden = true;
@@ -1704,6 +1870,27 @@ function renderHist(h, free, lad){
     }).join('');
   } else { ladHead.hidden = true; ladBox.hidden = true; }
 
+  var mcBox = document.getElementById('mc-score');
+  if(mc){
+    mcBox.hidden = false;
+    var mcNum = document.getElementById('mc-pct');
+    mcNum.textContent = Math.round(mc.share*100) + '%';
+    mcNum.className = 'hist-num' + (mc.share < .75 ? ' bad' : '');
+    document.getElementById('mc-den').textContent = 'of ' + commas(mc.total) + ' simulated futures';
+    var drift = Math.round(mc.share*100) - Math.round(share*100);
+    document.getElementById('hist-mc').innerHTML =
+      'Those futures are the same history resampled in <b>' + MC_BLOCK + '-year blocks</b>, so crashes keep their real size and a bad decade stays a bad decade. ' +
+      'The same ' + commas(mc.total) + ' are reused every time you move something, so a change in this number is a real change and not a reshuffle. ' +
+      (mc.ok === mc.total ? 'Not one of them ran out. '
+        : 'The soonest any ran dry was <b>age ' + mc.worstDry + '</b>, and the typical failure lasted to ' + mc.medianDry + '. ') +
+      (Math.abs(drift) <= 3 ? 'It agrees with the record.'
+        : drift > 0 ? 'It is kinder than the record \u2014 history dealt worse orderings than the shuffle usually finds.'
+                    : 'It is harsher than the record \u2014 the shuffle finds orderings history never got around to.');
+  } else {
+    mcBox.hidden = true;
+    document.getElementById('hist-mc').textContent = '';
+  }
+
   var hc = histRealCAGR(s), yours = assumRes.r0*100;
   var gap = yours - hc;
   document.getElementById('hist-real').innerHTML =
@@ -1749,14 +1936,29 @@ var vEye  = document.getElementById('verdict-eyebrow');
 var vCap  = document.getElementById('lifeline-cap');
 
 function update(){
-  var free = solve(s);
-  var res  = run(s, free === null ? 90 : free);
+  var earliest = solve(s);
+  var chosen   = s.stopAt > 0 ? Math.max(s.age, Math.min(s.stopAt, 90)) : null;
+  var free     = chosen !== null ? chosen : earliest;
+  var res      = run(s, free === null ? 90 : free);
+  currentFree  = free;
+
+  var altEl = document.getElementById('verdict-alt');
+  var tailEl = document.getElementById('verdict-tail');
+  var earlyEl = document.getElementById('verdict-earliest');
+  vSub.hidden = free === null;
+  altEl.hidden = free !== null;
+
+  if(chosen !== null && earliest !== null && chosen !== earliest){
+    earlyEl.hidden = false;
+    earlyEl.textContent = 'Earliest you could stop is ' + earliest +
+      ', in ' + (NOW + earliest - s.age) + ' \u2014 show me that';
+  } else { earlyEl.hidden = true; }
 
   if(free === null){
     var worked = run(s, 90), need = neededRate();
     vEye.textContent = 'On this path';
     setVerdict('You don’t get there.', true);
-    vSub.innerHTML = 'Even working to 90, the money runs out at age <b>' +
+    altEl.innerHTML = 'Even working to 90, the money runs out at age <b>' +
       (worked.depleted || s.life) + '</b>. ' +
       (need === null
         ? 'Saving alone won’t close it — the spending has to come down.'
@@ -1764,15 +1966,21 @@ function update(){
     vNote.hidden = true;
   } else {
     var t = free - s.age, at = res.rows[t];
-    vEye.textContent = free === s.age
-      ? 'On your assumptions you are already there \u2014 you could stop in'
-      : 'On your assumptions, you could stop working in';
+    vEye.textContent = chosen !== null
+      ? 'You have chosen to stop working in'
+      : free === s.age
+        ? 'On your assumptions you are already there \u2014 you could stop in'
+        : 'On your assumptions, you could stop working in';
     setVerdict(String(NOW + t), false);
-    vSub.innerHTML = 'Age <b>' + free + '</b>' +
+    paintChip(document.getElementById('c-stop'));
+    tailEl.innerHTML =
       (t === 0 ? '' : ' · <b>' + plural(t, 'year') + '</b> from now') +
       ' · <b>' + money(disp(at.bal, t)) + '</b> the day you walk out';
     var thin = res.end < s.spend;
-    if(res.penaltyPaid > 500){
+    if(!res.ok){
+      vNote.hidden = false;
+      vNote.textContent = 'Stopping this early empties the account at age ' + res.depleted;
+    } else if(res.penaltyPaid > 500){
       vNote.hidden = false;
       vNote.textContent = 'Reaching the 401(k) before 59½ costs ' + money(res.penaltyPaid) + ' in penalties';
     } else if(thin){
@@ -1817,7 +2025,8 @@ function update(){
 
   var hist = free === null ? null : histTest(s, free);
   var lad  = (hist && hist.ok < hist.total) ? ladder(s, free, 10) : null;
-  renderHist(hist, free, lad);
+  var mc   = free === null ? null : mcTest(s, free);
+  renderHist(hist, free, lad, mc);
   var added = comp.growth + comp.contributed;
   var gShare = added > 0 ? comp.growth/added : 0;
   document.getElementById('comp-head').textContent = headlineFor(gShare);
@@ -1861,13 +2070,20 @@ function refresh(){
 /* ── chips ─────────────────────────────────────────────────────────── */
 var CHIP_FMT = {
   age:    function(v){ return String(v); },
+  stopAt: function(v){ return String(v); },
   income: function(v){ return '$' + commas(v); },
   savings:function(v){ return '$' + commas(v); },
   spend:  function(v){ return '$' + commas(v); },
   health: function(v){ return '$' + commas(v); },
   rate:   function(v){ return v + '%'; }
 };
-var CHIP_STEP = { age:1, income:1000, savings:1000, spend:500, rate:1, health:250 };
+var CHIP_STEP = { age:1, income:1000, savings:1000, spend:500, rate:1, health:250, stopAt:1 };
+var currentFree = null;
+/* the stop-at chip shows the solved age until you take hold of it */
+function chipValue(key){
+  if(key !== 'stopAt') return s[key];
+  return s.stopAt > 0 ? s.stopAt : (currentFree === null ? s.age : currentFree);
+}
 var ruler = document.createElement('span');
 ruler.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;left:-9999px;top:0';
 document.body.appendChild(ruler);
@@ -1879,12 +2095,12 @@ function sizeChip(el){
   ruler.textContent = el.value || '0';
   el.style.width = (ruler.offsetWidth + 16) + 'px';
 }
-function paintChip(el){ el.value = CHIP_FMT[el.dataset.key](s[el.dataset.key]); sizeChip(el); }
+function paintChip(el){ el.value = CHIP_FMT[el.dataset.key](chipValue(el.dataset.key)); sizeChip(el); }
 
 function wireChip(el){
   var key = el.dataset.key, step = CHIP_STEP[key];
   el.addEventListener('focus', function(){
-    el.value = String(s[key]); sizeChip(el); setTimeout(function(){ el.select(); }, 0);
+    el.value = String(chipValue(key)); sizeChip(el); setTimeout(function(){ el.select(); }, 0);
   });
   el.addEventListener('input', function(){
     var raw = parseFloat(el.value.replace(/[^0-9.\-]/g, ''));
@@ -1897,8 +2113,8 @@ function wireChip(el){
     var d = ev.key === 'ArrowUp' ? 1 : ev.key === 'ArrowDown' ? -1 : 0;
     if(!d) return;
     ev.preventDefault();
-    s[key] = clampNum(key, s[key] + d*step*(ev.shiftKey ? 10 : 1));
-    afterChip(key); el.value = String(s[key]); sizeChip(el); refresh();
+    s[key] = clampNum(key, chipValue(key) + d*step*(ev.shiftKey ? 10 : 1));
+    afterChip(key); el.value = String(chipValue(key)); sizeChip(el); refresh();
   });
 
   var drag = null;
@@ -1906,7 +2122,7 @@ function wireChip(el){
     if(ev.button) return;
     if(document.activeElement === el) return;
     ev.preventDefault();
-    drag = { x:ev.clientX, v:s[key], moved:false, id:ev.pointerId };
+    drag = { x:ev.clientX, v:chipValue(key), moved:false, id:ev.pointerId };
     el.setPointerCapture(ev.pointerId);
   });
   el.addEventListener('pointermove', function(ev){
@@ -1957,7 +2173,7 @@ var GROUPS = [
       { key:'payRate', a11y:'Pay rise, percent a year', lo:'0%', hi:'8%',
         fmt:function(v){ return 'Pay +' + v.toFixed(1) + '% a year'; } } ] },
 
-  { title:'Social Security', pair:true, gate:'ss',
+  { title:'Social Security', pair:true, gate:'ss', helper:'Estimate it',
     hint:'Set an amount and you can say when it starts.',
     note:'In today\u2019s dollars \u2014 benefits have carried an automatic cost-of-living rise since 1975, so this keeps its buying power for life. Use the estimate on your SSA statement. One caveat: the 2026 Trustees Report has the trust funds running down in 2034, with about 83% of scheduled benefits funded after that unless Congress acts. To plan for that, enter roughly 83% of your estimate.',
     dials:[
@@ -2001,7 +2217,9 @@ GROUPS.forEach(function(G){
       '<div class="scale"><span>'+D.lo+'</span><span>'+D.hi+'</span></div>' +
     '</div>';
   }).join('');
-  box.innerHTML = '<p class="dgroup-title">' + G.title + '</p>' +
+  box.innerHTML = '<p class="dgroup-title">' + G.title +
+      (G.helper ? '<button type="button" class="helper-btn" data-role="helper">' + G.helper + '</button>' : '') +
+    '</p>' +
     '<div class="dgroup-body">' + body + '</div>' +
     (G.toggle ? '<label class="switch switch--sm" data-role="toggle">' +
         '<input type="checkbox" id="t-'+G.toggle.key+'">' +
@@ -2011,6 +2229,8 @@ GROUPS.forEach(function(G){
     (G.note || G.noteFn ? '<p class="dgroup-note" data-role="note">' + (G.note || '') + '</p>' : '');
   if(!G.host) dialHost.appendChild(box);
 
+  G.helperEl = box.querySelector('[data-role="helper"]');
+  if(G.helperEl) G.helperEl.addEventListener('click', openSS);
   G.noteEl   = box.querySelector('[data-role="note"]');
   G.hintEl   = box.querySelector('[data-role="hint"]');
   G.toggleEl = box.querySelector('[data-role="toggle"]');
@@ -2065,6 +2285,49 @@ function paintDials(){
   syncGroups();
 }
 
+/* ── the Social Security estimator ─────────────────────────────────── */
+var ssModal = document.getElementById('ss-modal');
+var ssAvg = document.getElementById('ss-avg'), ssYrs = document.getElementById('ss-yrs');
+var ssWork = document.getElementById('ss-work'), ssUse = document.getElementById('ss-use');
+var ssPick = 0;
+
+function ssRender(){
+  var avg = parseFloat((ssAvg.value || '').replace(/[^0-9.]/g, '')) || 0;
+  var yrs = Math.max(1, Math.min(45, parseFloat(ssYrs.value) || 35));
+  var e = ssEstimate(avg, yrs, s.ssAge, NOW - s.age);
+  ssPick = Math.round(e.annual / 500) * 500;
+  var row = function(a, b, cls){
+    return '<div class="ss-row' + (cls || '') + '"><span>' + a + '</span><span>' + b + '</span></div>';
+  };
+  var fra = Math.round(e.fra * 10) / 10;
+  ssWork.innerHTML =
+    row('Counted earnings, capped at ' + usd(TAXMAX), usd(Math.min(avg, TAXMAX))) +
+    (yrs < 35 ? row(yrs + ' of the 35 years averaged, so ' + (35 - yrs) + ' count as zero', '\u00d7 ' + (yrs/35).toFixed(2)) : '') +
+    row('Monthly average the formula sees (AIME)', usd(e.aime)) +
+    row('90% of the first ' + usd(e.b1), usd(e.p1)) +
+    row('32% of the next ' + usd(e.b2), usd(e.p2)) +
+    row('15% of the remaining ' + usd(e.b3), usd(e.p3)) +
+    row('A month at your full age of ' + fra, usd(e.pia)) +
+    row('Claimed at ' + s.ssAge + ', that is ' + (e.factor >= 1 ? '+' : '') +
+        Math.round((e.factor - 1) * 100) + '%', usd(e.pia * e.factor)) +
+    row('A year, in today\u2019s money', usd(ssPick), ' total');
+  ssUse.textContent = 'Use ' + usd(ssPick) + ' a year';
+}
+function openSS(){
+  ssAvg.value = '$' + commas(s.income);
+  ssYrs.value = String(Math.max(1, Math.min(45, (currentFree || s.age) - 22)));
+  ssRender();
+  if(ssModal.showModal) ssModal.showModal(); else ssModal.setAttribute('open','');
+}
+ssAvg.addEventListener('input', ssRender);
+ssYrs.addEventListener('input', ssRender);
+document.getElementById('ss-close').onclick = function(){ ssModal.close ? ssModal.close() : ssModal.removeAttribute('open'); };
+ssUse.onclick = function(){
+  s.ss = clampNum('ss', ssPick);
+  paintDials(); refresh();
+  ssModal.close ? ssModal.close() : ssModal.removeAttribute('open');
+};
+
 /* ── account buckets ───────────────────────────────────────────────── */
 var BUCKETS = ['taxable','pretax','roth'];
 var splitEl = document.getElementById('split-on');
@@ -2093,7 +2356,10 @@ function totalToBuckets(){
   }
   paintBuckets();
 }
-function afterChip(key){ if(key === 'savings' && s.split === 1) totalToBuckets(); }
+function afterChip(key){
+  if(key === 'savings' && s.split === 1) totalToBuckets();
+  if(key === 'stopAt' && s.stopAt > 0) s.stopAt = Math.max(s.age, Math.min(90, s.stopAt));
+}
 
 BUCKETS.forEach(function(k){
   var el = document.getElementById('f-' + k);
@@ -2190,6 +2456,10 @@ pinBtn.onclick = function(){
   paintPin(); lifePrev = null; refresh();
 };
 paintPin();
+
+document.getElementById('verdict-earliest').onclick = function(){
+  s.stopAt = 0; refresh();
+};
 
 var resetBtn = document.getElementById('reset');
 resetBtn.onclick = function(){
