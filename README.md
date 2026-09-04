@@ -33,7 +33,7 @@ And because "80%" is not an answer anyone can act on, the panel prices the alter
 
 > Stop at 49 → **85%**  ·  50 → **94%**  ·  51 → **97%**  ·  52 → **100%**
 
-The first date that clears every history is repeated under the headline, so you never have to scroll to find the number you can actually rely on.
+The headline stays a single date and says what it rests on — "on your assumptions" — and leaves the judgment to the panel rather than arguing with itself in the hero.
 
 The chart shows the middle half and the middle eight-tenths of those histories as bands, every failure as its own red line, and your steady-return assumption as a dashed line so you can see how optimistic or cautious it was against what actually happened.
 
