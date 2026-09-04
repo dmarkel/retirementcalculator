@@ -147,6 +147,11 @@ body::before{
 }
 .verdict-odds b{color:var(--ink); font-weight:500}
 .verdict-odds.bad b{color:var(--alarm)}
+.verdict-safe{
+  font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--ink-2);
+  margin:9px 0 0; text-transform:uppercase;
+}
+.verdict-safe b{color:var(--free); font-weight:500}
 .verdict-vs{
   font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--ink-2);
   margin:11px 0 0; text-transform:uppercase; display:inline-flex; align-items:center; gap:9px;
@@ -400,6 +405,24 @@ body::before{
 .hist-note b{color:var(--ink-2); font-weight:500}
 .hist-note + .hist-note{margin-top:9px}
 
+/* what another year buys */
+.ladder-head{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--ink-3); margin:26px 0 0;
+}
+.ladder{display:flex; flex-wrap:wrap; gap:0 2px; margin:12px 0 0}
+.ladder-step{flex:1 1 88px; min-width:88px; padding-top:13px; border-top:1px solid var(--rule-soft)}
+.ladder-step.now{border-top-color:var(--free)}
+.ladder-age{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+.ladder-pct{
+  font-family:var(--display); font-weight:500; font-size:1.45rem; line-height:1; margin-top:6px;
+  color:var(--ink); font-variant-numeric:tabular-nums; letter-spacing:-.01em;
+}
+.ladder-step.now .ladder-pct{color:var(--free)}
+.ladder-bar{height:3px; border-radius:2px; background:var(--rule-soft); margin-top:10px; margin-right:10px; overflow:hidden}
+.ladder-bar i{display:block; height:100%; border-radius:2px; background:var(--blue)}
+.ladder-step.now .ladder-bar i{background:var(--free)}
+
 /* tooltip */
 .tip{
   position:absolute; pointer-events:none; opacity:0; transform:translate(-50%,-100%);
@@ -472,6 +495,7 @@ body::before{
         <div class="verdict" id="verdict" aria-live="polite"></div>
         <p class="verdict-sub" id="verdict-sub"></p>
         <p class="verdict-odds" id="verdict-odds" hidden></p>
+        <p class="verdict-safe" id="verdict-safe" hidden></p>
         <p class="verdict-vs" id="verdict-vs" hidden></p>
         <p class="verdict-note" id="verdict-note" hidden></p>
       </div>
@@ -648,6 +672,8 @@ body::before{
           <span class="key"><i style="width:14px;height:2px;border-radius:1px;display:block;background:var(--neg)"></i>One that ran out</span>
           <span class="key"><i style="width:14px;height:0;border-top:2px dashed var(--ink);display:block"></i>Your steady-return assumption</span>
         </div>
+        <p class="ladder-head" id="ladder-head" hidden></p>
+        <div class="ladder" id="ladder" hidden></div>
         <p class="hist-note" id="hist-fails"></p>
         <p class="hist-note" id="hist-real"></p>
       </article>
@@ -872,6 +898,18 @@ function histTest(st, retireAge){
   }
   return { runs:runs, ok:ok, total:tab.length, fails:fails,
            span: st.life - st.age + 1, last: HIST_FROM + tab.length - 1 };
+}
+function ladder(st, from, cap){
+  var tab = rateTable(st);
+  if(!tab.length || from === null) return null;
+  var steps = [], safe = null, top = Math.min(90, from + (cap || 10));
+  for(var a = from; a <= top; a++){
+    var ok = 0;
+    for(var i=0;i<tab.length;i++){ if(run(st, a, tab[i]).ok) ok++; }
+    steps.push({ age:a, ok:ok, total:tab.length });
+    if(ok === tab.length){ safe = a; break; }
+  }
+  return { steps:steps, safe:safe, total:tab.length };
 }
 function safeAge(st, from){
   var tab = rateTable(st);
@@ -1508,7 +1546,7 @@ function renderStats(res, free, comp){
 }
 
 /* ── tested against history ────────────────────────────────────────── */
-function renderHist(h, free){
+function renderHist(h, free, lad){
   var host = document.getElementById('hist-plot');
   var tip  = document.getElementById('hist-tip');
   var numEl = document.getElementById('hist-num');
@@ -1520,6 +1558,8 @@ function renderHist(h, free){
       'There is no date to test yet. History can only tell you how a finished plan would have fared.';
     head.hidden = true; leg.hidden = true;
     document.getElementById('hist-fails').textContent = '';
+    document.getElementById('ladder-head').hidden = true;
+    document.getElementById('ladder').hidden = true;
     document.getElementById('hist-real').textContent = '';
     host.innerHTML = ''; return;
   }
@@ -1645,7 +1685,7 @@ function renderHist(h, free){
     : share >= .7 ? 'It works more often than not — but there is a real stretch of history where this plan does not survive.'
     : 'It fails in <b>' + lost + ' of ' + h.total + '</b>. That is not bad luck, that is the plan.';
 
-  var sa = lost ? safeAge(s, free) : free;
+  var sa = lad ? lad.safe : free;
   var parts = [];
   if(lost){
     var ys = h.fails.map(function(f){ return f.start; });
@@ -1658,13 +1698,24 @@ function renderHist(h, free){
         ' — they stopped working in ' + (lo + free - s.age) + '–' + (hi + free - s.age) +
         ' and spent their first retired decade in the market that followed. The worst of them, a ' + worst.start +
         ' start, ran dry at <b>age ' + worst.age + '</b>.');
-    parts.push(sa === null
-      ? 'No stopping age before 90 clears all of them; the spending is what has to move.'
-      : 'Work to <b>age ' + sa + '</b> instead of ' + free + ' and every one of the ' + h.total + ' survives.');
+    if(sa === null) parts.push('No stopping age before 90 clears all of them; the spending is what has to move.');
   } else {
     parts.push('Not one of them ran out, and that set includes the plans that began just before 1929 and the ones that retired into the 1970s.');
   }
   document.getElementById('hist-fails').innerHTML = parts.join(' ');
+
+  var ladHead = document.getElementById('ladder-head'), ladBox = document.getElementById('ladder');
+  if(lad && lad.steps.length > 1){
+    ladHead.hidden = false; ladBox.hidden = false;
+    ladHead.textContent = 'What each extra year of work buys';
+    ladBox.innerHTML = lad.steps.map(function(st2){
+      var p = Math.round(st2.ok/st2.total*100);
+      return '<div class="ladder-step' + (st2.age === free ? ' now' : '') + '">' +
+        '<div class="ladder-age">Stop at ' + st2.age + '</div>' +
+        '<div class="ladder-pct">' + p + '%</div>' +
+        '<div class="ladder-bar"><i style="width:' + p + '%"></i></div></div>';
+    }).join('');
+  } else { ladHead.hidden = true; ladBox.hidden = true; }
 
   var hc = histRealCAGR(s), yours = assumRes.r0*100;
   var gap = yours - hc;
@@ -1726,7 +1777,9 @@ function update(){
     vNote.hidden = true;
   } else {
     var t = free - s.age, at = res.rows[t];
-    vEye.textContent = free === s.age ? 'You are already there. You could stop in' : 'On this path, you can stop working in';
+    vEye.textContent = free === s.age
+      ? 'On your assumptions you are already there \u2014 you could stop in'
+      : 'On your assumptions, you could stop working in';
     setVerdict(String(NOW + t), false);
     vSub.innerHTML = 'Age <b>' + free + '</b>' +
       (t === 0 ? '' : ' · <b>' + plural(t, 'year') + '</b> from now') +
@@ -1776,7 +1829,18 @@ function update(){
   } else { vs.hidden = true; }
 
   var hist = free === null ? null : histTest(s, free);
-  renderHist(hist, free);
+  var lad  = (hist && hist.ok < hist.total) ? ladder(s, free, 10) : null;
+  renderHist(hist, free, lad);
+
+  var safeLine = document.getElementById('verdict-safe');
+  if(lad && lad.safe !== null){
+    safeLine.hidden = false;
+    safeLine.innerHTML = '<b>' + plural(lad.safe - free, 'more year') + ' of work</b> \u2014 ' +
+      (NOW + lad.safe - s.age) + ', age ' + lad.safe + ' \u2014 and it holds in every one';
+  } else if(lad){
+    safeLine.hidden = false;
+    safeLine.innerHTML = '<b>No stopping age clears them all</b> \u2014 the spending is what has to move';
+  } else { safeLine.hidden = true; }
   var odds = document.getElementById('verdict-odds');
   if(hist){
     odds.hidden = false;

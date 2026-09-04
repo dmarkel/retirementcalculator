@@ -25,9 +25,15 @@ A steady 7% a year has never happened to anyone. What ruins early retirements is
 
 So the plan is re-run on real markets. For every starting year from 1928 onward, it takes the actual annual returns of the S&P 500 (with dividends) and 10-year US Treasuries, blends them to your stock/bond mix, rebalances once a year, discounts by that year's real CPI, and runs the same saving, spending and stopping age through them.
 
-The result is a count, not a point estimate:
+The date itself still comes from your steady-return assumption — that is what "on your assumptions" means at the top of the page. History then judges it, and the page says so in the same breath rather than burying the caveat:
 
-> **32 of 40** histories where the money lasted — **80%** — and the ones that failed all began in the 1950s. Work one year longer and every one of them survives.
+> **32 of 40** histories where the money lasted — **80%** — and the ones that failed all began in the 1950s.
+
+And because "80%" is not an answer anyone can act on, the panel prices the alternative. Each extra year of work, and what it buys:
+
+> Stop at 49 → **85%**  ·  50 → **94%**  ·  51 → **97%**  ·  52 → **100%**
+
+The first date that clears every history is repeated under the headline, so you never have to scroll to find the number you can actually rely on.
 
 The chart shows the middle half and the middle eight-tenths of those histories as bands, every failure as its own red line, and your steady-return assumption as a dashed line so you can see how optimistic or cautious it was against what actually happened.
 
