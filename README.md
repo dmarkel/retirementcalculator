@@ -86,7 +86,7 @@ Then open http://localhost:8000.
 
 ## Sharing a plan
 
-Every input lives in the URL fragment, so a link carries the whole plan. "Copy my plan link" in the footer puts it on your clipboard.
+Every input lives in the URL fragment, so a link carries the whole plan. "Copy my plan link" in the footer puts it on your clipboard. Shared links unfurl with a preview card (`og.jpg`, 1200×630) built from the default plan's own chart.
 
 "Reset the numbers" — next to the sentence — puts every input back to the example and clears the link. It greys out when you are already at the defaults.
 
@@ -95,7 +95,9 @@ Every input lives in the URL fragment, so a link carries the whole plan. "Copy m
 - Type: Bodoni Moda (display), Archivo (text), IBM Plex Mono (data).
 - Chart palettes were validated for colour-vision deficiency separation and contrast against both light and dark surfaces before being used.
 - Light and dark are both selected palettes, not an automatic inversion.
-- Respects `prefers-reduced-motion`; every control is keyboard-reachable; the full year-by-year schedule is available as a table.
+- Motion is spent in three places. The lifeline's bars rise left to right on first load. Sections ease in as you reach them. The first time the history chart comes into view, all its runs draw themselves in the order they started, with a running tally ("1956 start · 28 lasted · 3 ran out"), before the bands settle over the survivors and only the failures stay. It plays once; after that, changes redraw instantly.
+- Touch screens get 44px sliders, chips and switches; the smallest type anywhere is 11px, and labels that are sentences are set as sentences, not small capitals.
+- Respects `prefers-reduced-motion` (all three animations are skipped); every control is keyboard-reachable; the full year-by-year schedule is available as a table.
 
 ## Licence
 

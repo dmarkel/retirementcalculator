@@ -9,6 +9,12 @@
 <meta property="og:title" content="Freedom Date">
 <meta property="og:description" content="What year can you stop working? Drag the numbers and find out.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://dmarkel.github.io/retirementcalculator/">
+<meta property="og:image" content="https://dmarkel.github.io/retirementcalculator/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Freedom Date: the year 2046 in large orange type above a bar chart of savings rising, then drawing down.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230A1424'/%3E%3Cg fill='%232a78d6'%3E%3Crect x='4' y='20' width='3' height='8'/%3E%3Crect x='9' y='16' width='3' height='12'/%3E%3Crect x='14' y='11' width='3' height='17'/%3E%3C/g%3E%3Cg fill='%23E8622C'%3E%3Crect x='19' y='5' width='3' height='23'/%3E%3Crect x='24' y='13' width='3' height='15'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +92,7 @@ body::before{
 .wrap{max-width:var(--maxw); margin:0 auto; padding-inline:var(--gap); position:relative; z-index:1}
 .eyebrow{
   font-family:var(--mono); font-size:11px; font-weight:500;
-  letter-spacing:.18em; text-transform:uppercase; color:var(--ink-3);
+  letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3);
   margin:0 0 14px;
 }
 .rule{height:1px; background:var(--rule); border:0; margin:0}
@@ -96,13 +102,13 @@ body::before{
   display:flex; align-items:center; justify-content:space-between; gap:16px;
   padding-block:18px; border-bottom:1px solid var(--rule);
 }
-.brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink)}
+.brand{display:flex; align-items:center; gap:10px; font-family:var(--mono); font-size:12px; letter-spacing:.13em; text-transform:uppercase; color:var(--ink)}
 .brand svg{display:block}
 .tools{display:flex; align-items:center; gap:8px}
 .seg{display:flex; background:var(--card); border:1px solid var(--rule); border-radius:999px; padding:2px}
 .seg button{
   appearance:none; border:0; background:transparent; cursor:pointer;
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
   color:var(--ink-3); padding:6px 11px; border-radius:999px; white-space:nowrap;
   transition:color .18s, background .18s;
 }
@@ -191,7 +197,7 @@ body::before{
 .drawer{margin:22px 0 0; border-top:1px solid var(--rule-soft)}
 .drawer summary{
   cursor:pointer; list-style:none; padding:14px 0 0;
-  font-family:var(--mono); font-size:11px; letter-spacing:.11em; text-transform:uppercase;
+  font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--ink-3); display:flex; align-items:center; gap:9px; width:max-content;
 }
 .drawer summary::-webkit-details-marker{display:none}
@@ -202,7 +208,7 @@ body::before{
 .table-scroll table{border-collapse:collapse; width:100%; font-family:var(--mono); font-size:11.5px}
 .table-scroll th{
   position:sticky; top:0; background:var(--card); text-align:right; font-weight:500;
-  letter-spacing:.09em; text-transform:uppercase; font-size:10px; color:var(--ink-3);
+  letter-spacing:.09em; text-transform:uppercase; font-size:11px; color:var(--ink-3);
   padding:10px 14px; border-bottom:1px solid var(--rule);
 }
 .table-scroll th:first-child, .table-scroll td:first-child{text-align:left}
@@ -244,7 +250,7 @@ body::before{
 .reset-btn{
   appearance:none; cursor:pointer; background:transparent; color:var(--ink);
   border:1px solid var(--rule); border-radius:999px; padding:8px 15px;
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
   display:inline-flex; align-items:center; gap:9px;
   transition:border-color .18s, color .18s, opacity .18s;
 }
@@ -256,23 +262,25 @@ body::before{
 .assume{padding-bottom:clamp(48px,7vw,88px)}
 .assume-head{display:flex; flex-wrap:wrap; gap:8px 24px; align-items:baseline; justify-content:space-between; margin-bottom:26px}
 .assume-head p{margin:0; color:var(--ink-2); font-size:15px; max-width:46ch}
-.dials{display:grid; grid-template-columns:repeat(12,1fr); gap:32px 30px}
-.dials > .dgroup{grid-column:span 3}
-.dials > .dgroup--pair{grid-column:span 6}
-.dials > .dgroup--wide{grid-column:span 6}
+.dials{display:grid; grid-template-columns:repeat(12,1fr); gap:clamp(14px,1.8vw,20px)}
+.dials > .dgroup{
+  grid-column:span 6; padding:clamp(18px,2vw,24px); border:1px solid var(--rule-soft); border-radius:14px;
+  background:color-mix(in srgb, var(--card) 62%, transparent);
+}
+.dials > .dgroup--wide{grid-column:span 12; display:grid; grid-template-columns:1fr 1fr; column-gap:clamp(24px,4vw,56px); align-items:end}
+.dgroup--wide .dgroup-title{grid-column:1/-1}
+.dgroup--wide .dgroup-note{margin:0; align-self:center}
 .dgroup-title{
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--ink-3); margin:0 0 11px; padding-bottom:9px; border-bottom:1px solid var(--rule-soft);
 }
 .dgroup-body{display:grid; gap:22px 26px; grid-template-columns:1fr}
 .dgroup-note{margin:14px 0 0; font-size:11.5px; color:var(--ink-3); line-height:1.6; max-width:64ch}
 .dgroup--pair .dgroup-body{grid-template-columns:1fr 1fr}
-@media (max-width:1040px){
-  .dials > .dgroup{grid-column:span 6}
-  .dials > .dgroup--pair, .dials > .dgroup--wide{grid-column:span 12}
-}
-@media (max-width:560px){
-  .dials > .dgroup, .dials > .dgroup--pair, .dials > .dgroup--wide{grid-column:span 12}
+@media (max-width:820px){
+  .dials > .dgroup{grid-column:span 12}
+  .dials > .dgroup--wide{grid-template-columns:1fr}
+  .dgroup--wide .dgroup-note{margin-top:14px}
 }
 @media (max-width:400px){
   .dgroup--pair .dgroup-body{grid-template-columns:1fr}
@@ -295,13 +303,13 @@ body::before{
 .dial input[type=range]::-moz-range-thumb{width:14px; height:14px; border-radius:50%; background:var(--ink); border:0}
 .dial input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.25)}
 .dial input[type=range]:active::-webkit-slider-thumb{background:var(--free); transform:scale(1.25)}
-.dial .scale{display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--ink-3); margin-top:5px; letter-spacing:.04em}
+.dial .scale{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--ink-3); margin-top:5px; letter-spacing:.04em}
 
 /* ─── estimator modal ─────────────────────────────────────────────────── */
 .helper-btn{
   appearance:none; cursor:pointer; background:transparent; border:1px solid var(--rule);
   color:var(--ink-2); border-radius:999px; padding:4px 11px; margin-left:10px;
-  font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
   transition:border-color .18s, color .18s; vertical-align:1px;
 }
 .helper-btn:hover{border-color:var(--free); color:var(--free)}
@@ -327,7 +335,7 @@ body::before{
 .ss-row span:first-child{font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--ink-3)}
 .ss-row span:last-child{font-family:var(--sans); font-weight:600; font-variant-numeric:tabular-nums}
 .ss-row.total{border-bottom:0; padding-top:16px}
-.ss-row.total span:first-child{color:var(--ink-2); text-transform:uppercase; letter-spacing:.1em}
+.ss-row.total span:first-child{color:var(--ink-2); text-transform:uppercase; letter-spacing:.08em}
 .ss-row.total span:last-child{font-family:var(--display); font-weight:500; font-size:1.6rem; color:var(--free)}
 .modal-acts{display:flex; flex-wrap:wrap; align-items:center; gap:14px 20px; margin-top:26px}
 .modal-acts a{font-size:12.5px; color:var(--ink-2); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--rule)}
@@ -344,16 +352,16 @@ body::before{
 .switch input:checked + .switch-track{background:var(--free)}
 .switch input:checked + .switch-track::after{transform:translateX(18px)}
 .switch input:focus-visible + .switch-track{outline:2px solid var(--free); outline-offset:3px}
-.switch-text{font-family:var(--mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2)}
+.switch-text{font-size:14.5px; color:var(--ink-2)}
 .switch--sm{margin-top:20px; gap:10px}
 .switch--sm .switch-track{width:34px; height:20px}
 .switch--sm .switch-track::after{top:3.5px; left:3.5px; width:13px; height:13px}
 .switch--sm input:checked + .switch-track::after{transform:translateX(14px)}
-.switch--sm .switch-text{font-size:10.5px; letter-spacing:.11em; color:var(--ink-3)}
+.switch--sm .switch-text{font-size:13.5px; color:var(--ink-3)}
 .switch--sm input:checked ~ .switch-text{color:var(--ink-2)}
 .acct{margin-top:32px}
 .fields{display:grid; grid-template-columns:repeat(auto-fit,minmax(214px,1fr)); gap:28px 30px; align-items:start}
-.field label{display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
+.field label{display:block; font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); margin-bottom:8px}
 .field input{
   width:100%; font-family:var(--sans); font-size:19px; font-weight:600; letter-spacing:-.01em;
   color:var(--ink); background:transparent; border:0; border-bottom:1.5px solid var(--rule);
@@ -388,7 +396,7 @@ body::before{
 .stats{display:grid; gap:0}
 .stat{display:flex; align-items:baseline; justify-content:space-between; gap:16px; padding:13px 0; border-bottom:1px solid var(--rule-soft)}
 .stat:last-child{border-bottom:0; padding-bottom:0}
-.stat dt{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin:0}
+.stat dt{font-size:14px; color:var(--ink-2); margin:0; line-height:1.4}
 .stat dd{margin:0; font-family:var(--display); font-size:clamp(1.15rem,2.2vw,1.5rem); font-weight:500; color:var(--ink); font-variant-numeric:tabular-nums; letter-spacing:-.01em; text-align:right}
 .stat dd small{font-family:var(--sans); font-size:11.5px; font-weight:400; color:var(--ink-3); display:block; letter-spacing:0; margin-top:1px}
 
@@ -408,7 +416,7 @@ body::before{
   line-height:.9; letter-spacing:-.02em; color:var(--ink); font-variant-numeric:tabular-nums;
 }
 .hist-num.bad{color:var(--alarm)}
-.hist-den{font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); max-width:21ch; line-height:1.5; padding-left:3px}
+.hist-den{font-size:14px; color:var(--ink-2); max-width:17ch; line-height:1.4; padding-left:3px}
 .hist-side{flex:1 1 320px; max-width:58ch; padding-top:4px}
 .hist-verdict{margin:0; font-size:15px; color:var(--ink-2); line-height:1.6}
 .hist-verdict b{color:var(--ink); font-weight:600}
@@ -422,13 +430,13 @@ body::before{
 
 /* what another year buys */
 .ladder-head{
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
+  font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase;
   color:var(--ink-3); margin:26px 0 0;
 }
 .ladder{display:flex; flex-wrap:wrap; gap:0 2px; margin:12px 0 0}
 .ladder-step{flex:1 1 88px; min-width:88px; padding-top:13px; border-top:1px solid var(--rule-soft)}
 .ladder-step.now{border-top-color:var(--free)}
-.ladder-age{font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3)}
+.ladder-age{font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3)}
 .ladder-pct{
   font-family:var(--display); font-weight:500; font-size:1.45rem; line-height:1; margin-top:6px;
   color:var(--ink); font-variant-numeric:tabular-nums; letter-spacing:-.01em;
@@ -446,7 +454,7 @@ body::before{
   letter-spacing:.02em; transition:opacity .12s; z-index:5; box-shadow:0 8px 24px -10px rgba(0,0,0,.5);
 }
 .tip.on{opacity:1}
-.tip b{font-weight:500; letter-spacing:.09em; text-transform:uppercase; opacity:.6; display:block; font-size:9.5px; margin-bottom:3px}
+.tip b{font-weight:500; letter-spacing:.09em; text-transform:uppercase; opacity:.6; display:block; font-size:11px; margin-bottom:3px}
 .tip .row{display:flex; justify-content:space-between; gap:14px}
 .tip .row span:last-child{font-variant-numeric:tabular-nums}
 
@@ -456,13 +464,13 @@ body::before{
 .foot .drawer summary{padding-top:2px}
 .foot-cols{display:grid; gap:10px 40px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:22px}
 .foot .foot-src{margin-top:16px}
-.foot h3{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px; font-weight:500}
+.foot h3{font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px; font-weight:500}
 .foot p{margin:0 0 9px; font-size:13.5px; color:var(--ink-2); line-height:1.62; max-width:44ch}
 .foot a{color:var(--ink); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--rule)}
 .foot a:hover{text-decoration-color:var(--free)}
 .copy-btn{
   appearance:none; cursor:pointer; background:transparent; border:1px solid var(--rule); color:var(--ink);
-  font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+  font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
   padding:9px 15px; border-radius:999px; transition:border-color .18s, background .18s;
 }
 .copy-btn:hover{border-color:var(--ink-3); background:var(--card)}
@@ -474,10 +482,44 @@ body::before{
   .foot{grid-template-columns:1fr}
 }
 @media (max-width:560px){
-  .masthead{flex-wrap:wrap; gap:12px}
+  .u-long{display:none}
+  .masthead{gap:10px}
+  .brand{gap:8px; letter-spacing:.1em}
+  .tools{gap:6px}
+  .seg button{padding-inline:10px}
   .sentence{line-height:1.9}
   .stat dd{font-size:1.15rem}
 }
+/* sections arrive as you reach them (only when script and motion allow) */
+.js-reveal .reveal{transition:opacity .8s cubic-bezier(.2,.7,.2,1), transform .8s cubic-bezier(.2,.7,.2,1)}
+.js-reveal .reveal:not(.in){opacity:0; transform:translateY(22px)}
+
+/* history intro: every run draws itself, then the summary settles in */
+.hist-intro .run{stroke-dasharray:1; stroke-dashoffset:1}
+.hist-intro.play .run{stroke-dashoffset:0; transition:stroke-dashoffset .95s cubic-bezier(.35,.55,.25,1) calc(var(--i) * 48ms)}
+.hist-intro .hist-sum{opacity:0}
+.hist-intro .hist-count{opacity:1}
+.hist-sum, .hist-count, .run-ok{transition:opacity .7s ease}
+.hist-intro.settle .hist-sum{opacity:1}
+.hist-intro.settle .run-ok, .hist-intro.settle .hist-count{opacity:0}
+
+/* fingers are bigger than cursors */
+@media (pointer:coarse){
+  .dial input[type=range]{height:44px}
+  .dial input[type=range]::-webkit-slider-thumb{width:22px; height:22px; margin-top:-10px}
+  .dial input[type=range]::-moz-range-thumb{width:22px; height:22px}
+  .chip{padding:6px 9px 5px}
+  .chip--sub{padding:5px 10px 4px}
+  .seg button{padding:11px 13px}
+  .icon-btn{width:40px; height:40px}
+  .switch{min-height:44px}
+  .helper-btn{padding:9px 14px}
+  .reset-btn, .copy-btn{padding:13px 17px}
+  .drawer summary{padding-block:14px}
+  .field input{min-height:44px}
+}
+@media (max-width:560px){ .seg button{padding-inline:10px} }
+
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
 }
@@ -496,8 +538,8 @@ body::before{
     </div>
     <div class="tools">
       <div class="seg" role="group" aria-label="Dollar units">
-        <button type="button" id="u-today" aria-pressed="true">Today's dollars</button>
-        <button type="button" id="u-future" aria-pressed="false">Future dollars</button>
+        <button type="button" id="u-today" aria-pressed="true">Today's<span class="u-long"> dollars</span></button>
+        <button type="button" id="u-future" aria-pressed="false">Future<span class="u-long"> dollars</span></button>
       </div>
       <button type="button" class="icon-btn" id="theme" aria-label="Switch colour theme">
         <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true">
@@ -755,7 +797,7 @@ body::before{
 
 <style>
   .plot svg text, .lifeline-plot svg text{
-    font-family:var(--mono); font-size:10.5px; letter-spacing:.06em; fill:var(--ink-3);
+    font-family:var(--mono); font-size:11px; letter-spacing:.06em; fill:var(--ink-3);
   }
   .plot svg .t-strong, .lifeline-plot svg .t-strong{ fill:var(--ink); font-size:11px }
   .plot svg .t-free, .lifeline-plot svg .t-free{ fill:var(--free); font-size:11px; letter-spacing:.09em }
@@ -1162,7 +1204,7 @@ function setVerdict(str, isNull){
 }
 
 /* ── lifeline ──────────────────────────────────────────────────────── */
-var lifePrev = null;
+var lifePrev = null, lifeGrowT0 = null;
 function renderLifeline(res, free){
   var host = document.getElementById('lifeline-plot');
   var tip  = document.getElementById('lifeline-tip');
@@ -1217,7 +1259,7 @@ function renderLifeline(res, free){
   /* social security tick */
   if(s.ss > 0 && free !== null && s.ssAge > free && s.ssAge <= s.life){
     var xs = (s.ssAge - s.age)*step - gap/2;
-    var farRight = xs > W - 170;
+    var farRight = xs + 124 > W;
     E('line', {x1:xs, y1:padT+7, x2:xs, y2:base, stroke:'var(--ink)', 'stroke-width':1,
                'stroke-dasharray':'2 4', opacity:.32}, svg);
     E('circle', {cx:xs, cy:padT+7, r:2.5, fill:'var(--ink)', opacity:.45}, svg);
@@ -1254,7 +1296,23 @@ function renderLifeline(res, free){
       bars[k].setAttribute('d', capTop(k*step, base-h, bw, h, Math.min(3, bw/2)));
     }
   };
-  tween(lifePrev, norm, 460, draw);
+  /* the first second of the page: bars rise left to right. A redraw inside
+     that second (fonts landing, a quick edit) picks up the same clock. */
+  if(!reduceMotion && (lifeGrowT0 === null || performance.now() - lifeGrowT0 < 1150)){
+    if(lifeGrowT0 === null) lifeGrowT0 = performance.now();
+    (function grow(now){
+      if(!bars[0] || !bars[0].isConnected) return;
+      var p = Math.min(1, Math.max(0, (now - lifeGrowT0)/1150)), hs = new Array(n);
+      for(var k=0;k<n;k++){
+        var q = Math.min(1, Math.max(0, (p - k/n*.45)/.55));
+        hs[k] = norm[k] * (1 - Math.pow(1 - q, 3));
+      }
+      draw(hs);
+      if(p < 1) requestAnimationFrame(grow);
+    })(performance.now());
+  } else {
+    tween(lifePrev, norm, 460, draw);
+  }
   lifePrev = norm;
 
   /* hover */
@@ -1589,10 +1647,10 @@ function renderLevers(free, fillH){
       if(d.rate) T(svg, 0, by+34, d.rate, 't-rate', 'start');
     } else {
       by = mid - 7;
-      var y0 = d.rate ? mid - 10 : mid - 3;
+      var y0 = d.rate ? mid - 12 : mid - 3;
       T(svg, 0, y0, d.L.label.toUpperCase(), 't-strong', 'start');
-      T(svg, 0, y0 + 13, d.L.note, null, 'start');
-      if(d.rate) T(svg, 0, y0 + 26, d.rate, 't-rate', 'start');
+      T(svg, 0, y0 + 14.5, d.L.note, null, 'start');
+      if(d.rate) T(svg, 0, y0 + 29, d.rate, 't-rate', 'start');
     }
     var pair = [d.g, d.b];
     var sameSide = d.g !== null && d.b !== null && d.g !== 0 && d.b !== 0 &&
@@ -1661,6 +1719,31 @@ function renderStats(res, free){
 }
 
 /* ── tested against history ────────────────────────────────────────── */
+/* The first time the chart comes into view, each historical run draws
+   itself in the order it started, with a running tally, before the bands
+   settle over the survivors. Once only; any change after that just redraws. */
+var histIntro = (reduceMotion || !('IntersectionObserver' in window)) ? 'done' : 'pending';
+var histTimer = null;
+function playHist(){
+  var svg = document.querySelector('#hist-plot svg.hist-intro');
+  if(histIntro !== 'pending' || !svg) return;
+  histIntro = 'playing';
+  var cnt = svg.querySelector('.hist-count');
+  var runs = JSON.parse(cnt.dataset.runs), k = 0, ok = 0, bad = 0;
+  svg.getBoundingClientRect();
+  svg.classList.add('play');
+  histTimer = setInterval(function(){
+    if(k >= runs.length){
+      clearInterval(histTimer);
+      histTimer = setTimeout(function(){ svg.classList.add('settle'); histIntro = 'done'; }, 950);
+      return;
+    }
+    if(runs[k][1]) ok++; else bad++;
+    cnt.textContent = runs[k][0] + ' START  \u00b7  ' + ok + ' LASTED  \u00b7  ' + bad + ' RAN OUT';
+    k++;
+  }, 48);
+}
+
 function renderHist(h, free, lad, mc){
   var host = document.getElementById('hist-plot');
   var tip  = document.getElementById('hist-tip');
@@ -1741,6 +1824,9 @@ function renderHist(h, free, lad, mc){
     for(var k=0;k<vals.length;k++) d += (k?'L':'M') + X(k).toFixed(1) + ',' + Y(vals[k]).toFixed(1);
     return d;
   };
+  var intro = histIntro === 'pending';
+  if(histIntro === 'playing'){ clearInterval(histTimer); clearTimeout(histTimer); histIntro = 'done'; }
+  if(intro) svg.setAttribute('class', 'hist-intro');
   var g = E('g', {'clip-path':'url(#' + cid + ')'}, svg);
   var ribbon = function(hi, lo){
     var d = '';
@@ -1748,17 +1834,29 @@ function renderHist(h, free, lad, mc){
     for(var k2=n-1;k2>=0;k2--) d += 'L' + X(k2).toFixed(1) + ',' + Y(lo[k2]).toFixed(1);
     return d + 'Z';
   };
-  E('path', {d:ribbon(p90, p10), fill:'var(--blue)', opacity:.14}, g);
-  E('path', {d:ribbon(p75, p25), fill:'var(--blue)', opacity:.26}, g);
+  var bandsG = E('g', {class:'hist-sum'}, g);
+  E('path', {d:ribbon(p90, p10), fill:'var(--blue)', opacity:.14}, bandsG);
+  E('path', {d:ribbon(p75, p25), fill:'var(--blue)', opacity:.26}, bandsG);
+  /* every run that lasted is drawn only for the intro, then gives way to the
+     bands; the ones that ran out stay, in red */
   var many = (h.total - h.ok) > 12;
-  h.runs.forEach(function(R, idx){
-    if(R.res.ok) return;
-    E('path', {d:line(paths[idx]), fill:'none', stroke:'var(--neg)',
-               'stroke-width': many ? 1 : 1.5, opacity: many ? .45 : .85}, g);
-  });
-  E('path', {d:line(p50), fill:'none', stroke:'var(--ink)', 'stroke-width':1.75, opacity:.5}, g);
+  var runLine = function(R, idx){
+    var ok = R.res.ok;
+    E('path', {d:line(paths[idx]), fill:'none', stroke: ok ? 'var(--blue)' : 'var(--neg)',
+               'stroke-width': ok ? 1 : (many ? 1 : 1.5), opacity: ok ? .5 : (many ? .45 : .85),
+               class: intro ? 'run' + (ok ? ' run-ok' : '') : null, pathLength: intro ? 1 : null,
+               style: intro ? '--i:' + idx : null, 'data-i': idx}, g);
+  };
+  if(intro) h.runs.forEach(function(R, idx){ if(R.res.ok) runLine(R, idx); });
+  h.runs.forEach(function(R, idx){ if(!R.res.ok) runLine(R, idx); });
+  var linesG = E('g', {class:'hist-sum'}, g);
+  E('path', {d:line(p50), fill:'none', stroke:'var(--ink)', 'stroke-width':1.75, opacity:.5}, linesG);
   E('path', {d:line(assum), fill:'none', stroke:'var(--ink)', 'stroke-width':2, opacity:.85,
-             'stroke-dasharray':'9 5'}, g);
+             'stroke-dasharray':'9 5'}, linesG);
+  if(intro){
+    var cnt = T(svg, 0, padT + 22, '', 't-strong hist-count', 'start');
+    cnt.dataset.runs = JSON.stringify(h.runs.map(function(R){ return [R.start, R.res.ok ? 1 : 0]; }));
+  }
 
   if(clipped){
     var fid = 'fade-hist', fg = E('linearGradient', {id:fid, x1:0, y1:0, x2:0, y2:1}, cp.parentNode);
@@ -2074,7 +2172,7 @@ function sizeChip(el){
   ruler.style.font = cs.fontWeight + ' ' + cs.fontSize + '/' + cs.lineHeight + ' ' + cs.fontFamily;
   ruler.style.letterSpacing = cs.letterSpacing;
   ruler.textContent = el.value || '0';
-  el.style.width = (ruler.offsetWidth + 16) + 'px';
+  el.style.width = Math.ceil(ruler.offsetWidth + parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight) + 3) + 'px';
 }
 function paintChip(el){ el.value = CHIP_FMT[el.dataset.key](chipValue(el.dataset.key)); sizeChip(el); }
 
@@ -2137,7 +2235,7 @@ var GROUPS = [
       { key:'stocks', a11y:'Share of the portfolio held in stocks', lo:'All bonds', hi:'All stocks',
         fmt:function(v){ return v + '% stocks \u00b7 ' + (100-v) + '% bonds'; } } ] },
 
-  { title:'Prices and pay', pair:true, pairAlways:true,
+  { title:'Prices and pay', pair:true,
     gate:'payOn', toggle:{ key:'payOn', label:'My pay goes up each year' }, toggleAlways:true,
     hint:'Off means your pay only keeps pace with prices, so what you put away stays flat in today\u2019s money for as long as you work.',
     noteFn:function(){
@@ -2181,7 +2279,9 @@ var GROUPS = [
       { key:'otherAge', a11y:'Age that income starts', lo:'45', hi:'80',
         fmt:function(v){ return 'Starts at ' + v; } } ] },
 
-  { title:'Plan runs through', wide:true, dials:[
+  { title:'Plan runs through', wide:true,
+    note:'Plan past the age you expect to reach. Life expectancy is an average, so roughly half of people outlive it \u2014 and running out at 90 is far worse than leaving money behind at 95.',
+    dials:[
     { key:'life', a11y:'Plan through age', lo:'70', hi:'105',
       fmt:function(v){ return 'Age ' + v; } } ] },
 
@@ -2250,8 +2350,7 @@ GROUPS.forEach(function(G){
 /* a start age and a cost-of-living switch mean nothing until there is money */
 function syncGroups(){
   GROUPS.forEach(function(G){
-    G.box.classList.toggle('dgroup--pair',
-      !!G.pair && (G.pairAlways || !G.gate || s[G.gate] > 0));
+    G.box.classList.toggle('dgroup--pair', !!G.pair && (!G.gate || s[G.gate] > 0));
     G.box.classList.toggle('dgroup--wide', !!G.wide);
     if(!G.gate) return;
     var on = s[G.gate] > 0;
@@ -2483,10 +2582,30 @@ document.getElementById('copy').onclick = function(){
   else { done(); }
 };
 
-var rt;
+/* phones fire resize when the address bar slides; only a new width redraws */
+var rt, lastW = window.innerWidth;
 window.addEventListener('resize', function(){
+  if(window.innerWidth === lastW) return;
+  lastW = window.innerWidth;
   clearTimeout(rt); rt = setTimeout(function(){ lifePrev = null; update(); }, 140);
 });
+
+/* sections arrive as you reach them; the history chart plays its intro */
+if('IntersectionObserver' in window && !reduceMotion){
+  document.documentElement.classList.add('js-reveal');
+  var revealIO = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); revealIO.unobserve(e.target); } });
+  }, { rootMargin:'0px 0px -40px 0px', threshold:0 });
+  document.querySelectorAll('.story, .assume, .accounts, .panel, .foot').forEach(function(el){
+    el.classList.add('reveal'); revealIO.observe(el);
+  });
+  var histIO = new IntersectionObserver(function(es){
+    if(es[0].isIntersecting && document.querySelector('#hist-plot svg.hist-intro')){
+      playHist(); if(histIntro !== 'pending') histIO.disconnect();
+    }
+  }, { threshold:.4 });
+  histIO.observe(document.getElementById('hist-plot'));
+}
 
 chips.forEach(paintChip);
 paintDials();
