@@ -24,10 +24,10 @@
   --blue:#2a78d6;   --blue-soft:rgba(42,120,214,.12);
   --s1:#184f95;     --s2:#2a78d6;    --s3:#6da7ec;
   --a1:#0d5c40;     --a2:#149268;    --a3:#3fbe92;
-  --neg:#d93a32;    --alarm:#b32318;
+  --neg:#d93a32;    --alarm:#b32318;   --later:#7d8794;
   --grid:rgba(10,20,36,.075); --card-hi:rgba(255,255,255,.9);
   --glow-warm:rgba(216,80,28,.15); --glow-cool:rgba(42,120,214,.12);
-  --grain-op:.24; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  --grain-op:.1; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
   --shadow:0 1px 2px rgba(10,20,36,.05), 0 12px 32px -18px rgba(10,20,36,.28);
   --display:"Bodoni Moda", "Didot", "Times New Roman", serif;
   --sans:"Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -44,7 +44,7 @@
   --blue:#3987e5;   --blue-soft:rgba(57,135,229,.16);
   --s1:#184f95;     --s2:#3987e5;    --s3:#9ec5f4;
   --a1:#0d5c40;     --a2:#199e70;    --a3:#6fd6ac;
-  --neg:#e66767;    --alarm:#f0655b;
+  --neg:#e66767;    --alarm:#f0655b;   --later:#5d6878;
   --grid:rgba(233,237,243,.062); --card-hi:rgba(255,255,255,.055);
   --glow-warm:rgba(232,98,44,.15); --glow-cool:rgba(57,135,229,.13);
   --grain-op:.16; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -59,7 +59,7 @@
   --blue:#3987e5;   --blue-soft:rgba(57,135,229,.16);
   --s1:#184f95;     --s2:#3987e5;    --s3:#9ec5f4;
   --a1:#0d5c40;     --a2:#199e70;    --a3:#6fd6ac;
-  --neg:#e66767;    --alarm:#f0655b;
+  --neg:#e66767;    --alarm:#f0655b;   --later:#5d6878;
   --grid:rgba(233,237,243,.062); --card-hi:rgba(255,255,255,.055);
   --glow-warm:rgba(232,98,44,.15); --glow-cool:rgba(57,135,229,.13);
   --grain-op:.16; --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
@@ -210,25 +210,6 @@ body::before{
 .table-scroll tr:last-child td{border-bottom:0}
 .table-scroll tr[data-phase="free"] td:first-child{color:var(--free)}
 .table-scroll td.neg{color:var(--alarm)}
-
-/* ─── the exchange rate ───────────────────────────────────────────────── */
-.rates{
-  padding-top:clamp(34px,4.5vw,52px); padding-bottom:clamp(48px,7vw,88px);
-  border-top:1px solid var(--rule-soft);
-}
-.rates-head{display:flex; flex-wrap:wrap; gap:6px 24px; align-items:baseline; justify-content:space-between}
-.rates-head p{margin:0; color:var(--ink-2); font-size:14.5px; max-width:44ch}
-.rate-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(196px,1fr)); gap:28px 34px; margin-top:28px}
-.rate-num{
-  font-family:var(--display); font-weight:500; font-size:clamp(2.1rem,3.8vw,2.9rem);
-  line-height:.95; letter-spacing:-.022em; color:var(--free); display:block;
-  font-variant-numeric:tabular-nums;
-}
-.rate-unit{
-  font-family:var(--mono); font-size:10.5px; letter-spacing:.11em; text-transform:uppercase;
-  color:var(--ink-3); display:block; margin-top:9px;
-}
-.rate-cap{margin:10px 0 0; font-size:13.5px; color:var(--ink-2); line-height:1.55; max-width:27ch}
 
 /* ─── story / mad-lib ─────────────────────────────────────────────────── */
 .story{padding-block:clamp(52px,8vw,104px)}
@@ -420,24 +401,24 @@ body::before{
 .empty-list b{color:var(--ink); font-weight:600}
 
 /* tested against history */
-.hist-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 28px; margin:0 0 26px}
+.hist-head{display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px 40px; margin:0 0 30px}
 .hist-score{display:flex; align-items:baseline; gap:13px; flex:none}
 .hist-num{
   font-family:var(--display); font-weight:500; font-size:clamp(2.4rem,5.5vw,3.6rem);
   line-height:.9; letter-spacing:-.02em; color:var(--ink); font-variant-numeric:tabular-nums;
 }
 .hist-num.bad{color:var(--alarm)}
-.hist-pct{
-  font-family:var(--display); font-weight:500; font-size:clamp(1.2rem,2.4vw,1.7rem);
-  line-height:1; letter-spacing:-.01em; color:var(--ink-3); font-variant-numeric:tabular-nums;
-}
-.hist-pct.bad{color:var(--alarm); opacity:.75}
 .hist-den{font-family:var(--mono); font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); max-width:21ch; line-height:1.5; padding-left:3px}
-.hist-verdict{margin:0; font-size:15px; color:var(--ink-2); max-width:48ch; line-height:1.6}
+.hist-side{flex:1 1 320px; max-width:58ch; padding-top:4px}
+.hist-verdict{margin:0; font-size:15px; color:var(--ink-2); line-height:1.6}
 .hist-verdict b{color:var(--ink); font-weight:600}
 .hist-note{margin:22px 0 0; font-size:13px; color:var(--ink-3); line-height:1.7; max-width:80ch}
 .hist-note b{color:var(--ink-2); font-weight:500}
 .hist-note + .hist-note{margin-top:9px}
+.hist-alt{margin:10px 0 0; padding-top:10px; border-top:1px solid var(--rule-soft); font-size:13.5px; color:var(--ink-3); line-height:1.6}
+.hist-alt b{color:var(--ink); font-weight:600; font-variant-numeric:tabular-nums}
+.drawer--in{margin-top:20px}
+.drawer--in .hist-note:first-of-type{margin-top:12px}
 
 /* what another year buys */
 .ladder-head{
@@ -470,7 +451,11 @@ body::before{
 .tip .row span:last-child{font-variant-numeric:tabular-nums}
 
 /* footer */
-.foot{border-top:1px solid var(--rule); padding-block:38px 60px; display:grid; gap:26px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.foot{border-top:1px solid var(--rule); padding-block:30px 60px; display:grid; gap:30px 56px; grid-template-columns:minmax(0,1fr) minmax(220px,300px); align-items:start}
+.foot .drawer{margin:0; border-top:0}
+.foot .drawer summary{padding-top:2px}
+.foot-cols{display:grid; gap:10px 40px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); margin-top:22px}
+.foot .foot-src{margin-top:16px}
 .foot h3{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-3); margin:0 0 10px; font-weight:500}
 .foot p{margin:0 0 9px; font-size:13.5px; color:var(--ink-2); line-height:1.62; max-width:44ch}
 .foot a{color:var(--ink); text-decoration:underline; text-underline-offset:3px; text-decoration-color:var(--rule)}
@@ -486,6 +471,7 @@ body::before{
 
 @media (max-width:880px){
   .panel--7,.panel--5{grid-column:span 12}
+  .foot{grid-template-columns:1fr}
 }
 @media (max-width:560px){
   .masthead{flex-wrap:wrap; gap:12px}
@@ -633,18 +619,6 @@ body::before{
       </div>
     </section>
 
-    <!-- ── the exchange rate ─────────────────────────────────────────── -->
-    <section class="rates" id="rates" hidden>
-      <div class="rates-head">
-        <div>
-          <p class="eyebrow">The exchange rate</p>
-          <h2 class="sec-h2">What buys you time.</h2>
-        </div>
-        <p>Roughly what each lever is worth from where you stand now, holding everything else still.</p>
-      </div>
-      <div class="rate-grid" id="rate-grid"></div>
-    </section>
-
     <!-- ── panels ───────────────────────────────────────────────────── -->
     <section class="panels">
 
@@ -674,8 +648,8 @@ body::before{
 
       <article class="panel panel--7">
         <p class="eyebrow">What moves the date</p>
-        <h2>One change at a time.</h2>
-        <p class="lede" id="lever-lede">Each bar holds everything else still and changes one thing. The length is how far your freedom date slides.</p>
+        <h2>What buys you time.</h2>
+        <p class="lede" id="lever-lede"></p>
         <div class="plot" id="lever-plot"></div>
       </article>
 
@@ -693,14 +667,12 @@ body::before{
         <div class="hist-head">
           <div class="hist-score">
             <span class="hist-num" id="hist-num">—</span>
-            <span class="hist-pct" id="hist-pct"></span>
             <span class="hist-den" id="hist-den"></span>
           </div>
-          <div class="hist-score" id="mc-score" hidden>
-            <span class="hist-num" id="mc-pct"></span>
-            <span class="hist-den" id="mc-den"></span>
+          <div class="hist-side">
+            <p class="hist-verdict" id="hist-verdict"></p>
+            <p class="hist-alt" id="hist-alt"></p>
           </div>
-          <p class="hist-verdict" id="hist-verdict"></p>
         </div>
         <div class="plot" id="hist-plot"><div class="tip" id="hist-tip"></div></div>
         <div class="legend" id="hist-legend">
@@ -713,8 +685,11 @@ body::before{
         <p class="ladder-head" id="ladder-head" hidden></p>
         <div class="ladder" id="ladder" hidden></div>
         <p class="hist-note" id="hist-fails"></p>
-        <p class="hist-note" id="hist-real"></p>
-        <p class="hist-note" id="hist-mc"></p>
+        <details class="drawer drawer--in" id="hist-more">
+          <summary>How these runs work</summary>
+          <p class="hist-note" id="hist-real"></p>
+          <p class="hist-note" id="hist-mc"></p>
+        </details>
       </article>
 
     </section>
@@ -749,27 +724,31 @@ body::before{
   </dialog>
 
   <footer class="foot">
-    <div>
-      <h3>How it works</h3>
-      <p>Everything is figured in today's dollars: returns are discounted by inflation, so a dollar here always buys what a dollar buys now. Social Security holds its value the same way, which matches the real thing — benefits have carried an automatic cost-of-living rise since 1975.</p>
-      <p>What it does not do is trim those benefits. The <a href="https://www.ssa.gov/oact/tr/2026/">2026 Trustees Report</a> projects the combined trust funds run down in 2034, with roughly 83% of scheduled benefits funded after that absent legislation. Lower the Social Security figure yourself if you want to plan for it.</p>
-      <p>Your freedom date is the first year you could stop and still have money left at the end of the plan — not a rule of thumb, an actual year-by-year run of the money. The balance keeps compounding after you stop; only what you spend leaves.</p>
-      <p>Health cover before Medicare is charged on top of your spending in every retired year up to 65, in today's dollars. ACA subsidies can cut that bill sharply if your reported income is low, and this does not model them — set it to what you expect to actually pay.</p>
-      <p>The history panel re-runs that same plan on real returns: S&amp;P 500 with dividends, 10-year Treasuries and CPI for every year from 1928 to 2024, blended to your stock/bond mix and rebalanced once a year. Each run starts in a different year and takes the returns in the order they came. Source: Damodaran, NYU Stern.</p>
-      <p>Split the accounts and withdrawals go brokerage first, then the 401(k) grossed up for tax, then Roth. A 10% penalty applies to 401(k) money taken before 59½, and required minimum distributions start at 73 or 75 depending on your birth year.</p>
-    </div>
-    <div>
-      <h3>What it ignores</h3>
-      <p>Fees, a paid-off house, a bad decade at exactly the wrong moment, and the raise you're about to get. Leave the accounts un-split and it ignores tax entirely.</p>
-      <p>Capital-gains tax on the brokerage account, state tax, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty.</p>
-      <p>The historical runs overlap heavily — a 58-year plan only fits 40 times into 97 years of data, and neighbouring runs share most of their years. Treat the count as a stress test, not a probability.</p>
-      <p>This is a model, not advice. Real markets don't return the same number every year, and neither will yours.</p>
-    </div>
-    <div>
+    <details class="drawer foot-more">
+      <summary>How this works, and what it leaves out</summary>
+      <div class="foot-cols">
+        <div>
+          <h3>How it works</h3>
+          <p>Everything is figured in today's dollars: returns are discounted by inflation, so a dollar here always buys what a dollar buys now. Social Security holds its value the same way, which matches the real thing — benefits have carried an automatic cost-of-living rise since 1975.</p>
+          <p>Your freedom date is the first year you could stop and still have money left at the end of the plan — not a rule of thumb, an actual year-by-year run of the money. The balance keeps compounding after you stop; only what you spend leaves.</p>
+          <p>Health cover before Medicare is charged on top of your spending in every retired year up to 65. ACA subsidies can cut that bill sharply if your reported income is low, and this does not model them — set it to what you expect to actually pay.</p>
+          <p>The history panel re-runs the same plan on real returns: S&amp;P 500 with dividends, 10-year Treasuries and CPI for every year from 1928 to 2024, blended to your stock/bond mix and rebalanced once a year. Source: Damodaran, NYU Stern.</p>
+          <p>Split the accounts and withdrawals go brokerage first, then the 401(k) grossed up for tax, then Roth. A 10% penalty applies to 401(k) money taken before 59½, and required minimum distributions start at 73 or 75 depending on your birth year.</p>
+        </div>
+        <div>
+          <h3>What it leaves out</h3>
+          <p>Fees, a paid-off house, and the raise you're about to get unless you switch it on. Leave the accounts un-split and it ignores tax entirely.</p>
+          <p>Capital-gains tax on the brokerage account, state tax, and the Roth ladders and 72(t) withdrawals that can sidestep the early-withdrawal penalty.</p>
+          <p>Any cut to Social Security. The <a href="https://www.ssa.gov/oact/tr/2026/">2026 Trustees Report</a> projects the combined trust funds run down in 2034, with roughly 83% of scheduled benefits funded after that absent legislation. Lower the figure yourself to plan for it.</p>
+          <p>This is a model, not advice. Real markets don't return the same number every year, and neither will yours.</p>
+        </div>
+      </div>
+    </details>
+    <div class="foot-take">
       <h3>Take it with you</h3>
       <p>Your numbers live in the link — copy it and the whole plan travels with you.</p>
       <p><button type="button" class="copy-btn" id="copy">Copy my plan link</button></p>
-      <p style="margin-top:16px"><a href="https://github.com/dmarkel/retirementcalculator">Source on GitHub</a></p>
+      <p class="foot-src"><a href="https://github.com/dmarkel/retirementcalculator">Source on GitHub</a></p>
     </div>
   </footer>
 </div>
@@ -780,7 +759,7 @@ body::before{
   }
   .plot svg .t-strong, .lifeline-plot svg .t-strong{ fill:var(--ink); font-size:11px }
   .plot svg .t-free, .lifeline-plot svg .t-free{ fill:var(--free); font-size:11px; letter-spacing:.09em }
-  .plot svg .t-neg{ fill:var(--neg) }
+  .plot svg .t-rate{ fill:var(--free) }
   .plot svg .t-alarm{ fill:var(--alarm) }
   .grid{ stroke:var(--rule-soft); stroke-width:1 }
   .axis{ stroke:var(--rule); stroke-width:1 }
@@ -1425,51 +1404,20 @@ function renderComp(res, free){
 }
 
 /* ── the exchange rate ─────────────────────────────────────────────── */
-function sooner(m){
-  var v = Math.abs(m), later = m < 0;
-  var word = later ? ' later' : ' sooner';
-  if(v < 0.5)  return ['&lt;1', 'month' + word];
-  if(v < 18)   return [String(Math.round(v)), (Math.round(v) === 1 ? 'month' : 'months') + word];
+/* the going rate: months of freedom per unit of a lever, in plain words */
+function goingRate(months, unit){
+  var v = Math.abs(months);
+  if(v < 0.5) return 'less than a month per ' + unit;
+  if(v < 18)  return 'about ' + plural(Math.round(v), 'month') + ' per ' + unit;
   var y = Math.round(v/12*10)/10;
-  return [String(y), (y === 1 ? 'year' : 'years') + word];
+  return 'about ' + y + (y === 1 ? ' year' : ' years') + ' per ' + unit;
 }
-function renderRates(free){
-  var box = document.getElementById('rates');
-  if(free === null){ box.hidden = true; return; }
-  box.hidden = false;
-
-  var A = function(mut){ return solve(variant(mut)); };
-  var per = function(up, down, units){
-    var hi = A(up), lo = A(down);
-    if(hi === null || lo === null) return null;
-    return (hi - lo) / units * 12;
-  };
-  var tiles = [];
-  var add = function(m, cap){
-    if(m === null) return;
-    var f = sooner(m);
-    tiles.push('<div><span class="rate-num">' + f[0] + '</span>' +
-               '<span class="rate-unit">' + f[1] + '</span>' +
-               '<p class="rate-cap">' + cap + '</p></div>');
-  };
-  add(per({spend:15000},  {spend:-15000},  30),
-      'for every <b>$1,000 a year</b> you won\u2019t need once you stop');
-  add(per({rate:-5},      {rate:5},        10),
-      'for every extra <b>1% of your pay</b> you save');
-  add(per({savings:-50000},{savings:50000},10),
-      'for every <b>$10,000</b> more invested today');
-
-  if(free + 1 <= s.life){
-    var now = run(s, free), plus = run(s, free + 1);
-    var gain = disp(plus.rows[free + 1 - s.age].bal, free + 1 - s.age) -
-               disp(now.rows[free - s.age].bal, free - s.age);
-    if(gain > 0){
-      tiles.push('<div><span class="rate-num">' + money(gain) + '</span>' +
-        '<span class="rate-unit">bigger pot</span>' +
-        '<p class="rate-cap">for <b>one more year</b> of work \u2014 and one less year of your own</p></div>');
-    }
-  }
-  document.getElementById('rate-grid').innerHTML = tiles.join('');
+/* what one more working year adds to the pot on the day you stop */
+function extraYearGain(free){
+  if(free === null || free + 1 > s.life) return null;
+  var now = run(s, free), plus = run(s, free + 1), t = free - s.age;
+  var gain = disp(plus.rows[t + 1].bal, t + 1) - disp(now.rows[t].bal, t);
+  return gain > 0 ? gain : null;
 }
 
 /* ── which pot pays ────────────────────────────────────────────────── */
@@ -1577,11 +1525,14 @@ function renderPots(res, free){
 
 /* ── levers ────────────────────────────────────────────────────────── */
 var LEVERS = [
-  { label:'How much you save',   note:'± 5% of your pay',     good:{rate:5},       bad:{rate:-5} },
-  { label:'Retirement spending', note:'± $10,000 a year',     good:{spend:-10000}, bad:{spend:10000} },
-  { label:'Market return',       note:'± 1% a year',         good:{ret:1},        bad:{ret:-1} },
-  { label:'Inflation',           note:'± 1% a year',         good:{infl:-1},      bad:{infl:1} },
-  { label:'Invested today',      note:'± $50,000',            good:{savings:50000},bad:{savings:-50000} }
+  { label:'How much you save',   note:'± 5% of your pay',  good:{rate:5},       bad:{rate:-5},
+    units:10, unit:'1% of pay' },
+  { label:'Retirement spending', note:'± $10,000 a year',  good:{spend:-10000}, bad:{spend:10000},
+    units:20, unit:'$1,000' },
+  { label:'Market return',       note:'± 1% a year',       good:{ret:1},        bad:{ret:-1} },
+  { label:'Inflation',           note:'± 1% a year',       good:{infl:-1},      bad:{infl:1} },
+  { label:'Invested today',      note:'± $50,000',         good:{savings:50000},bad:{savings:-50000},
+    units:10, unit:'$10,000' }
 ];
 function renderLevers(free, fillH){
   var host = document.getElementById('lever-plot');
@@ -1598,19 +1549,23 @@ function renderLevers(free, fillH){
   var W = Math.max(280, host.clientWidth || 600);
   var narrow = W < 520;
   var headH = 26;
-  var rowH = narrow ? 62 : 46;
+  var rowH = 60;
   if(fillH) rowH = Math.max(rowH, Math.min(94, (fillH - headH - 6)/LEVERS.length));
-  var labelW = narrow ? 0 : Math.min(184, W*0.34);
-  var H = headH + LEVERS.length*rowH + 6;
+  var labelW = narrow ? 0 : Math.min(200, W*0.36);
+
+  var data = LEVERS.map(function(L){
+    var g = solve(variant(L.good)), b = solve(variant(L.bad));
+    var d = { L:L, g: g === null ? null : g - free, b: b === null ? null : b - free, rate:null };
+    if(L.units && d.g !== null && d.b !== null) d.rate = goingRate((d.b - d.g)*12/L.units, L.unit);
+    return d;
+  });
+  var tops = [], y = headH;
+  data.forEach(function(d){ tops.push(y); y += narrow ? (d.rate ? 76 : 56) : rowH; });
+  var plotB = y, H = y + 6;
   var svg = fresh(host);
   svg.setAttribute('viewBox','0 0 '+W+' '+H);
   svg.setAttribute('width', W); svg.setAttribute('height', H);
   svg.setAttribute('role','img'); svg.setAttribute('aria-label','How far each change moves your freedom date.');
-
-  var data = LEVERS.map(function(L){
-    var g = solve(variant(L.good)), b = solve(variant(L.bad));
-    return { L:L, g: g === null ? null : g - free, b: b === null ? null : b - free };
-  });
   var cap = 1;
   data.forEach(function(d){
     if(d.g !== null) cap = Math.max(cap, Math.abs(d.g));
@@ -1620,19 +1575,24 @@ function renderLevers(free, fillH){
   var half = axisW/2 - (narrow ? 54 : 74);
   var X = function(d){ return cx + (d/cap)*half; };
 
-  T(svg, cx-10, 12, 'EARLIER', null, 'end');
-  T(svg, cx+10, 12, 'LATER',   null, 'start');
-  E('line',{x1:cx, y1:headH-14, x2:cx, y2:headH+LEVERS.length*rowH-8, class:'axis'}, svg);
+  T(svg, cx-10, 12, 'SOONER', null, 'end');
+  T(svg, cx+10, 12, 'LATER',  null, 'start');
+  E('line',{x1:cx, y1:headH-14, x2:cx, y2:plotB-8, class:'axis'}, svg);
 
   data.forEach(function(d, i){
-    var top = headH + i*rowH;
-    var by  = narrow ? top + 28 : top + rowH/2 - 7;
+    var top = tops[i], mid = top + rowH/2;
+    var by;
     if(narrow){
+      by = top + 24;
       T(svg, 0, top+12, d.L.label.toUpperCase(), 't-strong', 'start');
       T(svg, W, top+12, d.L.note, null, 'end');
+      if(d.rate) T(svg, 0, by+34, d.rate, 't-rate', 'start');
     } else {
-      T(svg, 0, top + rowH/2 - 1, d.L.label.toUpperCase(), 't-strong', 'start');
-      T(svg, 0, top + rowH/2 + 12, d.L.note, null, 'start');
+      by = mid - 7;
+      var y0 = d.rate ? mid - 10 : mid - 3;
+      T(svg, 0, y0, d.L.label.toUpperCase(), 't-strong', 'start');
+      T(svg, 0, y0 + 13, d.L.note, null, 'start');
+      if(d.rate) T(svg, 0, y0 + 26, d.rate, 't-rate', 'start');
     }
     var pair = [d.g, d.b];
     var sameSide = d.g !== null && d.b !== null && d.g !== 0 && d.b !== 0 &&
@@ -1643,7 +1603,7 @@ function renderLevers(free, fillH){
       var never = v === null;
       var dir = never ? 1 : (v < 0 ? -1 : 1);
       var len = Math.max(4, ((never ? cap : Math.abs(v))/cap)*half);
-      var col = dir === -1 ? 'var(--blue)' : 'var(--neg)';
+      var col = dir === -1 ? 'var(--free)' : 'var(--later)';
       var path = dir === -1 ? capLeft(cx-len, by, len-2, 14, 4) : capRight(cx+2, by, len-2, 14, 4);
       E('path', {d:path, fill:col, opacity: never ? .38 : 1,
                  stroke: (sameSide && j === 1) ? 'var(--card)' : null,
@@ -1651,48 +1611,45 @@ function renderLevers(free, fillH){
       var txt = never ? 'never'
                       : narrow ? plural(Math.abs(v),'yr')
                                : plural(Math.abs(v),'yr') + (dir === -1 ? ' sooner' : ' later');
-      T(svg, dir === -1 ? cx-len-7 : cx+len+7, by+11, txt,
-        dir === -1 ? null : 't-neg', dir === -1 ? 'end' : 'start');
+      T(svg, dir === -1 ? cx-len-7 : cx+len+7, by+11, txt, null, dir === -1 ? 'end' : 'start');
     });
     if(d.g === 0 && d.b === 0) T(svg, cx+10, by+11, 'no change', null, 'start');
   });
 }
 
 /* ── stats ─────────────────────────────────────────────────────────── */
-function renderStats(res, free, comp){
+function renderStats(res, free){
   var host = document.getElementById('stats');
   var lede = document.getElementById('stats-lede');
   var at = free === null ? null : res.rows[free - s.age];
   var t = free === null ? 0 : free - s.age;
-  var balAt = at ? disp(at.bal, t) : 0;
-  var need = Math.max(0, s.spend - (free !== null && free >= s.ssAge ? s.ss : 0));
-  var wr = balAt > 0 ? disp(need, t)/balAt*100 : 0;
   var endT = s.life - s.age;
   var items = [];
 
   if(free !== null){
-    items.push(['Portfolio the day you stop', money(balAt), 'age ' + free + ', ' + (units==='future'?'future':"today's") + ' dollars']);
+    /* the first free year's draw, after Social Security and any pension,
+       with health cover on top - the number the 4% rule is about */
+    var balAt = disp(at.bal, t), draw = disp(Math.max(0, -at.flow), t);
+    var wr = balAt > 0 ? draw/balAt*100 : 0;
     items.push(['What you pull out in year one', pct(wr,1),
-      usd(disp(need,t)) + ' \u2014 ' + (wr > 4.3 ? 'above' : wr < 3.7 ? 'below' : 'right at') + ' the 4% rule of thumb']);
-    items.push(['Years of freedom', String(Math.max(0, s.life - free + 1)), 'through age ' + s.life]);
-    items.push(['What you add from here', money(units==='future' ? res.contribNom : res.contribTotal), plural(free - s.age,'year') + ' of saving']);
-    items.push(['What the market adds from here', money(comp.growth),
-      comp.contributed > 0 ? '$' + (comp.growth/comp.contributed).toFixed(2) + ' for every $1 you put in'
-                           : 'all of the build-up']);
+      usd(draw) + ' \u2014 ' + (wr > 4.3 ? 'above' : wr < 3.7 ? 'below' : 'right at') + ' the 4% rule of thumb']);
     if(res.medPaid > 0) items.push(['Health cover before Medicare', money(res.medPaid),
       plural(Math.max(0, Math.min(MEDICARE_AGE, s.life) - free), 'year') + ' of it, on top of spending']);
-    items.push(['It keeps earning after you stop', money(res.growthPost), 'growth during retirement, today\u2019s dollars']);
+    items.push(['It keeps earning after you stop', money(res.growthPost), 'growth during retirement']);
     if(res.split) items.push(['Tax and penalties on the way out', money(res.taxPaid + res.penaltyPaid),
       res.penaltyPaid > 0 ? money(res.penaltyPaid) + ' of it early-withdrawal penalty' : 'on 401(k) withdrawals']);
+    var gain = extraYearGain(free);
+    if(gain !== null) items.push(['One more year of work', '+' + money(gain), 'on the pot, and one less year of your own']);
     items.push(['Left at age ' + s.life, money(disp(res.end, endT+1)), res.end > s.spend*3 ? 'room to spare' : 'cutting it fine']);
-    lede.textContent = 'Everything below is measured on the day you walk out, in ' +
-      (units === 'future' ? 'the dollars of that year' : "today's dollars") + '.';
+    lede.textContent = 'What the plan asks of the money once you stop, and what it leaves behind \u2014 in ' +
+      (units === 'future' ? 'the dollars of each year' : "today's dollars") + '.';
   } else {
     var worked = run(s, 90);
-    items.push(['Money runs out at age', String(worked.depleted || s.life), 'even working to 90']);
     var ssReal = s.ss * claimFactor(s.ssAge, fraFor(NOW - s.age));
-    items.push(['Yearly gap to close', money(disp(Math.max(0, s.spend - ssReal), 0)), 'after Social Security']);
-    items.push(['You would need roughly', money(Math.max(0, s.spend - s.ss)*25), 'invested, at a 4% draw']);
+    var gapYr = Math.max(0, s.spend - ssReal);
+    items.push(['Money runs out at age', String(worked.depleted || s.life), 'even working to 90']);
+    items.push(['Yearly gap to close', money(gapYr), 'after Social Security']);
+    items.push(['You would need roughly', money(gapYr*25), 'invested, at a 4% draw']);
     items.push(['You have now', money(s.savings), 'invested']);
     items.push(['You add each year', money(s.income*s.rate/100), pct(s.rate,0) + ' of income']);
     lede.textContent = 'The plan as written does not finish. Here is the size of the gap.';
@@ -1715,7 +1672,7 @@ function renderHist(h, free, lad, mc){
     document.getElementById('hist-lede').textContent =
       'There is no date to test yet. History can only tell you how a finished plan would have fared.';
     head.hidden = true; leg.hidden = true;
-    document.getElementById('mc-score').hidden = true;
+    document.getElementById('hist-more').hidden = true;
     document.getElementById('hist-mc').textContent = '';
     document.getElementById('hist-fails').textContent = '';
     document.getElementById('ladder-head').hidden = true;
@@ -1724,6 +1681,7 @@ function renderHist(h, free, lad, mc){
     host.innerHTML = ''; return;
   }
   head.hidden = false; leg.hidden = false;
+  document.getElementById('hist-more').hidden = false;
 
   var W = Math.max(280, host.clientWidth || 700);
   var narrow = W < 560;
@@ -1748,8 +1706,19 @@ function renderHist(h, free, lad, mc){
   var band = function(q){ return cols.map(function(c){ return quant(c, q); }); };
   var p10 = band(.10), p25 = band(.25), p50 = band(.50), p75 = band(.75), p90 = band(.90);
 
-  var tk = ticks(Math.max(Math.max.apply(null, p90), Math.max.apply(null, assum)*1.1, 1), 3);
-  var maxV = tk.top;
+  /* The scale follows the plan, not the luckiest tenth of history. Left to
+     the top band it ran to ten times the stopping balance and pressed every
+     failure flat against the axis; the failures are the point, so they get
+     the height and the best runs are allowed to leave through the top. */
+  var peak   = Math.max.apply(null, assum);
+  var anchor = Math.max(peak, p50[Math.min(n-1, free - s.age)], 1);
+  var want   = Math.min(Math.max.apply(null, p90),
+                        Math.max(Math.max.apply(null, p50)*1.08, anchor*1.15),
+                        anchor*2.6);
+  var maxV = Math.max(want, peak*1.1, 1);
+  var tk = ticks(maxV, 3);
+  tk.list = tk.list.filter(function(v){ return v <= maxV*1.001; });
+  var clipped = Math.max.apply(null, p90) > maxV*1.02;
   var Y = function(v){ return base - Math.min(1, v/maxV)*plotH; };
 
   var svg = fresh(host);
@@ -1765,7 +1734,6 @@ function renderHist(h, free, lad, mc){
 
   tk.list.forEach(function(yv){
     E('line', {x1:0, y1:Y(yv), x2:plotW, y2:Y(yv), class:'grid'}, svg);
-    T(svg, 0, Y(yv)-6, money(yv), null, 'start');
   });
 
   var line = function(vals){
@@ -1792,15 +1760,23 @@ function renderHist(h, free, lad, mc){
   E('path', {d:line(assum), fill:'none', stroke:'var(--ink)', 'stroke-width':2, opacity:.85,
              'stroke-dasharray':'9 5'}, g);
 
+  if(clipped){
+    var fid = 'fade-hist', fg = E('linearGradient', {id:fid, x1:0, y1:0, x2:0, y2:1}, cp.parentNode);
+    E('stop', {offset:0, style:'stop-color:var(--card);stop-opacity:1'}, fg);
+    E('stop', {offset:1, style:'stop-color:var(--card);stop-opacity:0'}, fg);
+    E('rect', {x:0, y:padT-6, width:plotW, height:34, fill:'url(#' + fid + ')'}, svg);
+    T(svg, plotW, padT-10, 'THE BEST RUNS GO OFF THE TOP', null, 'end');
+  }
+  tk.list.forEach(function(yv){ T(svg, 0, Y(yv)-6, money(yv), null, 'start'); });
+
   E('line', {x1:0, y1:base+.5, x2:plotW, y2:base+.5, class:'axis'}, svg);
   T(svg, 0, base+18, 'AGE ' + s.age, null, 'start');
   T(svg, plotW, base+18, String(s.life), null, 'end');
   if(free > s.age && free < s.life){
     var xf = X(free - s.age);
-    E('line', {x1:xf, y1:padT-6, x2:xf, y2:base, stroke:'var(--ink)', 'stroke-width':1,
+    E('line', {x1:xf, y1:padT-6, x2:xf, y2:base+4, stroke:'var(--ink)', 'stroke-width':1,
                'stroke-dasharray':'2 4', opacity:.35}, svg);
-    T(svg, Math.min(xf+6, plotW), padT+4, 'YOU STOP AT ' + free, null,
-      xf > plotW-120 ? 'end' : 'start');
+    T(svg, Math.max(104, Math.min(plotW-80, xf)), base+18, 'YOU STOP AT ' + free, 't-strong', 'middle');
   }
 
 
@@ -1826,12 +1802,9 @@ function renderHist(h, free, lad, mc){
 
   /* ── the words ── */
   var lost = h.total - h.ok, share = h.ok / h.total;
-  var pctEl = document.getElementById('hist-pct');
-  numEl.textContent = h.ok + '/' + h.total;
+  numEl.textContent = Math.round(share*100) + '%';
   numEl.className = 'hist-num' + (share < .75 ? ' bad' : '');
-  pctEl.textContent = Math.round(share*100) + '%';
-  pctEl.className = 'hist-pct' + (share < .75 ? ' bad' : '');
-  denEl.textContent = 'histories where the money lasted';
+  denEl.textContent = h.ok + ' of ' + h.total + ' real market histories lasted';
 
   document.getElementById('hist-lede').textContent =
     'Your plan run through every ' + h.span + '-year stretch of real markets since 1928 — ' +
@@ -1877,24 +1850,24 @@ function renderHist(h, free, lad, mc){
     }).join('');
   } else { ladHead.hidden = true; ladBox.hidden = true; }
 
-  var mcBox = document.getElementById('mc-score');
+  var altEl = document.getElementById('hist-alt');
   if(mc){
-    mcBox.hidden = false;
-    var mcNum = document.getElementById('mc-pct');
-    mcNum.textContent = Math.round(mc.share*100) + '%';
-    mcNum.className = 'hist-num' + (mc.share < .75 ? ' bad' : '');
-    document.getElementById('mc-den').textContent = 'of ' + commas(mc.total) + ' simulated futures';
-    var drift = Math.round(mc.share*100) - Math.round(share*100);
-    document.getElementById('hist-mc').innerHTML =
-      'Those futures are the same history resampled in <b>' + MC_BLOCK + '-year blocks</b>, so crashes keep their real size and a bad decade stays a bad decade. ' +
-      'The same ' + commas(mc.total) + ' are reused every time you move something, so a change in this number is a real change and not a reshuffle. ' +
-      (mc.ok === mc.total ? 'Not one of them ran out. '
-        : 'The soonest any ran dry was <b>age ' + mc.worstDry + '</b>, and the typical failure lasted to ' + mc.medianDry + '. ') +
+    var mcP = Math.round(mc.share*100), drift = mcP - Math.round(share*100);
+    altEl.hidden = false;
+    altEl.innerHTML = 'Shuffled into ' + commas(mc.total) + ' new futures built from the same years: <b>' + mcP + '%</b>. ' +
       (Math.abs(drift) <= 3 ? 'It agrees with the record.'
-        : drift > 0 ? 'It is kinder than the record \u2014 history dealt worse orderings than the shuffle usually finds.'
-                    : 'It is harsher than the record \u2014 the shuffle finds orderings history never got around to.');
+        : Math.abs(drift) <= 10 ? (drift > 0 ? 'A little kinder than the record.' : 'A little harsher than the record.')
+        : drift > 0 ? 'Kinder than the record \u2014 history dealt worse orderings than the shuffle usually finds.'
+                    : 'Harsher than the record \u2014 the shuffle finds bad orderings history never got around to.');
+    document.getElementById('hist-mc').innerHTML =
+      'The ' + commas(mc.total) + ' futures resample the same history in <b>' + MC_BLOCK + '-year blocks</b>, so crashes keep their real size and a bad decade stays a bad decade. ' +
+      'The same ' + commas(mc.total) + ' are reused every time you move something, so a change in that number is a real change and not a reshuffle. ' +
+      (mc.ok === mc.total ? 'Not one of them ran out.'
+        : 'The soonest any ran dry was <b>age ' + mc.worstDry + '</b>, and the typical failure lasted to ' + mc.medianDry + '.') +
+      (drift > 3 && drift <= 10 ? ' They come out kinder because history dealt worse orderings than the shuffle usually finds.'
+        : drift < -3 && drift >= -10 ? ' They come out harsher because the shuffle finds orderings history never got around to.' : '');
   } else {
-    mcBox.hidden = true;
+    altEl.hidden = true;
     document.getElementById('hist-mc').textContent = '';
   }
 
@@ -2000,7 +1973,6 @@ function update(){
   lastRun = { res:res, free:free };
   potsPanel.hidden = s.split !== 1;
   renderLifeline(res, free);
-  renderRates(free);
   renderTable();
   var comp = renderComp(res, free);
   if(s.split === 1){
@@ -2017,7 +1989,7 @@ function update(){
       '; anything the RMD forces out that you do not spend goes back into the brokerage account. ' +
       'Capital-gains tax on the brokerage account is not modelled.';
   }
-  renderStats(res, free, comp);
+  renderStats(res, free);
   renderLevers(free);
   fitLevers(free);
 
@@ -2052,7 +2024,7 @@ function update(){
 
   document.getElementById('lever-lede').textContent = free === null
     ? 'There is nothing to compare until the plan finishes. Here is what would get it there.'
-    : 'Each bar holds everything else still and changes one thing. The length is how far your freedom date slides.';
+    : 'Each bar changes one thing and holds the rest still. The length is how far your date slides; the orange line under each name is the going rate.';
 
   vCap.textContent = free === null
     ? 'Every year from ' + s.age + ' to ' + s.life + '. Red marks the years you are underwater.'

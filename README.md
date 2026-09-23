@@ -11,7 +11,7 @@ Drag any number in the sentence, or type it. Everything on the page — the year
 - **Finds the date, it doesn't assume one.** For every candidate retirement age it runs the money year by year to the end of the plan. The freedom date is the earliest age where the money survives — not a 25× rule of thumb.
 - **Keeps compounding after you stop.** The portfolio earns its return every year of retirement too. Only what you spend leaves the account.
 - **Works in today's dollars.** Returns are discounted by inflation, so a dollar on the chart always buys what a dollar buys now. A toggle switches everything to future dollars.
-- **Prices the levers.** An exchange rate under the hero: months sooner per $1,000 of retirement spending you drop, per extra point of income saved, per $10,000 invested today — and what one more year of work adds to the pot.
+- **Prices the levers.** One chart, "What buys you time": each lever moved on its own, how many years sooner or later the date lands, and the going rate underneath — months per 1% of pay saved, per $1,000 of yearly spending, per $10,000 invested today. Sooner is orange, the colour of free years; later is grey, so red only ever means money that ran out.
 - **Charges for health cover before Medicare.** The biggest surprise cost of stopping early, on top of your spending, in every retired year up to 65.
 - **Knows the difference between income that keeps up and income that doesn't.** Social Security holds its buying power, matching the real cost-of-living rise. A pension only does if you say so — leave the switch off, as most private pensions warrant, and it decays every year after it starts. On a $42,000 pension that switch alone is worth two years of freedom.
 - **Grows your pay, if you say so.** An optional switch: give it the raise you actually expect ("3% a year") and it tells you what that is worth against inflation. A 2% raise against 2.6% inflation is a pay cut, and the model charges you a year of freedom for it.
@@ -30,7 +30,7 @@ So the plan is re-run on real markets. For every starting year from 1928 onward,
 
 The date itself still comes from your steady-return assumption — that is what "on your assumptions" means at the top of the page. History then judges it, and the page says so in the same breath rather than burying the caveat:
 
-> **32 of 40** histories where the money lasted — **80%** — and the ones that failed all began in the 1950s.
+> **80%** — 32 of 40 real market histories lasted — and the ones that failed all began in the 1950s.
 
 And because "80%" is not an answer anyone can act on, the panel prices the alternative. Each extra year of work, and what it buys:
 
@@ -38,15 +38,15 @@ And because "80%" is not an answer anyone can act on, the panel prices the alter
 
 The headline stays a single date and says what it rests on — "on your assumptions" — and leaves the judgment to the panel rather than arguing with itself in the hero.
 
-The chart shows the middle half and the middle eight-tenths of those histories as bands, every failure as its own red line, and your steady-return assumption as a dashed line so you can see how optimistic or cautious it was against what actually happened.
+The chart shows the middle half and the middle eight-tenths of those histories as bands, every failure as its own red line, and your steady-return assumption as a dashed line so you can see how optimistic or cautious it was against what actually happened. Its scale follows the plan, not the luckiest runs: the best tenth of history can grow to ten times the stopping balance, and scaling to them pressed every failure flat against the axis. Those runs now leave through the top of the chart, which says so.
 
 **Data**: annual total returns for the S&P 500 and 10-year Treasuries plus CPI, 1928–2024, from [Damodaran at NYU Stern](https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/histretSP.html). Verified against the source's cumulative growth of $100 over the full period (S&P geometric mean 9.95% vs the source's 9.94%; Treasuries 4.50% vs 4.50%).
 
 ### And a thousand futures that never happened
 
-Thirty-three overlapping windows is a small sample, and the count jumps a few points whenever the date moves. So the same history is also resampled in contiguous **8-year blocks** — crashes keep their real size, a bad decade stays a bad decade, but the orderings are ones history never got around to. A thousand of them, scored beside the real count:
+Thirty-three overlapping windows is a small sample, and the count jumps a few points whenever the date moves. So the same history is also resampled in contiguous **8-year blocks** — crashes keep their real size, a bad decade stays a bad decade, but the orderings are ones history never got around to. A thousand of them, reported in one line under the real count so the panel leads with a single number:
 
-> **40 / 40** histories where the money lasted · **93%** of 1,000 simulated futures
+> Shuffled into 1,000 new futures built from the same years: **93%**. A little harsher than the record.
 
 When the two agree, that's reassuring. When they diverge, the shuffle has usually found an ordering worse than anything on record — which is the point of running it.
 
